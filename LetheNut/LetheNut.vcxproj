@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{fe75d385-98b8-41fe-bcb7-1d3082bf5c72}</ProjectGuid>
+    <RootNamespace>LetheNut</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\</IntDir>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\</IntDir>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NBUILD;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;$(SolutionDir)bin\Thirdparty\glfw3.lib;$(SolutionDir)bin\Thirdparty\glew32.lib;$(SolutionDir)bin\Thirdparty\openAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NBUILD;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;$(SolutionDir)bin\Thirdparty\glfw3.lib;$(SolutionDir)bin\Thirdparty\glew32.lib;$(SolutionDir)bin\Thirdparty\openAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="sources\NutBasic.cpp" />
+    <ClCompile Include="sources\NutBrowser.cpp" />
+    <ClCompile Include="sources\NutEditor.cpp" />
+    <ClCompile Include="sources\NutKernel.cpp" />
+    <ClCompile Include="sources\NutLibrary.cpp" />
+    <ClCompile Include="sources\NutLibrary_unix.cpp" />
+    <ClCompile Include="sources\NutLibrary_win.cpp" />
+    <ClCompile Include="sources\NutMenu.cpp" />
+    <ClCompile Include="sources\NutMenuItem.cpp" />
+    <ClCompile Include="sources\NutModule.cpp" />
+    <ClCompile Include="sources\NutNode.cpp" />
+    <ClCompile Include="sources\NutNodeEditor.cpp" />
+    <ClCompile Include="sources\NutPanel.cpp" />
+    <ClCompile Include="sources\NutPopup.cpp" />
+    <ClCompile Include="sources\NutProfiler.cpp" />
+    <ClCompile Include="sources\NutProperties.cpp" />
+    <ClCompile Include="sources\NutScene.cpp" />
+    <ClCompile Include="sources\NutStyle.cpp" />
+    <ClCompile Include="sources\NutTool.cpp" />
+    <ClCompile Include="sources\NutViewport.cpp" />
+    <ClCompile Include="sources\NutWindow.cpp" />
+    <ClCompile Include="sources\VendorGLFW.cpp" />
+    <ClCompile Include="sources\VendorImGUI.cpp" />
+    <ClCompile Include="sources\VendorJSON.cpp" />
+    <ClCompile Include="sources\VendorOpenGL.cpp" />
+    <ClCompile Include="sources\__main.cpp" />
+    <ClCompile Include="Thirdparty\ImGUI\imgui.cpp" />
+    <ClCompile Include="Thirdparty\ImGUI\imgui_demo.cpp" />
+    <ClCompile Include="Thirdparty\ImGUI\imgui_draw.cpp" />
+    <ClCompile Include="Thirdparty\ImGUI\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Thirdparty\ImGUI\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Thirdparty\ImGUI\imgui_impl_win32.cpp" />
+    <ClCompile Include="Thirdparty\ImGUI\imgui_widgets.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LetheNut\Core.hpp" />
+    <ClInclude Include="LetheNut\Editors\Nodes\NutNode.hpp" />
+    <ClInclude Include="LetheNut\Editors\Nodes\NutNodeEditor.hpp" />
+    <ClInclude Include="LetheNut\Modules\NutKernel.hpp" />
+    <ClInclude Include="LetheNut\Modules\NutModule.hpp" />
+    <ClInclude Include="LetheNut\NutBasic.hpp" />
+    <ClInclude Include="LetheNut\NutEditor.hpp" />
+    <ClInclude Include="LetheNut\NutHelper.hpp" />
+    <ClInclude Include="LetheNut\NutLibrary.hpp" />
+    <ClInclude Include="LetheNut\Tools\NutBrowser.hpp" />
+    <ClInclude Include="LetheNut\Tools\NutProfiler.hpp" />
+    <ClInclude Include="LetheNut\Tools\NutProperties.hpp" />
+    <ClInclude Include="LetheNut\Tools\NutScene.hpp" />
+    <ClInclude Include="LetheNut\Tools\NutTool.hpp" />
+    <ClInclude Include="LetheNut\Tools\NutViewport.hpp" />
+    <ClInclude Include="LetheNut\UI\NutMenu.hpp" />
+    <ClInclude Include="LetheNut\UI\NutMenuItem.hpp" />
+    <ClInclude Include="LetheNut\UI\NutPanel.hpp" />
+    <ClInclude Include="LetheNut\UI\NutPopup.hpp" />
+    <ClInclude Include="LetheNut\UI\NutStyle.hpp" />
+    <ClInclude Include="LetheNut\UI\NutWindow.hpp" />
+    <ClInclude Include="LetheNut\Vendor\GLFW.hpp" />
+    <ClInclude Include="LetheNut\Vendor\ImGUI.hpp" />
+    <ClInclude Include="LetheNut\Vendor\JSON.hpp" />
+    <ClInclude Include="LetheNut\Vendor\OpenGL.hpp" />
+    <ClInclude Include="sources\__ui.hpp" />
+    <ClInclude Include="Templates\NutEditor.hpp" />
+    <ClInclude Include="Templates\NutLibrary.hpp" />
+    <ClInclude Include="Templates\NutMenu.hpp" />
+    <ClInclude Include="Templates\NutMenuItem.hpp" />
+    <ClInclude Include="Templates\NutPopup.hpp" />
+    <ClInclude Include="Templates\NutWindow.hpp" />
+    <ClInclude Include="Templates\VendorImGUI.hpp" />
+    <ClInclude Include="Templates\VendorJSON.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
