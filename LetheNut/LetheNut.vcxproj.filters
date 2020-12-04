@@ -129,6 +129,9 @@
     <ClCompile Include="sources\NutTextParser.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Thirdparty\ImGUI\imgui_tables.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LetheNut\Core.hpp">

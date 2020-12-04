@@ -80,8 +80,8 @@ void ImGUI::Initialize( nPointer& window ) {
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-	io.Fonts->AddFontFromFileTTF( "Assets/Fonts/OpenSans-Regular.ttf", 18.f );
-	io.Fonts->AddFontFromFileTTF( "Assets/Fonts/OpenSans-Bold.ttf", 18.f );
+	//io.Fonts->AddFontFromFileTTF( "Assets/Fonts/OpenSans-Regular.ttf", 18.f );
+	//io.Fonts->AddFontFromFileTTF( "Assets/Fonts/OpenSans-Bold.ttf", 18.f );
 
 	if ( io.Fonts->Fonts.Size > 0 )
 		io.FontDefault = io.Fonts->Fonts[ ImGUI::FONT_DEFAULT ];

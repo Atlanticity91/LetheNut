@@ -55,7 +55,9 @@ NutTextEditor::NutTextEditor( )
 	this->renderer.Record = nHelper::GetTime( );
 
 	this->Create( "I'm a test" );
-	this->Get( ).Append( "I'm a symbolic test !", 10 );
+	this->Get( ).Append( "func add ( a : int , b : int )", 0 );
+	this->Get( ).Append( "\treturn a + b ;", 1 );
+	this->Get( ).Append( "end", 2 );
 }
 
 NutTextEditor::~NutTextEditor( ) {

@@ -1,4 +1,4 @@
-// dear imgui: Platform Binding for Windows (standard windows API for 32 and 64 bits applications)
+// dear imgui: Platform Backend for Windows (standard windows API for 32 and 64 bits applications)
 // This needs to be used along with a Renderer (e.g. DirectX11, OpenGL3, Vulkan..)
 
 // Implemented features:
@@ -7,6 +7,10 @@
 //  [X] Platform: Keyboard arrays indexed using VK_* Virtual Key Codes, e.g. ImGui::IsKeyPressed(VK_SPACE).
 //  [X] Platform: Gamepad support. Enabled with 'io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad'.
 //  [X] Platform: Multi-viewport support (multiple windows). Enable with 'io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable'.
+
+// You can copy and use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
+// If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
+// Read online: https://github.com/ocornut/imgui/tree/master/docs
 
 #include "imgui.h"
 #include "imgui_impl_win32.h"
@@ -30,6 +34,7 @@
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
 //  2020-XX-XX: Platform: Added support for multiple windows via the ImGuiPlatformIO interface.
+//  2020-12-04: Misc: Fixed setting of io.DisplaySize to invalid/uninitialized data when after hwnd has been closed.
 //  2020-03-03: Inputs: Calling AddInputCharacterUTF16() to support surrogate pairs leading to codepoint >= 0x10000 (for more complete CJK inputs)
 //  2020-02-17: Added ImGui_ImplWin32_EnableDpiAwareness(), ImGui_ImplWin32_GetDpiScaleForHwnd(), ImGui_ImplWin32_GetDpiScaleForMonitor() helper functions.
 //  2020-01-14: Inputs: Added support for #define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD/IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT.
@@ -71,12 +76,12 @@ static void ImGui_ImplWin32_UpdateMonitors();
 // Functions
 bool    ImGui_ImplWin32_Init(void* hwnd)
 {
-    if (!::QueryPerformanceFrequency((LARGE_INTEGER *)&g_TicksPerSecond))
+    if (!::QueryPerformanceFrequency((LARGE_INTEGER*)&g_TicksPerSecond))
         return false;
-    if (!::QueryPerformanceCounter((LARGE_INTEGER *)&g_Time))
+    if (!::QueryPerformanceCounter((LARGE_INTEGER*)&g_Time))
         return false;
 
-    // Setup back-end capabilities flags
+    // Setup backend capabilities flags
     ImGuiIO& io = ImGui::GetIO();
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;         // We can honor GetMouseCursor() values (optional)
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;          // We can honor io.WantSetMousePos requests (optional, rarely used)
@@ -168,7 +173,7 @@ static void ImGui_ImplWin32_UpdateMousePos()
     if (io.WantSetMousePos)
     {
         POINT pos = { (int)io.MousePos.x, (int)io.MousePos.y };
-        if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) == 0)
+        if ((io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) != 0 || ::ClientToScreen(g_hWnd, &pos))
             ::ClientToScreen(g_hWnd, &pos);
         ::SetCursorPos(pos.x, pos.y);
     }
@@ -208,7 +213,7 @@ static void ImGui_ImplWin32_UpdateMousePos()
     // Important: this information is not easy to provide and many high-level windowing library won't be able to provide it correctly, because
     // - This is _ignoring_ viewports with the ImGuiViewportFlags_NoInputs flag (pass-through windows).
     // - This is _regardless_ of whether another viewport is focused or being dragged from.
-    // If ImGuiBackendFlags_HasMouseHoveredViewport is not set by the back-end, imgui will ignore this field and infer the information by relying on the
+    // If ImGuiBackendFlags_HasMouseHoveredViewport is not set by the backend, imgui will ignore this field and infer the information by relying on the
     // rectangles and last focused time of every viewports it knows about. It will be unaware of foreign windows that may be sitting between or over your windows.
     if (HWND hovered_hwnd = ::WindowFromPoint(mouse_screen_pos))
         if (ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle((void*)hovered_hwnd))
@@ -295,18 +300,18 @@ static void ImGui_ImplWin32_UpdateMonitors()
 void    ImGui_ImplWin32_NewFrame()
 {
     ImGuiIO& io = ImGui::GetIO();
-    IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
+    IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It is generally built by the renderer backend. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL3_NewFrame().");
 
     // Setup display size (every frame to accommodate for window resizing)
-    RECT rect;
+    RECT rect = { 0, 0, 0, 0 };
     ::GetClientRect(g_hWnd, &rect);
     io.DisplaySize = ImVec2((float)(rect.right - rect.left), (float)(rect.bottom - rect.top));
     if (g_WantUpdateMonitors)
         ImGui_ImplWin32_UpdateMonitors();
 
     // Setup time step
-    INT64 current_time;
-    ::QueryPerformanceCounter((LARGE_INTEGER *)&current_time);
+    INT64 current_time = 0;
+    ::QueryPerformanceCounter((LARGE_INTEGER*)&current_time);
     io.DeltaTime = (float)(current_time - g_Time) / g_TicksPerSecond;
     g_Time = current_time;
 
@@ -342,7 +347,7 @@ void    ImGui_ImplWin32_NewFrame()
 
 // Win32 message handler (process Win32 mouse/keyboard inputs, etc.)
 // Call from your application's message handler.
-// When implementing your own back-end, you can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if Dear ImGui wants to use your inputs.
+// When implementing your own backend, you can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if Dear ImGui wants to use your inputs.
 // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
 // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
 // Generally you may always pass all inputs to Dear ImGui, and hide them from your application based on those two flags.
@@ -438,14 +443,14 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARA
 //---------------------------------------------------------------------------------------------------------
 // This is the scheme successfully used by GLFW (from which we borrowed some of the code) and other apps aiming to be highly portable.
 // ImGui_ImplWin32_EnableDpiAwareness() is just a helper called by main.cpp, we don't call it automatically.
-// If you are trying to implement your own back-end for your own engine, you may ignore that noise.
+// If you are trying to implement your own backend for your own engine, you may ignore that noise.
 //---------------------------------------------------------------------------------------------------------
 
 // Implement some of the functions and types normally declared in recent Windows SDK.
 #if !defined(_versionhelpers_H_INCLUDED_) && !defined(_INC_VERSIONHELPERS)
 static BOOL IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp)
 {
-    OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, { 0 }, sp };
+    OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, { 0 }, sp, 0, 0, 0, 0 };
     DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR;
     ULONGLONG cond = ::VerSetConditionMask(0, VER_MAJORVERSION, VER_GREATER_EQUAL);
     cond = ::VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
@@ -473,6 +478,9 @@ typedef DPI_AWARENESS_CONTEXT(WINAPI* PFN_SetThreadDpiAwarenessContext)(DPI_AWAR
 // Helper function to enable DPI awareness without setting up a manifest
 void ImGui_ImplWin32_EnableDpiAwareness()
 {
+    // Make sure monitors will be updated with latest correct scaling
+    g_WantUpdateMonitors = true;
+
     // if (IsWindows10OrGreater()) // This needs a manifest to succeed. Instead we try to grab the function pointer!
     {
         static HINSTANCE user32_dll = ::LoadLibraryA("user32.dll"); // Reference counted per-process
@@ -491,7 +499,9 @@ void ImGui_ImplWin32_EnableDpiAwareness()
             return;
         }
     }
-    SetProcessDPIAware();
+#if _WIN32_WINNT >= 0x0600
+    ::SetProcessDPIAware();
+#endif
 }
 
 #if defined(_MSC_VER) && !defined(NOGDI)
@@ -501,7 +511,8 @@ void ImGui_ImplWin32_EnableDpiAwareness()
 float ImGui_ImplWin32_GetDpiScaleForMonitor(void* monitor)
 {
     UINT xdpi = 96, ydpi = 96;
-    if (IsWindows8Point1OrGreater())
+    static BOOL bIsWindows8Point1OrGreater = IsWindows8Point1OrGreater();
+    if (bIsWindows8Point1OrGreater)
     {
         static HINSTANCE shcore_dll = ::LoadLibraryA("shcore.dll"); // Reference counted per-process
         if (PFN_GetDpiForMonitor GetDpiForMonitorFn = (PFN_GetDpiForMonitor)::GetProcAddress(shcore_dll, "GetDpiForMonitor"))
@@ -557,7 +568,7 @@ static void ImGui_ImplWin32_SetImeInputPos(ImGuiViewport* viewport, ImVec2 pos)
 
 //--------------------------------------------------------------------------------------------------------
 // MULTI-VIEWPORT / PLATFORM INTERFACE SUPPORT
-// This is an _advanced_ and _optional_ feature, allowing the back-end to create and handle multiple viewports simultaneously.
+// This is an _advanced_ and _optional_ feature, allowing the backend to create and handle multiple viewports simultaneously.
 // If you are new to dear imgui or creating a new binding for dear imgui, it is recommended that you completely ignore this section first..
 //--------------------------------------------------------------------------------------------------------
 
@@ -654,13 +665,19 @@ static void ImGui_ImplWin32_UpdateWindow(ImGuiViewport* viewport)
     // Only reapply the flags that have been changed from our point of view (as other flags are being modified by Windows)
     if (data->DwStyle != new_style || data->DwExStyle != new_ex_style)
     {
+        // (Optional) Update TopMost state if it changed _after_ creation
+        bool top_most_changed = (data->DwExStyle & WS_EX_TOPMOST) != (new_ex_style & WS_EX_TOPMOST);
+        HWND insert_after = top_most_changed ? ((viewport->Flags & ImGuiViewportFlags_TopMost) ? HWND_TOPMOST : HWND_NOTOPMOST) : 0;
+        UINT swp_flag = top_most_changed ? 0 : SWP_NOZORDER;
+
+        // Apply flags and position (since it is affected by flags)
         data->DwStyle = new_style;
         data->DwExStyle = new_ex_style;
         ::SetWindowLong(data->Hwnd, GWL_STYLE, data->DwStyle);
         ::SetWindowLong(data->Hwnd, GWL_EXSTYLE, data->DwExStyle);
         RECT rect = { (LONG)viewport->Pos.x, (LONG)viewport->Pos.y, (LONG)(viewport->Pos.x + viewport->Size.x), (LONG)(viewport->Pos.y + viewport->Size.y) };
         ::AdjustWindowRectEx(&rect, data->DwStyle, FALSE, data->DwExStyle); // Client to Screen
-        ::SetWindowPos(data->Hwnd, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+        ::SetWindowPos(data->Hwnd, insert_after, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, swp_flag | SWP_NOACTIVATE | SWP_FRAMECHANGED);
         ::ShowWindow(data->Hwnd, SW_SHOWNA); // This is necessary when we alter the style
         viewport->PlatformRequestMove = viewport->PlatformRequestResize = true;
     }
@@ -801,7 +818,7 @@ static LRESULT CALLBACK ImGui_ImplWin32_WndProcHandler_PlatformWindow(HWND hWnd,
                 return MA_NOACTIVATE;
             break;
         case WM_NCHITTEST:
-            // Let mouse pass-through the window. This will allow the back-end to set io.MouseHoveredViewport properly (which is OPTIONAL).
+            // Let mouse pass-through the window. This will allow the backend to set io.MouseHoveredViewport properly (which is OPTIONAL).
             // The ImGuiViewportFlags_NoInputs flag is set while dragging a viewport, as want to detect the window behind the one we are dragging.
             // If you cannot easily access those viewport flags from your windowing/event code: you may manually synchronize its state e.g. in
             // your main loop after calling UpdatePlatformWindows(). Iterate all viewports/platform windows and pass the flag to your windowing system.
