@@ -45,6 +45,7 @@ NutNode::NutNode( ENutNodeTypes type, nString name, nString description )
 	: NutBasic( name ),
 	type( type ),
 	description( description ),
+	color( ),
 	inputs( ),
 	outputs( )
 { }
@@ -57,7 +58,22 @@ void NutNode::AddIn( const NutNodePin& pin ) { this->inputs.emplace_back( pin );
 void NutNode::AddIn( const NutNodePin&& pin ) { this->AddIn( pin ); }
 
 void NutNode::AddIn( bool is_array, ENutPinTypes type, nString name, nString description ) {
-	this->AddIn( NutNodePin{ is_array, type, name, description } );
+	this->AddIn( NutNodePin{ is_array, false, type, name, description, { nullptr, 0 } } );
+}
+
+void NutNode::ConnectIn( nUInt query_id ) {
+	if ( this->HasInPin( query_id ) )
+		this->inputs[ query_id ].is_connected = true;
+}
+
+void NutNode::DisConnectIn( nUInt query_id ) {
+	if ( this->HasInPin( query_id ) )
+		this->inputs[ query_id ].is_connected = false;
+}
+
+void NutNode::ToggleIn( nUInt query_id ) {
+	if ( this->HasInPin( query_id ) )
+		this->inputs[ query_id ].is_connected = !this->inputs[ query_id ].is_connected;
 }
 
 void NutNode::AddOut( const NutNodePin& pin ) { this->outputs.emplace_back( pin ); }
@@ -65,7 +81,22 @@ void NutNode::AddOut( const NutNodePin& pin ) { this->outputs.emplace_back( pin 
 void NutNode::AddOut( const NutNodePin&& pin ) { this->AddOut( pin ); }
 
 void NutNode::AddOut( bool is_array, ENutPinTypes type, nString name, nString description ) {
-	this->AddOut( NutNodePin{ is_array, type, name, description } );
+	this->AddOut( NutNodePin{ is_array, false, type, name, description, { nullptr, 0 } } );
+}
+
+void NutNode::ConnectOut( nUInt query_id ) {
+	if ( this->HasOutPin( query_id ) )
+		this->outputs[ query_id ].is_connected = true;
+}
+
+void NutNode::DisConnectOut( nUInt query_id ) {
+	if ( this->HasOutPin( query_id ) )
+		this->outputs[ query_id ].is_connected = false;
+}
+
+void NutNode::ToggleOut( nUInt query_id ) {
+	if ( this->HasOutPin( query_id ) )
+		this->outputs[ query_id ].is_connected = !this->outputs[ query_id ].is_connected;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +105,8 @@ void NutNode::AddOut( bool is_array, ENutPinTypes type, nString name, nString de
 ENutNodeTypes NutNode::GetType( ) const { return this->type; }
 
 nString NutNode::GetDescription( ) const { return this->description; }
+
+const ImVec4& NutNode::GetColor( ) const { return this->color; }
 
 bool NutNode::HasInPin( nUInt query_id ) const { 
 	return query_id < this->inputs.size( ); 

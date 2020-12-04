@@ -45,13 +45,32 @@
 
 	private:
 		std::vector<NutNode*> nodes;
+		std::vector<NutNodeLink> links;
 
 	public:
 		NutNodeEditor( );
 
 		virtual ~NutNodeEditor( );
 
+		void CreateLink( const NutNodeLink& link );
+
+		void CreateLink( const NutNodeLink&& link );
+
+		void CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin );
+
+		void CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin, const ImVec4& color );
+
+		void CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin, const ImVec4&& color );
+
 	protected:
+		/**
+		 * Process virtual method
+		 * @author : ALVES Quentin
+		 * @note : Process the current tool.
+		 * @param editor : Pointer to current editor.
+		 **/
+		virtual void Process( class NutEditor* editor ) override;
+
 		/**
 		 * OnEditorRender override method
 		 * @author : ALVES Quentin
@@ -60,7 +79,11 @@
 		 **/
 		virtual void OnEditorRender( class NutEditor* editor ) override;
 
-		virtual void InternalDrawPinIcon( ENutPinTypes pin_type, bool connected, float alpha );
+		virtual void InternalDrawPin( const NutNodePin& pin, bool is_out, float alpha );
+
+		virtual void InternalDrawPin( const NutNodePin& pin, float alpha );
+
+		virtual void InternalDrawLink( const NutNodeLink& link );
 
 	};
 

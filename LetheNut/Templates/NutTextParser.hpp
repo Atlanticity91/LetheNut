@@ -34,29 +34,20 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_TEXT_PARSER_IMP_HPP_
+#define _IGS_NUT_TEXT_PARSER_IMP_HPP_
 
-#ifndef _WIN64
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    //      PUBLIC
+    ///////////////////////////////////////////////////////////////////////////////////////////
+	template< typename... Args >
+	void NutTextParser::Register( ENutTextStyleVars variable, Args... args ) {
+		if ( this->tables.find( variable ) == this->tables.end( ) ) {
+			auto list = StringList{ args... };
+			auto pair = std::make_pair( variable, list );
 
-#include <dlfcn.h>
-#include <LetheNut/NutLibrary.hpp>
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutLibrary::NutLibrary( std::string path ) {
-	this->handle = dlopen( path.c_str( ), RTLD_LAZY );
-
-	this->Initialize( );
-}
-
-NutLibrary::~NutLibrary( ) { dlclose( this->handle ); }
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PRIVATE GET
-///////////////////////////////////////////////////////////////////////////////////////////
-bool NutLibrary::GetState( ) const { return this->handle != nullptr; }
-
-void* NutLibrary::Get( nString name ) const { return dlsym( this->handle, name ); }
+			this->tables.emplace( pair );
+		}
+	}
 
 #endif

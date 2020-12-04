@@ -43,7 +43,7 @@
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutPopup::NutPopup( nString name, ImGuiWindowFlags flags )
-    : NutPanel( name, true, ImVec2{ 0.f, 0.f } ),
+    : NutPanel( name, true, ImGUI::NO_PADDING ),
     panels( ),
     is_open( true ),
     size( 0.f, 0.f ),
@@ -51,7 +51,7 @@ NutPopup::NutPopup( nString name, ImGuiWindowFlags flags )
 { }
 
 NutPopup::NutPopup( nString name, nUInt width, nUInt height, ImGuiWindowFlags flags )
-    : NutPanel( name, true, ImVec2{ 0.f, 0.f } ),
+    : NutPanel( name, true, ImGUI::NO_PADDING ),
     panels( ),
     is_open( true ),
     size( (float)width, (float)height ),
@@ -135,7 +135,15 @@ void NutPopup::OnPanelRender( class NutEditor* editor ) {
     for ( auto& panel : this->panels ) {
         if ( panel->GetIsActive( ) ) {
             ImGUI::BeginPanel( panel->GetName( ), panel->GetPadding( ) );
-                panel->OnEditorRender( editor );
+                if ( !ImGui::IsWindowCollapsed( ) ) {
+                    if ( ImGui::IsWindowFocused( ) && dynamic_cast<NutTool*>( panel ) ) {
+                        auto* tool = reinterpret_cast<NutTool*>( panel );
+
+                        tool->OnEditorProcess( editor );
+                    }
+
+                    panel->OnEditorRender( editor );
+                }
             ImGUI::EndPanel( );
         }
     }

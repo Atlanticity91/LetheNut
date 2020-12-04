@@ -34,29 +34,40 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_CORE_IMP_HPP_
+#define _IGS_NUT_CORE_IMP_HPP_
 
-#ifndef _WIN64
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//      PUBLIC
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template< typename Type >
+	Type* Alloc( size_t count ) { return (Type*)malloc( sizeof( Type ) * count ); }
 
-#include <dlfcn.h>
-#include <LetheNut/NutLibrary.hpp>
+	template< typename Type >
+	void nHelper::Clamp( Type& value, Type min, Type max ) {
+		if constexpr ( std::is_literal_type<Type>::value ) {
+			if ( value < min )
+				value = min;
+			else if ( value > max )
+				value = max;
+		}
+	}
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutLibrary::NutLibrary( std::string path ) {
-	this->handle = dlopen( path.c_str( ), RTLD_LAZY );
+	nTimePoint nHelper::GetTime( ) {
+		return std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now( ).time_since_epoch( ) ).count( );
+	}
 
-	this->Initialize( );
-}
+	template< typename Callback, typename... Args >
+	void nHelper::Blink( nTimePoint& time, nTimePoint duration, Callback&& callback, Args... args ) {
+		auto timeEnd = nHelper::GetTime( );
+		auto elapsed = timeEnd - time;
 
-NutLibrary::~NutLibrary( ) { dlclose( this->handle ); }
+		if ( elapsed > duration ) {
+			callback( args... );
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PRIVATE GET
-///////////////////////////////////////////////////////////////////////////////////////////
-bool NutLibrary::GetState( ) const { return this->handle != nullptr; }
-
-void* NutLibrary::Get( nString name ) const { return dlsym( this->handle, name ); }
+			if ( elapsed > duration * 2 )
+				time = timeEnd;
+		}
+	}
 
 #endif

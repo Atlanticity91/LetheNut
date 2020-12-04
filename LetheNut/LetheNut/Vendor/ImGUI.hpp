@@ -66,6 +66,7 @@
 		REG_VAR( uint32_t, FONT_DEFAULT, 0 );
 		REG_VAR( uint32_t, FONT_BOLD, 1 );
 		REG_VAR( ImGuiTreeNodeFlags, TREE_FLAGS, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding );
+		REG_VEC2( NO_PADDING, 0.f, 0.f );
 		REG_VEC2( DEFAULT_PADDING, 1.f, 1.f );
 		REG_VEC4( DEFAULT_COLOR, .8f, .8f, .8f, 1.f );
 
@@ -129,12 +130,57 @@
 		void Internal_StyleFooter( );
 
 		/**
-		 * GetLineHeight function
+		 * DequeueCharacters template method
+		 * @author : ALVES Quentin
+		 * @note : Dequeue characters from keyboard input.
+		 * @template Callback : Capture lambda function.
+		 * @template Args : Capture lambda function argumrnts types.
+		 * @param callback :
+		 * @param args : 
+		 **/
+		template< typename Callback, typename... Args >
+		void DequeueCharacters( Callback&& callback, Args... args );
+
+		/**
+		 * GetIsShiftDown function
+		 * @author : ALVES Quentin
+		 * @note : Get if shift key is pressed.
+		 * @return : const bool
+		 **/
+		const bool GetIsShiftDown( );
+
+		/**
+		 * GetIsCtrltDown function
+		 * @author : ALVES Quentin
+		 * @note : Get if control key is pressed.
+		 * @return : const bool
+		 **/
+		const bool GetIsCtrltDown( );
+
+		/**
+		 * GetIsAltDown function
+		 * @author : ALVES Quentin
+		 * @note : Get if alt key is pressed.
+		 * @return : const bool
+		 **/
+		const bool GetIsAltDown( );
+
+		/**
+		 * GetLineHeight const function
 		 * @author : ALVES Quentin
 		 * @note : Get current ImGui line height.
 		 * @return : const float
 		 **/
 		const float GetLineHeight( );
+
+		/**
+		 * GetTextSize const function
+		 * @author : ALVES Quentin
+		 * @note : Get the size of a text with current font.
+		 * @param text : The text you wan't size.
+		 * @return : const ImVec2
+		 **/
+		const ImVec2 GetTextSize( nString text );
 
 		/**
 		 * Begin method
@@ -264,7 +310,73 @@
 		void Spring( );
 
 		/**
-		 * MenuButton method
+		 * Link method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Link using Bézier curve's.
+		 * @param source : Source point of the link.
+		 * @param destination : Destination point of the link.
+		 * @param color : Color of the link.
+		 * @param thickness : Thickness of the link.
+		 **/
+		void Link( const ImVec2& source, const ImVec2& destination, const ImVec4& color, float thickness );
+
+		/**
+		 * Link method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Link using Bézier curve's.
+		 * @param source : Source point of the link.
+		 * @param destination : Destination point of the link.
+		 * @param color : Color of the link.
+		 * @param thickness : Thickness of the link.
+		 **/
+		void Link( const ImVec2&& source, const ImVec2&& destination, const ImVec4&& color, float thickness );
+
+		/**
+		 * CircleIcon method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for drawing a circle icon.
+		 * @param size : Size of the icon.
+		 * @param is_filled : True to draw filled icon.
+		 * @param color : Color of the icon.
+		 * @param inner : Internal color of the icon if is not filled.
+		 **/
+		void CircleIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner );
+
+		/**
+		 * SquareIcon method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for drawing a square icon.
+		 * @param size : Size of the icon.
+		 * @param is_filled : True to draw filled icon.
+		 * @param color : Color of the icon.
+		 * @param inner : Internal color of the icon if is not filled.
+		 **/
+		void SquareIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner );
+
+		/**
+		 * DiamondIcon method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for drawing a diamond icon.
+		 * @param size : Size of the icon.
+		 * @param is_filled : True to draw filled icon.
+		 * @param color : Color of the icon.
+		 * @param inner : Internal color of the icon if is not filled.
+		 **/
+		void DiamondIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner );
+
+		/**
+		 * GridIcon method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for drawing a grid icon.
+		 * @param size : Size of the icon.
+		 * @param is_filled : True to draw filled icon.
+		 * @param color : Color of the icon.
+		 * @param inner : Internal color of the icon if is not filled.
+		 **/
+		void GridIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner );
+
+		/**
+		 * MenuButton template method
 		 * @author : ALVES Quentin
 		 * @note : Wrapper for MenuItem call from ImGui.
 		 * @template OnClick : Lambda capture.
@@ -277,7 +389,7 @@
 		void MenuButton( nString label, nString shortcut, bool is_active, OnClick&& callback );
 
 		/**
-		 * ToolTip void method
+		 * ToolTip template method
 		 * @author : ALVES Quentin
 		 * @note : Wrapper for Tooltip.
 		 * @template OnFly : Lambda capture.
@@ -287,24 +399,72 @@
 		void ToolTip( OnFly&& on_fly );
 
 		/**
-		 * TextUnformatted method
+		 * Text method
 		 * @author : ALVES Quentin
-		 * @note : Draw a text on a panel.
+		 * @note : Wrapper for Tooltip.
+		 * @param position : Position where draw the text.
 		 * @param text : Query text to display.
-		 * @param color : Color for the text.
+		 * @param background : Text background color.
+		 * @param foreground : Text foreground color.
 		 **/
-		template< typename... Args >
-		void Text( nString format, const ImVec4& color, Args... args );
+		void Text( const ImVec2& position, nString text, const ImColor& background, const ImColor& foreground );
+
+		/**
+		 * Text method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Tooltip.
+		 * @param position : Position where draw the text.
+		 * @param text : Query text to display.
+		 * @param background : Text background color.
+		 * @param foreground : Text foreground color.
+		 **/
+		void Text( const ImVec2&& position, nString text, const ImColor&& background, const ImColor&& foreground );
+
+		/**
+		 * Text method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Tooltip.
+		 * @param renderer : Pointer to current ImGui draw list.
+		 * @param position : Position where draw the text.
+		 * @param text : Query text to display.
+		 * @param background : Text background color.
+		 * @param foreground : Text foreground color.
+		 **/
+		void Text( ImDrawList* renderer, const ImVec2& position, nString text, const ImColor& background, const ImColor& foreground );
+
+		/**
+		 * Text method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Tooltip.
+		 * @param renderer : Pointer to current ImGui draw list.
+		 * @param position : Position where draw the text.
+		 * @param text : Query text to display.
+		 * @param background : Text background color.
+		 * @param foreground : Text foreground color.
+		 **/
+		void Text( ImDrawList* renderer, const ImVec2&& position, nString text, const ImColor&& background, const ImColor&& foreground );
 
 		/**
 		 * TextUnformatted method
 		 * @author : ALVES Quentin
 		 * @note : Draw a text on a panel.
-		 * @param text : Query text to display.
 		 * @param color : Color for the text.
+		 * @param text : Query text to display.
+		 * @param args : Arguments of the formated text.
 		 **/
 		template< typename... Args >
-		void Text( nString text, const ImVec4&& color, Args... args );
+		void Text( const ImColor& color, nString format, Args... args );
+
+		/**
+		 * TextUnformatted method
+		 * @author : ALVES Quentin
+		 * @note : Draw a text on a panel.
+		 * @param color : Color for the text.
+		 * @param text : Query text to display.
+		 * @param args : Arguments of the formated text.
+		 **/
+		template< typename... Args >
+		void Text( const ImColor&& color, nString text, Args... args );
 
 		/**
 		 * Button template method

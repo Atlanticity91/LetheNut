@@ -35,28 +35,3 @@
  ************************************************************************************/
 
 #include "__ui.hpp"
-
-#ifndef _WIN64
-
-#include <dlfcn.h>
-#include <LetheNut/NutLibrary.hpp>
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutLibrary::NutLibrary( std::string path ) {
-	this->handle = dlopen( path.c_str( ), RTLD_LAZY );
-
-	this->Initialize( );
-}
-
-NutLibrary::~NutLibrary( ) { dlclose( this->handle ); }
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PRIVATE GET
-///////////////////////////////////////////////////////////////////////////////////////////
-bool NutLibrary::GetState( ) const { return this->handle != nullptr; }
-
-void* NutLibrary::Get( nString name ) const { return dlsym( this->handle, name ); }
-
-#endif

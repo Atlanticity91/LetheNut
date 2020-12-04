@@ -40,7 +40,7 @@
 	#include "NutTool.hpp"
 
 	/**
-	 * NutProperties final class [ NutTool ]
+	 * NutProperties class [ NutTool ]
 	 * @author : ALVES Quentin
 	 * @note : Defined Nut Properties tool core class.
 	 **/

@@ -40,7 +40,7 @@
 	#include "NutTool.hpp"
 
 	/**
-	 * NutProfiler final class [ NutTool ]
+	 * NutProfiler class [ NutTool ]
 	 * @author : ALVES Quentin
 	 * @note : Defined Nut Profiler tool core class.
 	 **/

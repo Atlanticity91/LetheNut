@@ -40,7 +40,7 @@
 	#include "NutTool.hpp"
 
 	/**
-	 * NutScene final class [ NutTool ]
+	 * NutScene class [ NutTool ]
 	 * @author : ALVES Quentin
 	 * @note : Defined Nut Scene tool core class.
 	 **/

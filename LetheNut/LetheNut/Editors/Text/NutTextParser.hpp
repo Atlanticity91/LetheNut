@@ -34,82 +34,90 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_TOOL_HPP_
-#define _IGS_NUT_TOOL_HPP_
+#ifndef _IGS_NUT_TEXT_PARSER_HPP_
+#define _IGS_NUT_TEXT_PARSER_HPP_
 
-	#include <LetheNut/UI/NutPanel.hpp>
-
-	#define NUT_TOOL( NAME, ... ) NUT_CLASS( NAME, NutTool, __VA_ARGS__ )
+	#include "NutTextStyle.hpp"
 
 	/**
-	 * NutTool class [ NutPanel ]
+	 * NutTextParser class [ NutBasic ]
 	 * @author : ALVES Quentin
-	 * @note : Defined Nut tool core class.
+	 * @note : Defined Nut Text Editor Style core class.
 	 **/
-	class NUT_API NutTool : public NutPanel {
+	NUT_ELEMENT( NutTextParser ) {
 
-		friend class NutPopup;
-		friend class NutEditor;
+		using StringList = std::vector<std::string>;
 
 	protected:
-		bool is_running;
+		nUInt last_char;
+		char result[ 4096 ];
+		std::map<ENutTextStyleVars, StringList> tables;
 
 	public:
 		/**
 		 * Constructor
 		 * @author : ALVES Quentin
-		 * @param name : Name of the current tool.
+		 * @param name : Name of the parser.
 		 **/
-		NutTool( nString name );
-
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 * @param name : Name of the current tool.
-		 * @param padding : Current padding value.
-		 **/
-		NutTool( nString name, const ImVec2& padding );
-
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 * @param name : Name of the current tool.
-		 * @param padding : Current padding value.
-		 **/
-		NutTool( nString name, const ImVec2&& padding );
+		NutTextParser( nString name );
 
 		/**
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		virtual ~NutTool( ) = default;
+		virtual ~NutTextParser( );
+
+		/**
+		 * Parse virtual method
+		 * @author : ALVES Quentin
+		 * @note : Parse text.
+		 * @param input : Query text to parse.
+		 **/
+		virtual void Parse( const std::string& input );
 
 	protected:
 		/**
-		 * Process virtual method
+		 * Validate virtual method
 		 * @author : ALVES Quentin
-		 * @note : Process the current tool.
-		 * @param editor : Pointer to current editor.
+		 * @note : Validate the current style, adding default colors for unset varibles.
 		 **/
-		virtual void Process( class NutEditor* editor );
+		virtual void Validate( );
 
+	protected:
 		/**
-		 * OnEditorProcess virtual method
+		 * Register template method
 		 * @author : ALVES Quentin
-		 * @note : Process the current tool during editor rendering phase.
-		 * @param editor : Pointer to current editor.
+		 * @note : Validate the current style, adding default colors for unset varibles.
+		 * @template args : Capture all strings.
+		 * @param variable : Query style variable.
+		 * @param args : Value for arguments.
 		 **/
-		virtual void OnEditorProcess( class NutEditor* editor );
+		template< typename... Args >
+		void Register( ENutTextStyleVars variable, Args... args );
 
 	public:
 		/**
-		 * GetIsRunning inline const function
+		 * GetNext function
 		 * @author : ALVES Quentin
-		 * @note : Get if the current tool is running.
+		 * @note : Validate the current style, adding default colors for unset varibles.
+		 * @param style : Style variable to set.
+		 * @param text : Text variable to set.
 		 * @return : bool
 		 **/
-		inline bool GetIsRunning( ) const;
+		bool GetNext( ENutTextStyleVars& style, nString& text );
+
+	private:
+		/**
+		 * FindSyntax function
+		 * @author : ALVES Quentin
+		 * @note : Find style variable from text.
+		 * @param text : Find syntax for text.
+		 * @return : ENutTextStyleVars
+		 **/
+		ENutTextStyleVars FindSyntax( nString text );
 
 	};
+
+	#include <Templates/NutTextParser.hpp>
 
 #endif

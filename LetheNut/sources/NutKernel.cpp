@@ -66,7 +66,6 @@ void NutKernel::Initialize( class NutEditor* editor ) {
     if ( this->config.Load( "NutEditor.json" ) ) {
         for ( auto lib : this->config.Get<nJSON::StringArray>( "Libraries" ) ) {
             if ( !lib.empty( ) ) {
-                printf( "%s\n", lib.c_str( ) );
                 NutLibrary* library = new NutLibrary( lib );
 
                 if ( library->GetIsValid( ) )
@@ -83,6 +82,8 @@ void NutKernel::Initialize( class NutEditor* editor ) {
     }
 }
 
+#include <LetheNut/Editors/Nodes/NutNodeEditor.hpp>
+#include <LetheNut/Editors/Text/NutTextEditor.hpp>
 void NutKernel::OnCreate( class NutEditor* editor ) {
     auto file_menu = editor->CreateMenu( "File" );
 
@@ -116,6 +117,8 @@ void NutKernel::OnCreate( class NutEditor* editor ) {
     editor->OpenPanel<NutProperties > ( editor );
     editor->OpenPanel<NutScene>( editor );
     editor->OpenPanel<NutViewport>( editor );
+
+    editor->OpenPanel<NutTextEditor>( editor );
 }
 
 void NutKernel::Process( class NutEditor* editor) { }

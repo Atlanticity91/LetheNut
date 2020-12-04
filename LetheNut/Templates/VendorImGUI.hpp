@@ -116,6 +116,23 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
+	template< typename Callback, typename... Args >
+	void ImGUI::DequeueCharacters( Callback&& callback, Args... args ) {
+		auto& io = ImGui::GetIO( );
+
+		if ( !io.InputQueueCharacters.empty( ) ) {
+			for ( int i = 0; i < io.InputQueueCharacters.Size; i++ ) {
+				auto c = io.InputQueueCharacters[ i ];
+
+				if ( c != 0 && ( c == '\n' || c >= 32 ) && c < 0x80 )
+					callback( (char)c, args... );
+			}
+
+			io.InputQueueCharacters.resize( 0 );
+		}
+	}
+
+
 	template< typename Content, typename... Args >
 	void ImGUI::CreateModal( nString label, ImVec2& size, float border_size, bool* is_open, Content&& content, Args... args ) {
 		ImGuiIO& io = ImGui::GetIO( );
@@ -161,7 +178,7 @@
 	}
 
 	template< typename... Args >
-	void ImGUI::Text( nString format, const ImVec4& color, Args... args ) {
+	void ImGUI::Text( const ImColor& color, nString format, Args... args ) {
 		if ( std::strlen( format ) > 0 ) {
 			ImGui::PushStyleColor( ImGuiCol_Text, color );
 			ImGui::Text( format, args... );
@@ -170,7 +187,7 @@
 	}
 
 	template< typename... Args >
-	void ImGUI::Text( nString format, const ImVec4&& color, Args... args ) {
+	void ImGUI::Text( const ImColor&& color, nString format, Args... args ) {
 		ImGUI::Text< Args... >( format, color, args... );
 	}
 

@@ -34,8 +34,9 @@
  *
  ************************************************************************************/
 
-#ifdef _WIN64
 #include "__ui.hpp"
+
+#ifdef _WIN64
 
 #include <LetheNut/NutLibrary.hpp>
 

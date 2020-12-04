@@ -38,6 +38,11 @@
 
 #include <LetheNut/UI/NutStyle.hpp>
 
+const ImVec4 ORANGE = ImVec4{ .76f, .31f, .0f, 1.f };
+const ImVec4 DARK_ORANGE = ImVec4{ .76f, .31f, .0f, .65f };
+const ImVec4 GRAY = ImVec4{ .15f, .1505f, .151f, 1.f };
+const ImVec4 DARK_GRAY = ImVec4{ .2f, .205f, .21f, 1.f };
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -79,38 +84,37 @@ void NutStyle::SetRule( ImGuiStyleVar_ query, float x, float y ) {
 }
 
 void NutStyle::OnStyleInit( ) {
-	this->SetColor( ImGuiCol_WindowBg, ImVec4{ .1f, .105f, .11f, 1.f } );
-	this->SetColor( ImGuiCol_PopupBg, ImVec4{ .1f, .105f, .11f, 1.f } );
-	this->SetColor( ImGuiCol_TextDisabled, ImVec4{ .3f, .305f, .31f, 1.f } );
-
-	this->SetColor( ImGuiCol_Header, ImVec4{ .2f, .205f, .21f, 1.f } );
-	this->SetColor( ImGuiCol_HeaderHovered, ImVec4{ .86f, .41f, .1f, 1.f } );
-	this->SetColor( ImGuiCol_HeaderActive, ImVec4{ .76f, .31f, .0f, 1.f } );
-
-	this->SetColor( ImGuiCol_Button, ImVec4{ .2f, .205f, .21f, 1.f } );
-	this->SetColor( ImGuiCol_ButtonHovered, ImVec4{ .3f, .305f, .31f, 1.f } );
-	this->SetColor( ImGuiCol_ButtonActive, ImVec4{ .15f, .1505f, .151f, 1.f } );
-
-	this->SetColor( ImGuiCol_FrameBg, ImVec4{ .2f, .205f, .21f, 1.f } );
-	this->SetColor( ImGuiCol_FrameBgHovered, ImVec4{ .3f, .305f, .31f, 1.f } );
-	this->SetColor( ImGuiCol_FrameBgActive, ImVec4{ .15f, .1505f, .151f, 1.f } );
-
-	this->SetColor( ImGuiCol_Tab, ImVec4{ .15f, .1505f, .151f, 1.f } );
-	this->SetColor( ImGuiCol_TabHovered, ImVec4{ .38f, .3805f, .381f, 1.f } );
-	this->SetColor( ImGuiCol_TabActive, ImVec4{ .28f, .2805f, .281f, 1.f } );
-	this->SetColor( ImGuiCol_TabUnfocused, ImVec4{ .15f, .1505f, .151f, 1.f } );
-	this->SetColor( ImGuiCol_TabUnfocusedActive, ImVec4{ .2f, .205f, .21f, 1.f } );
-
-	this->SetColor( ImGuiCol_TitleBg, ImVec4{ .15f, .1505f, .151f, 1.f } );
-	this->SetColor( ImGuiCol_TitleBgActive, ImVec4{ .15f, .1505f, .151f, 1.f } );
-	this->SetColor( ImGuiCol_TitleBgCollapsed, ImVec4{ .15f, .1505f, .151f, 1.f } );
-
-	this->SetColor( ImGuiCol_DockingPreview, ImVec4{ .76f, .31f, .0f, 1.f } );
-	this->SetColor( ImGuiCol_SeparatorHovered, ImVec4{ .76f, .31f, .0f, 1.f } );
-	this->SetColor( ImGuiCol_SeparatorActive, ImVec4{ .76f, .31f, .0f, 1.f } );
-	this->SetColor( ImGuiCol_CheckMark, ImVec4{ .76f, .31f, .0f, 1.f } );
-	this->SetColor( ImGuiCol_SliderGrab, ImVec4{ .76f, .31f, .0f, 1.f } );
-	this->SetColor( ImGuiCol_SliderGrabActive, ImVec4{ .86f, .41f, .1f, 1.f } );
+	this->SetColor( ImGuiCol_WindowBg,				ImVec4{ .1f, .105f, .11f, 1.f } );
+	this->SetColor( ImGuiCol_PopupBg,				ImVec4{ .1f, .105f, .11f, 1.f } );
+	this->SetColor( ImGuiCol_TextDisabled,			ImVec4{ .3f, .305f, .31f, 1.f } );
+	this->SetColor( ImGuiCol_MenuBarBg,				ImVec4{ .094f, .094f, .094f, 1.f } );
+	this->SetColor( ImGuiCol_Header,				DARK_GRAY );
+	this->SetColor( ImGuiCol_HeaderHovered,			ImVec4{ .86f, .41f, .1f, 1.f } );
+	this->SetColor( ImGuiCol_HeaderActive,			ORANGE );
+	this->SetColor( ImGuiCol_Button,				DARK_GRAY );
+	this->SetColor( ImGuiCol_ButtonHovered,			ImVec4{ .3f, .305f, .31f, 1.f } );
+	this->SetColor( ImGuiCol_ButtonActive,			GRAY );
+	this->SetColor( ImGuiCol_FrameBg,				DARK_GRAY );
+	this->SetColor( ImGuiCol_FrameBgHovered,		ImVec4{ .3f, .305f, .31f, 1.f } );
+	this->SetColor( ImGuiCol_FrameBgActive,			GRAY );
+	this->SetColor( ImGuiCol_Tab,					GRAY );
+	this->SetColor( ImGuiCol_TabHovered,			DARK_ORANGE );
+	this->SetColor( ImGuiCol_TabActive,				ORANGE );
+	this->SetColor( ImGuiCol_TabUnfocused,			GRAY );
+	this->SetColor( ImGuiCol_TabUnfocusedActive,	DARK_GRAY );
+	this->SetColor( ImGuiCol_TitleBg,				GRAY );
+	this->SetColor( ImGuiCol_TitleBgActive,			GRAY );
+	this->SetColor( ImGuiCol_TitleBgCollapsed,		GRAY );
+	this->SetColor( ImGuiCol_DockingPreview,		ORANGE );
+	this->SetColor( ImGuiCol_SeparatorHovered,		ORANGE );
+	this->SetColor( ImGuiCol_SeparatorActive,		ORANGE );
+	this->SetColor( ImGuiCol_CheckMark,				ORANGE );
+	this->SetColor( ImGuiCol_SliderGrab,			ORANGE );
+	this->SetColor( ImGuiCol_SliderGrabActive,		ImVec4{ .86f, .41f, .1f, 1.f } );
+	this->SetColor( ImGuiCol_ScrollbarBg,			ImVec4{ .117f, .117f, .117f, .8f } );
+	this->SetColor( ImGuiCol_ScrollbarGrab,			DARK_ORANGE );
+	this->SetColor( ImGuiCol_ScrollbarGrabHovered,	ORANGE );
+	this->SetColor( ImGuiCol_ScrollbarGrabActive,	ORANGE );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

@@ -40,7 +40,7 @@
 	#include "NutTool.hpp"
 
 	/**
-	 * NutViewport final class [ NutTool ]
+	 * NutViewport class [ NutTool ]
 	 * @author : ALVES Quentin
 	 * @note : Defined Nut Viewport tool core class.
 	 **/

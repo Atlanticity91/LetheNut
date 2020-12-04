@@ -44,119 +44,118 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutNodeEditor::NutNodeEditor( )
 	: NutTool( "NodeEditor" ),
-	nodes( )
+	nodes( ),
+    links( )
 { }
 
-NutNodeEditor::~NutNodeEditor( ) { }
+NutNodeEditor::~NutNodeEditor( ) { 
+    for ( auto& node : this->nodes )
+        delete node;
+}
+
+void NutNodeEditor::CreateLink( const NutNodeLink& link ) { 
+    this->links.emplace_back( link ); 
+}
+
+void NutNodeEditor::CreateLink( const NutNodeLink&& link ) { this->CreateLink( link ); }
+
+void NutNodeEditor::CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin ) {
+    this->CreateLink( source_node, source_pin, destination_node, destination_pin, ImColor{ 255, 255, 255 } );
+}
+
+void NutNodeEditor::CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin, const ImVec4& color ) {
+    this->links.emplace_back( 
+        NutNodeLink{
+            { source_node, source_pin },
+            { destination_node, destination_pin },
+            color
+        }
+    );
+}
+
+void NutNodeEditor::CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin, const ImVec4&& color ) {
+    this->CreateLink( source_node, source_pin, destination_node, destination_pin, color );
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTETED
 ///////////////////////////////////////////////////////////////////////////////////////////
+void NutNodeEditor::Process( class NutEditor* editor ) {
+    if ( this->nodes.size( ) < 1 ) {
+        auto* n = new NutNode( ENutNodeTypes::ENT_FUNCTION, "Test", "I'm a test node." );
+        n->AddIn( false, ENutPinTypes::EPT_BOOL, "Test", "Test pin" );
+        n->AddIn( false, ENutPinTypes::EPT_INT32, "Test i", "Test pin" );
+        n->AddIn( false, ENutPinTypes::EPT_FLOAT64, "Test f", "Test pin" );
+        n->AddIn( false, ENutPinTypes::EPT_STRING, "Test s", "Test pin" );
+        n->AddOut( false, ENutPinTypes::EPT_BOOL, "Test b", "Test pin" );
+        this->nodes.emplace_back( n );
+    }
+}
+
 void NutNodeEditor::OnEditorRender( NutEditor* editor ) {
     auto alpha = ImGui::GetStyle( ).Alpha;
 
-    auto* n = new NutNode( ENutNodeTypes::ENT_FUNCTION, "", "" );
-    this->nodes.emplace_back( n );
-
 	for ( auto& node : this->nodes ) {
-		//builder.Begin(node.ID);
-			//builder.Header(node.Color);
-                ImGUI::Spring( );
-				ImGui::TextUnformatted( node->GetName( ) );
-                ImGUI::Spring( 1 );
-				ImGUI::Spacer( 0, 28 );
-                ImGUI::Spring( );
-			//builder.EndHeader();
+        ImGUI::Spring( );
+        ImGui::TextUnformatted( node->GetName( ) );
+        ImGUI::Spring( 1 );
+        ImGUI::Spacer( 0.f, 28.f );
+        ImGUI::Spring( );
+        
+        ImGui::PushStyleVar( ImGuiStyleVar_Alpha, alpha );
+        for ( auto& input : node->GetInPins( ) ) {
+            this->InternalDrawPin( input, false, alpha );
+        }
+        
+        for ( auto& output : node->GetOutPins( ) ) {
+            this->InternalDrawPin( output, true, alpha );
+        }
 
-			for ( auto& input : node->GetInPins( ) ) {
-                /*
-				if ( newLinkPin && !CanCreateLink( newLinkPin, &input ) && &input != newLinkPin )
-                    alpha = alpha * ( 48.0f / 255.0f );
-                */
-
-                //builder.Input( input.ID );
-                    ImGui::PushStyleVar( ImGuiStyleVar_Alpha, alpha );
-                    this->InternalDrawPinIcon( input.type, false, alpha );
-                    //DrawPinIcon( input, IsPinLinked( input.ID ), (int)( alpha * 255 ) );
-                    ImGUI::Spring( );
-                    
-                    if ( strcmp( input.name, "" ) != 0 ) {
-                        ImGui::TextUnformatted( input.name );
-                        ImGUI::Spring( );
-                    }
-
-                    ImGui::PopStyleVar( );
-                //builder.EndInput( );
-			}
-
-			for ( auto& output : node->GetOutPins( ) ) {
-                /*
-                if ( newLinkPin && !CanCreateLink( newLinkPin, &output ) && &output != newLinkPin )
-                    alpha = alpha * ( 48.0f / 255.0f );
-                    */
-
-                ImGui::PushStyleVar( ImGuiStyleVar_Alpha, alpha );
-                //builder.Output( output.ID );
-                    if ( output.type == ENutPinTypes::EPT_STRING ) {
-                        static char buffer[ 128 ] = "Edit Me\nMultiline!";
-                        static bool wasActive = false;
-
-                        ImGui::PushItemWidth( 100.0f );
-                        ImGui::InputText( "##edit", buffer, 127 );
-                        ImGui::PopItemWidth( );
-                        
-                        if ( ImGui::IsItemActive( ) && !wasActive ) {
-                            //ed::EnableShortcuts( false );
-                            wasActive = true;
-                        } else if ( !ImGui::IsItemActive( ) && wasActive ) {
-                            //ed::EnableShortcuts( true );
-                            wasActive = false;
-                        }
-                        
-                        ImGUI::Spring( );
-                    }
-
-                    if ( strcmp( output.name, "" ) != 0 ) {
-                        ImGUI::Spring( );
-                        ImGui::TextUnformatted( output.name );
-                    }
-                    
-                    ImGUI::Spring( );
-                    this->InternalDrawPinIcon( output.type, false, alpha );
-                    //DrawPinIcon( output, IsPinLinked( output.ID ), (int)( alpha * 255 ) );
-                    ImGui::PopStyleVar( );
-                //builder.EndOutput( );
-			}
-        //builder.End();
+        ImGui::PopStyleVar( );
 	}
 
-    delete this->nodes[ 0 ];
-    this->nodes.erase( this->nodes.begin( ) );
+    for ( auto& link : this->links ) 
+        this->InternalDrawLink( link );
 }
 
-void NutNodeEditor::InternalDrawPinIcon( ENutPinTypes type, bool connected, float alpha ) {
-    /*
-    IconType iconType;
-    ImColor  color = GetIconColor( pin.Type );
-    color.Value.w = alpha / 255.0f;
-    switch ( pin.Type ) {
-        case PinType::Flow:     iconType = IconType::Flow;   break;
-        case PinType::Bool:     iconType = IconType::Circle; break;
-        case PinType::Int:      iconType = IconType::Circle; break;
-        case PinType::Float:    iconType = IconType::Circle; break;
-        case PinType::String:   iconType = IconType::Circle; break;
-        case PinType::Object:   iconType = IconType::Circle; break;
-        case PinType::Function: iconType = IconType::Circle; break;
-        case PinType::Delegate: iconType = IconType::Square; break;
-        default:
-            return;
+void NutNodeEditor::InternalDrawPin( const NutNodePin& pin, bool is_out, float alpha ) {
+    if ( !is_out ) {
+        this->InternalDrawPin( pin, alpha );
+        ImGUI::Spring( );
     }
 
-    ax::Widgets::Icon( ImVec2( s_PinIconSize, s_PinIconSize ), iconType, connected, color, ImColor( 32, 32, 32, alpha ) );
-    */
+    if ( pin.type == ENutPinTypes::EPT_STRING && pin.string.value && pin.string.length > 0 ) {
+        static bool wasActive = false;
+
+        ImGui::PushItemWidth( 100.0f );
+        ImGui::InputText( "##edit", pin.string.value, pin.string.length );
+        ImGui::PopItemWidth( );
+
+        if ( ImGui::IsItemActive( ) && !wasActive ) 
+            wasActive = true;
+        else if ( !ImGui::IsItemActive( ) && wasActive ) 
+            wasActive = false;
+
+        ImGUI::Spring( );
+    }
+
+    ImGUI::Spring( );
+
+    if ( strcmp( pin.name, "" ) != 0 ) {
+        ImGui::TextUnformatted( pin.name );
+        ImGUI::Spring( );
+    }
+
+    if ( is_out ) {
+        ImGUI::Spring( );
+        this->InternalDrawPin( pin, alpha );
+    }
+}
+
+void NutNodeEditor::InternalDrawPin( const NutNodePin& pin, float alpha ) {
     ImColor color;
 
-    switch ( type ) {
+    switch ( pin.type ) {
         case ENutPinTypes::EPT_STRING  : color = ImColor( 124,  21, 153 ); break;
         case ENutPinTypes::EPT_BOOL    : color = ImColor( 220,  48,  48 ); break;
         case ENutPinTypes::EPT_INT8    : color = ImColor(  68, 201, 156 ); break;
@@ -168,6 +167,16 @@ void NutNodeEditor::InternalDrawPinIcon( ENutPinTypes type, bool connected, floa
 
         default : color = ImColor( 255, 255, 255 ); break;
     }
+    
+    if ( !pin.is_array )
+        ImGUI::CircleIcon( 24.f, pin.is_connected, ImColor( color ), ImColor( 32, 32, 32, (int)alpha * 255 ) );
+    else
+        ImGUI::GridIcon( 24.f, pin.is_connected, ImColor( color ), ImColor( 32, 32, 32, (int)alpha * 255 ) );
+}
 
-    // ImGUI::Icon( 32.f, color, ImColor( 32, 32, 32, alpha ) );
+void NutNodeEditor::InternalDrawLink( const NutNodeLink& link ) {
+    ImVec2 source = ImVec2{ };
+    ImVec2 destination = ImVec2{ };
+
+    ImGUI::Link( source, destination, link.color, 2.f );
 }

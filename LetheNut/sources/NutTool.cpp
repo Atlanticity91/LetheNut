@@ -58,9 +58,9 @@ NutTool::NutTool( nString name, const ImVec2&& padding )
 
 void NutTool::Process( class NutEditor* editor ) { }
 
+void NutTool::OnEditorProcess( class NutEditor* editor ) { }
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
-bool NutTool::GetIsRunning( ) const {
-	return this->is_running;
-}
+bool NutTool::GetIsRunning( ) const { return this->is_running; }

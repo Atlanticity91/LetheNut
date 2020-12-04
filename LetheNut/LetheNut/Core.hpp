@@ -55,6 +55,7 @@
 	 * @author : ALVES Quentin
 	 **/
 	#include <bitset>
+	#include <chrono>
 	#include <map>
 	#include <memory>
 	#include <new>
@@ -200,35 +201,62 @@
 	typedef uint64_t nULong;
 	typedef uint8_t* nPointer;
 	typedef const char* nString;
+	typedef long long nTimePoint;
 
 	/**
-	 * Alloc template function
+	 * nHelper namespace
 	 * @author : ALVES Quentin
-	 * @note : Internal definition for memory allocation.
-	 * @template Type : Query type to allocate.
-	 * @param count : How many instance to allocate.
-	 * @return : Type*
+	 * @note : Wrapper for some usefull function.
 	 **/
-	template< typename Type >
-	Type* Alloc( size_t count ) { return (Type*)malloc( sizeof( Type ) * count );  }
+	namespace nHelper {
 
-	/**
-	 * nClamp template method
-	 * @author : ALVES Quentin
-	 * @note : Internal definition for clamp method.
-	 * @template Type : Query type to clamp.
-	 * @param value : How many instance to allocate.
-	 * @param min : Minimum value.
-	 * @param max : Maximum value.
-	 **/
-	template< typename Type >
-	void nClamp( Type& value, Type min, Type max ) {
-		if constexpr ( std::is_literal_type<Type>::value ) {
-			if ( value < min )
-				value = min;
-			else if ( value > max )
-				value = max;
-		}
+		/**
+		 * Alloc static template function
+		 * @author : ALVES Quentin
+		 * @note : Internal definition for memory allocation.
+		 * @template Type : Query type to allocate.
+		 * @param count : How many instance to allocate.
+		 * @return : Type*
+		 **/
+		template< typename Type >
+		static Type* Alloc( size_t count );
+
+		/**
+		 * nClamp static template method
+		 * @author : ALVES Quentin
+		 * @note : Internal definition for clamp method.
+		 * @template Type : Query type to clamp.
+		 * @param value : How many instance to allocate.
+		 * @param min : Minimum value.
+		 * @param max : Maximum value.
+		 **/
+		template< typename Type >
+		static void Clamp( Type& value, Type min, Type max );
+
+		/**
+		 * GetTime static function
+		 * @author : ALVES Quentin
+		 * @note : Get current elapsed time.
+		 * @return : nTimePoint
+		 **/
+		static nTimePoint GetTime( );
+
+		/**
+		 * Blink static template method
+		 * @author : ALVES Quentin
+		 * @note : Get current elapsed time.
+		 * @template Callback : Capture lambda function.
+		 * @template Args : Capture lambda arguments types.
+		 * @param time : Current recorded time.
+		 * @param duration : Duration of the blink in ms.
+		 * @param callback : Lambda executed when blink.
+		 * @param args : Arguments values for the lambda call.
+		 **/
+		template< typename Callback, typename... Args >
+		static void Blink( nTimePoint& time, nTimePoint duration, Callback&& callback, Args... args );
+
 	}
+
+	#include <Templates/Core.hpp>
 
 #endif

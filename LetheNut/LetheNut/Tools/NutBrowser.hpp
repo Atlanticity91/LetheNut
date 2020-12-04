@@ -40,7 +40,7 @@
 	#include "NutTool.hpp"
 
 	/**
-	 * NutBrowser final class [ NutTool ]
+	 * NutBrowser class [ NutTool ]
 	 * @author : ALVES Quentin
 	 * @note : Defined Nut Browser tool core class.
 	 **/

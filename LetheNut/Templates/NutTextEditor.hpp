@@ -34,29 +34,26 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_TEXT_EDITOR_IMP_HPP_
+#define _IGS_NUT_TEXT_EDITOR_IMP_HPP_
 
-#ifndef _WIN64
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//      PUBLIC
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template< typename Style >
+	void NutTextEditor::SetStyle( ) {
+		if ( this->style )
+			delete this->style;
+	
+		this->style = new Style( );
+	}
 
-#include <dlfcn.h>
-#include <LetheNut/NutLibrary.hpp>
+	template< typename Parser >
+	void NutTextEditor::SetParser( ) {
+		if ( this->parser )
+			delete this->parser;
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutLibrary::NutLibrary( std::string path ) {
-	this->handle = dlopen( path.c_str( ), RTLD_LAZY );
-
-	this->Initialize( );
-}
-
-NutLibrary::~NutLibrary( ) { dlclose( this->handle ); }
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PRIVATE GET
-///////////////////////////////////////////////////////////////////////////////////////////
-bool NutLibrary::GetState( ) const { return this->handle != nullptr; }
-
-void* NutLibrary::Get( nString name ) const { return dlsym( this->handle, name ); }
+		this->parser = new Parser( );
+	}
 
 #endif

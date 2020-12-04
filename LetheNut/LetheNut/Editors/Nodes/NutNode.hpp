@@ -58,9 +58,28 @@
 	struct NutNodePin {
 
 		bool is_array;
+		bool is_connected;
 		ENutPinTypes type;
 		nString name;
 		nString description;
+		struct {
+			char* value;
+			nUInt length;
+		} string;
+
+	};
+
+	struct NutNodeLink {
+
+		struct { 
+			nUInt node_id;
+			nUInt pin_id;
+		} source;
+		struct {
+			nUInt node_id;
+			nUInt pin_id;
+		} destination;
+		ImVec4 color;
 
 	};
 
@@ -82,6 +101,7 @@
 	private:
 		ENutNodeTypes type;
 		nString description;
+		ImVec4 color;
 		PinList inputs;
 		PinList outputs;
 
@@ -96,16 +116,30 @@
 
 		inline void AddIn( bool is_array, ENutPinTypes type, nString name, nString description );
 
+		void ConnectIn( nUInt query_id );
+
+		void DisConnectIn( nUInt query_id );
+
+		void ToggleIn( nUInt query_id );
+
 		virtual void AddOut( const NutNodePin& pin );
 
 		inline void AddOut( const NutNodePin&& pin );
 
 		inline void AddOut( bool is_array, ENutPinTypes type, nString name, nString description );
 
+		void ConnectOut( nUInt query_id );
+
+		void DisConnectOut( nUInt query_id );
+
+		void ToggleOut( nUInt query_id );
+
 	public:
 		ENutNodeTypes GetType( ) const;
 
 		nString GetDescription( ) const;
+
+		const ImVec4& GetColor( ) const;
 
 		bool HasInPin( nUInt query_id ) const;
 
