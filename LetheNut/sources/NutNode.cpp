@@ -41,89 +41,45 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutNode::NutNode( ENutNodeTypes type, nString name, nString description ) 
-	: NutBasic( name ),
-	type( type ),
-	description( description ),
-	color( ),
-	inputs( ),
-	outputs( )
+NutNode::NutNode( ImVec2 position, const NutNodeModel& model ) 
+	: position( position ),
+	model( model )
 { }
 
 NutNode::~NutNode( ) 
 { }
 
-void NutNode::AddIn( const NutNodePin& pin ) { this->inputs.emplace_back( pin ); }
+void NutNode::ConnectIn( nUInt query_id ) { this->model.ConnectIn( query_id ); }
 
-void NutNode::AddIn( const NutNodePin&& pin ) { this->AddIn( pin ); }
+void NutNode::DisConnectIn( nUInt query_id ) { this->model.DisConnectIn( query_id ); }
 
-void NutNode::AddIn( bool is_array, ENutPinTypes type, nString name, nString description ) {
-	this->AddIn( NutNodePin{ is_array, false, type, name, description, { nullptr, 0 } } );
-}
+void NutNode::ToggleIn( nUInt query_id ) { this->model.ToggleIn( query_id ); }
 
-void NutNode::ConnectIn( nUInt query_id ) {
-	if ( this->HasInPin( query_id ) )
-		this->inputs[ query_id ].is_connected = true;
-}
+void NutNode::ConnectOut( nUInt query_id ) { this->model.ConnectOut( query_id ); }
 
-void NutNode::DisConnectIn( nUInt query_id ) {
-	if ( this->HasInPin( query_id ) )
-		this->inputs[ query_id ].is_connected = false;
-}
+void NutNode::DisConnectOut( nUInt query_id ) { this->model.DisConnectOut( query_id ); }
 
-void NutNode::ToggleIn( nUInt query_id ) {
-	if ( this->HasInPin( query_id ) )
-		this->inputs[ query_id ].is_connected = !this->inputs[ query_id ].is_connected;
-}
-
-void NutNode::AddOut( const NutNodePin& pin ) { this->outputs.emplace_back( pin ); }
-
-void NutNode::AddOut( const NutNodePin&& pin ) { this->AddOut( pin ); }
-
-void NutNode::AddOut( bool is_array, ENutPinTypes type, nString name, nString description ) {
-	this->AddOut( NutNodePin{ is_array, false, type, name, description, { nullptr, 0 } } );
-}
-
-void NutNode::ConnectOut( nUInt query_id ) {
-	if ( this->HasOutPin( query_id ) )
-		this->outputs[ query_id ].is_connected = true;
-}
-
-void NutNode::DisConnectOut( nUInt query_id ) {
-	if ( this->HasOutPin( query_id ) )
-		this->outputs[ query_id ].is_connected = false;
-}
-
-void NutNode::ToggleOut( nUInt query_id ) {
-	if ( this->HasOutPin( query_id ) )
-		this->outputs[ query_id ].is_connected = !this->outputs[ query_id ].is_connected;
-}
+void NutNode::ToggleOut( nUInt query_id ) { this->model.ToggleOut( query_id ); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
-ENutNodeTypes NutNode::GetType( ) const { return this->type; }
+const ImVec2 NutNode::GetPosition( ) const { return this->position; }
 
-nString NutNode::GetDescription( ) const { return this->description; }
+ENutNodeTypes NutNode::GetType( ) const { return this->model.GetType( ); }
 
-const ImVec4& NutNode::GetColor( ) const { return this->color; }
+nString NutNode::GetName( ) const { return this->model.GetName( ); }
 
-bool NutNode::HasInPin( nUInt query_id ) const { 
-	return query_id < this->inputs.size( ); 
-}
+nString NutNode::GetDescription( ) const { return this->model.GetDescription( ); }
 
-const NutNodePin& NutNode::GetInPin( nUInt query_id ) const { 
-	return this->inputs[ query_id ]; 
-}
+bool NutNode::HasInPin( nUInt query_id ) const { return this->model.HasInPin( query_id ); }
 
-const NutNode::PinList& NutNode::GetInPins( ) const { return this->inputs; }
+const NutNodePin& NutNode::GetInPin( nUInt query_id ) const { return this->model.GetInPin( query_id ); }
 
-bool NutNode::HasOutPin( nUInt query_id ) const { 
-	return query_id < this->outputs.size( ); 
-}
+const NutNode::PinList& NutNode::GetInPins( ) const { return this->model.GetInPins( ); }
 
-const NutNodePin& NutNode::GetOutPin( nUInt query_id ) const {
-	return this->outputs[ query_id ];
-}
+bool NutNode::HasOutPin( nUInt query_id ) const { return this->model.HasOutPin( query_id ); }
 
-const NutNode::PinList& NutNode::GetOutPins( ) const { return this->outputs; }
+const NutNodePin& NutNode::GetOutPin( nUInt query_id ) const { return this->model.GetOutPin( query_id ); }
+
+const NutNode::PinList& NutNode::GetOutPins( ) const { return this->model.GetOutPins( ); }

@@ -221,6 +221,14 @@
 		template< typename Type >
 		static Type* Alloc( size_t count );
 
+		template< typename Type >
+		static void Copy( const Type& source, Type& destination );
+
+		template< typename Type >
+		static void Copy( const Type& source, Type& destination, nULong count );
+
+		static void Copy( nString source, char* destination, nUInt size );
+
 		/**
 		 * nClamp static template method
 		 * @author : ALVES Quentin

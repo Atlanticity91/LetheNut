@@ -34,21 +34,19 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_NODE_EDITOR_IMP_HPP_
+#define _IGS_NUT_NODE_EDITOR_IMP_HPP_
 
-#include <LetheNut/Tools/NutViewport.hpp>
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//      PUBLIC
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template< typename Type >
+	void NutNodeEditor::SetParser( ) {
+		if ( this->parser )
+			delete this->parser;
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutViewport::NutViewport( )
-	: NutTool( "Viewport" )
-{ 
-}
+		this->parser = new Type( );
+		this->parser->Initialize( );
+	}
 
-NutViewport::~NutViewport( ) {
-}
-
-void NutViewport::OnEditorRender( class NutEditor* editor ) { 
-	//ImGui::ShowDemoWindow( );
-}
+#endif

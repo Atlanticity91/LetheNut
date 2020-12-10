@@ -36,19 +36,39 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/Tools/NutViewport.hpp>
+#include <LetheNut/Editors/Nodes/NutNodeParser.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutViewport::NutViewport( )
-	: NutTool( "Viewport" )
-{ 
+NutNodeParser::NutNodeParser( nString name )
+	: NutBasic( name ),
+	models( )
+{ }
+
+NutNodeParser::~NutNodeParser( ) { }
+
+void NutNodeParser::Initialize( ) { }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PROTECTED
+///////////////////////////////////////////////////////////////////////////////////////////
+NutNodeModel* NutNodeParser::Create( ENutNodeTypes type, nString name, nString description ) {
+	auto model = NutNodeModel( type, name, description );
+
+	this->models.emplace_back( model );
+
+	return &this->models[ this->models.size( ) - 1 ];
 }
 
-NutViewport::~NutViewport( ) {
-}
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC GET
+///////////////////////////////////////////////////////////////////////////////////////////
+const nUInt NutNodeParser::GetModelCount( ) const { return (nUInt)this->models.size( ); }
 
-void NutViewport::OnEditorRender( class NutEditor* editor ) { 
-	//ImGui::ShowDemoWindow( );
+const NutNodeModel* NutNodeParser::GetModel( nUInt query_id ) const {
+	if ( query_id < this->models.size( ) ) 
+		return  &this->models[ query_id ];
+
+	return nullptr;
 }

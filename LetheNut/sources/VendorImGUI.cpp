@@ -39,6 +39,7 @@
 #include <LetheNut/UI/NutStyle.hpp>
 #include <Thirdparty/GLFW/glfw3.h>
 #include <Thirdparty/ImGUI/imgui.h>
+#include <Thirdparty/ImGUI/imgui_internal.h>
 #include <Thirdparty/ImGUI/imgui_impl_glfw.h>
 #include <Thirdparty/ImGUI/imgui_impl_opengl3.h>
 
@@ -48,27 +49,37 @@
 void internal_Image( const nULong texture, const ImVec2& position, const ImVec2& size ) {
 	const auto region = ImGui::GetContentRegionAvail( );
 
-	if ( position.x < region.x && position.y < region.y ) {
+	if ( position.x < region.x && position.y < region.y) {
+		auto* renderer = ImGui::GetWindowDrawList( );
 		const auto cursor = ImGui::GetCursorPos( );
 
-		ImGui::SetCursorPos( position );
+		ImGui::SetCursorScreenPos( position );
 
 		if ( size.x > 0.f && size.y > 0.f )
-			ImGui::Image( reinterpret_cast<ImTextureID>( texture ), size );
+			renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), position, size );
 		else if ( size.x <= 0.f && size.y > 0.f )
-			ImGui::Image( reinterpret_cast<ImTextureID>( texture ), ImVec2{ region.x, size.y } );
+			renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), position, ImVec2{ region.x, size.y } );
 		else if ( size.x > 0.f && size.y <= 0.f )
-			ImGui::Image( reinterpret_cast<ImTextureID>( texture ), ImVec2{ size.x, region.y } );
+			renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), position, ImVec2{ size.x, region.y } );
 		else if ( size.x <= 0.f && size.y <= 0.f )
-			ImGui::Image( reinterpret_cast<ImTextureID>( texture ), region );
+			renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), position, region );
 
-		ImGui::SetCursorPos( cursor );
+		ImGui::SetCursorScreenPos( cursor );
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
+ImGUI::ImCanvas::ImCanvas( float zoom_min, float zoom_max )
+	: zoom( 1.f ),
+	offset( ),
+	curve_thickness( 5.f ),
+	connection_indent( 1.f ),
+	zoom_min( zoom_min ),
+	zoom_max( zoom_max )
+{ }
+
 void ImGUI::Initialize( nPointer& window ) {
 	auto* handle = (struct GLFWwindow*)window;
 
@@ -192,6 +203,28 @@ const bool ImGUI::GetIsAltDown( ) {
 	return io.ConfigMacOSXBehaviors ? io.KeyCtrl : io.KeyAlt;
 }
 
+const ImVec2 ImGUI::GetMouseRelPos( ) {
+	return ImVec2{ ImGui::GetMousePos( ).x - ImGui::GetWindowPos( ).x, ImGui::GetMousePos( ).y - ImGui::GetWindowPos( ).y };
+}
+
+const ImVec2 ImGUI::GetMouseDelta( ) {
+	auto& io = ImGui::GetIO( );
+
+	return io.MouseDelta;
+}
+
+const float ImGUI::GetScrollWheelH( ) {
+	auto& io = ImGui::GetIO( );
+
+	return io.MouseWheelH;
+}
+
+const float ImGUI::GetScrollWheel( ) {
+	auto& io = ImGui::GetIO( );
+
+	return io.MouseWheel;
+}
+
 const float ImGUI::GetLineHeight( ) {
 	return GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 }
@@ -252,117 +285,165 @@ void ImGUI::BeginPanel( nString label, const ImVec2&& padding ) {
 	ImGUI::BeginPanel( label, padding );
 }
 
+void ImGUI::BeginCanvas( ImCanvas& canvas ) {
+	const auto* window = ImGui::GetCurrentWindow( );
+	const auto pos = ImGui::GetWindowPos( );
+	const auto size = ImGui::GetWindowSize( );
+	const auto grid = 48.f * canvas.zoom;
+
+	auto& style = ImGui::GetStyle( );
+	auto* renderer = ImGui::GetWindowDrawList( );
+
+	ImGui::PushID( &canvas );
+	ImGui::ItemAdd( window->ContentRegionRect, ImGui::GetID( "canvas" ) );
+	ImGui::SetWindowFontScale( canvas.zoom );
+
+	ImU32 grid_color = ImColor( style.Colors[ ImGuiCol_Separator ] );
+	for ( float x = fmodf( canvas.offset.x, grid ); x < size.x;) {
+		renderer->AddLine( ImVec2( x, 0 ) + pos, ImVec2( x, size.y ) + pos, grid_color );
+		x += grid;
+	}
+
+	for ( float y = fmodf( canvas.offset.y, grid ); y < size.y;) {
+		renderer->AddLine( ImVec2( 0, y ) + pos, ImVec2( size.x, y ) + pos, grid_color );
+		y += grid;
+	}
+}
+
+void ImGUI::BeginNode( const ImCanvas& canvas, nString title, const ImVec2& position ) {
+	auto* renderer = ImGui::GetWindowDrawList( );
+	auto pos = ImGui::GetWindowPos( ) + position * canvas.zoom + canvas.offset;
+
+	renderer->ChannelsSplit( 2 );
+
+	ImGui::SetCursorScreenPos( pos );
+	ImGui::PushID( title );
+	ImGui::BeginGroup( );
+
+	renderer->ChannelsSetCurrent( 1 );
+
+	ImGui::TextUnformatted( title );
+}
+
 void ImGUI::Spacer( const ImVec2& spacing ) { ImGui::Dummy( spacing ); }
 
 void ImGUI::Spacer( const ImVec2&& spacing ) { ImGUI::Spacer( spacing ); }
 
 void ImGUI::Spacer( const float x, const float y ) {  ImGUI::Spacer( ImVec2{ x, y } ); }
 
-void ImGUI::Spring( nInt value ) { ImGui::Dummy( ImVec2{ (float)value, 0.f} ); }
+void ImGUI::NodeLink( const ImCanvas& canvas, const ImVec2& source, const ImVec2& destination, const ImColor& color ) {
+	auto* renderer = ImGui::GetWindowDrawList( );
+	auto thickness = canvas.curve_thickness * canvas.zoom;
+	auto p2 = source - ImVec2{ 100 * canvas.zoom, 0 };
+	auto p3 = destination + ImVec2{ 100 * canvas.zoom, 0 };
 
-void ImGUI::Spring( ) { ImGUI::Spring( 0 ); }
-
-void ImGUI::Link( const ImVec2& source, const ImVec2& destination, const ImVec4& color, float thickness ) {
-
+	renderer->AddBezierCurve( source, p2, p3, destination, color, thickness );
 }
 
-void ImGUI::Link( const ImVec2&& source, const ImVec2&& destination, const ImVec4&& color, float thickness ) {
-	ImGUI::Link( source, destination, color, thickness );
+void ImGUI::NodeLink( const ImCanvas& canvas, const ImVec2&& source, const ImVec2&& destination, const ImColor&& color ) {
+	ImGUI::NodeLink( canvas, source, destination, color );
 }
 
-void ImGUI::CircleIcon( float size, bool is_filled, const ImU32 color, const ImU32 inner ) {
-	auto cursorPos = ImGui::GetCursorScreenPos( );
-	auto drawList = ImGui::GetWindowDrawList( );
+void ImGUI::NodeCirclePin( const bool is_connected, const ImColor& color ) {
+	auto cursor = ImGui::GetCursorScreenPos( );
+	auto renderer = ImGui::GetWindowDrawList( );
 
-	auto rect = ImRect( cursorPos, ImVec2{ cursorPos.x + size, cursorPos.y + size } );
+	auto rect = ImRect( cursor, ImVec2{ cursor.x + ImGUI::NODE_PIN_SIZE, cursor.y + ImGUI::NODE_PIN_SIZE } );
 	auto rect_w = rect.Max.x - rect.Min.x;
 	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * 0.5f, ( rect.Min.y + rect.Max.y ) * 0.5f );
 	const auto outline_scale = rect_w / 24.0f;
 	const auto extra_segments = static_cast<int>( 2 * outline_scale );
 
-	if ( !is_filled ) {
+	if ( !is_connected ) {
 		const auto r = 0.5f * rect_w / 2.0f - 0.5f;
 
-		if ( inner & 0xFF000000 )
-			drawList->AddCircleFilled( rect_center, r, inner, 12 + extra_segments );
-		drawList->AddCircle( rect_center, r, color, 12 + extra_segments, 2.0f * outline_scale );
-	} else
-		drawList->AddCircleFilled( rect_center, 0.5f * rect_w / 2.0f, color, 12 + extra_segments );
+		if ( ImGUI::NODE_PIN_INNER &0xFF000000 )
+			renderer->AddCircleFilled( rect_center, r, ImGUI::NODE_PIN_INNER, 12 + extra_segments );
 
-	ImGUI::Spacer( size, size );
+		renderer->AddCircle( rect_center, r, color, 12 + extra_segments, 2.0f * outline_scale );
+	} else
+		renderer->AddCircleFilled( rect_center, 0.5f * rect_w / 2.0f, color, 12 + extra_segments );
 }
 
-void ImGUI::SquareIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner ) {
-	auto cursorPos = ImGui::GetCursorScreenPos( );
-	auto drawList = ImGui::GetWindowDrawList( );
+void ImGUI::NodeCirclePin( const bool is_connected, const ImColor&& color ) { 
+	ImGUI::NodeCirclePin( is_connected, color );
+}
 
-	auto rect = ImRect( cursorPos, ImVec2{ cursorPos.x + size, cursorPos.y + size } );
+void ImGUI::NodeSquarePin( const bool is_connected, const ImColor& color ) {
+	auto cursor = ImGui::GetCursorScreenPos( );
+	auto renderer = ImGui::GetWindowDrawList( );
+
+	auto rect = ImRect( cursor, ImVec2{ cursor.x + ImGUI::NODE_PIN_SIZE, cursor.y + ImGUI::NODE_PIN_SIZE } );
 	auto rect_w = rect.Max.x - rect.Min.x;
 	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * 0.5f, ( rect.Min.y + rect.Max.y ) * 0.5f );
 	const auto outline_scale = rect_w / 24.0f;
 	const auto extra_segments = static_cast<int>( 2 * outline_scale );
 
-	if ( is_filled ) {
+	if ( is_connected ) {
 		const auto r = 0.5f * rect_w / 2.0f;
 		const auto p0 = rect_center - ImVec2( r, r );
 		const auto p1 = rect_center + ImVec2( r, r );
 
-		drawList->AddRectFilled( p0, p1, color, 0, 15 + extra_segments );
+		renderer->AddRectFilled( p0, p1, color, 0, 15 + extra_segments );
 	} else {
 		const auto r = 0.5f * rect_w / 2.0f - 0.5f;
 		const auto p0 = rect_center - ImVec2( r, r );
 		const auto p1 = rect_center + ImVec2( r, r );
 
-		if ( inner & 0xFF000000 )
-			drawList->AddRectFilled( p0, p1, inner, 0, 15 + extra_segments );
+		if ( ImGUI::NODE_PIN_INNER & 0xFF000000 )
+			renderer->AddRectFilled( p0, p1, ImGUI::NODE_PIN_INNER, 0, 15 + extra_segments );
 
-		drawList->AddRect( p0, p1, color, 0, 15 + extra_segments, 2.0f * outline_scale );
+		renderer->AddRect( p0, p1, color, 0, 15 + extra_segments, 2.0f * outline_scale );
 	}
-
-	ImGUI::Spacer( size, size );
 }
 
-void ImGUI::DiamondIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner ) {
-	auto cursorPos = ImGui::GetCursorScreenPos( );
-	auto drawList = ImGui::GetWindowDrawList( );
+void ImGUI::NodeSquarePin( const bool is_connected, const ImColor&& color ) {
+	ImGUI::NodeSquarePin( is_connected, color );
+}
 
-	auto rect = ImRect( cursorPos, ImVec2{ cursorPos.x + size, cursorPos.y + size } );
+void ImGUI::NodeDiamondPin( const bool is_connected, const ImColor& color ) {
+	auto cursor = ImGui::GetCursorScreenPos( );
+	auto renderer = ImGui::GetWindowDrawList( );
+
+	auto rect = ImRect( cursor, ImVec2{ cursor.x + ImGUI::NODE_PIN_SIZE, cursor.y + ImGUI::NODE_PIN_SIZE } );
 	auto rect_w = rect.Max.x - rect.Min.x;
 	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * 0.5f, ( rect.Min.y + rect.Max.y ) * 0.5f );
 	const auto outline_scale = rect_w / 24.0f;
 
-	if ( is_filled ) {
+	if ( is_connected ) {
 		const auto r = 0.607f * rect_w / 2.0f;
 		const auto c = rect_center;
 
-		drawList->PathLineTo( c + ImVec2(  0, -r ) );
-		drawList->PathLineTo( c + ImVec2(  r,  0 ) );
-		drawList->PathLineTo( c + ImVec2(  0,  r ) );
-		drawList->PathLineTo( c + ImVec2( -r,  0 ) );
-		drawList->PathFillConvex( color );
+		renderer->PathLineTo( c + ImVec2(  0, -r ) );
+		renderer->PathLineTo( c + ImVec2(  r,  0 ) );
+		renderer->PathLineTo( c + ImVec2(  0,  r ) );
+		renderer->PathLineTo( c + ImVec2( -r,  0 ) );
+		renderer->PathFillConvex( color );
 	} else {
 		const auto r = 0.607f * rect_w / 2.0f - 0.5f;
 		const auto c = rect_center;
 
-		drawList->PathLineTo( c + ImVec2(  0, -r ) );
-		drawList->PathLineTo( c + ImVec2(  r,  0 ) );
-		drawList->PathLineTo( c + ImVec2(  0,  r ) );
-		drawList->PathLineTo( c + ImVec2( -r,  0 ) );
+		renderer->PathLineTo( c + ImVec2( 0, -r ) );
+		renderer->PathLineTo( c + ImVec2( r, 0 ) );
+		renderer->PathLineTo( c + ImVec2( 0, r ) );
+		renderer->PathLineTo( c + ImVec2( -r, 0 ) );
 
-		if ( inner & 0xFF000000 )
-			drawList->AddConvexPolyFilled( drawList->_Path.Data, drawList->_Path.Size, inner );
+		if ( ImGUI::NODE_PIN_INNER & 0xFF000000 )
+			renderer->AddConvexPolyFilled( renderer->_Path.Data, renderer->_Path.Size, ImGUI::NODE_PIN_INNER );
 
-		drawList->PathStroke( color, true, 2.0f * outline_scale );
+		renderer->PathStroke( color, true, 2.0f * outline_scale );
 	}
-
-	ImGUI::Spacer( size, size );
 }
 
-void ImGUI::GridIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner ) {
-	auto cursorPos = ImGui::GetCursorScreenPos( );
-	auto drawList = ImGui::GetWindowDrawList( );
+void ImGUI::NodeDiamondPin( const bool is_connected, const ImColor&& color ) {
+	ImGUI::NodeDiamondPin( is_connected, color );
+}
 
-	auto rect = ImRect( cursorPos, ImVec2{ cursorPos.x + size, cursorPos.y + size } );
+void ImGUI::NodeArrayPin( const bool is_connected, const ImColor& color ) {
+	auto cursor = ImGui::GetCursorScreenPos( );
+	auto renderer = ImGui::GetWindowDrawList( );
+
+	auto rect = ImRect( cursor, ImVec2{ cursor.x + ImGUI::NODE_PIN_SIZE, cursor.y + ImGUI::NODE_PIN_SIZE } );
 	auto rect_w = rect.Max.x - rect.Min.x;
 	auto rect_center_x = ( rect.Min.x + rect.Max.x ) * 0.5f;
 	auto rect_center_y = ( rect.Min.y + rect.Max.y ) * 0.5f;
@@ -380,25 +461,28 @@ void ImGUI::GridIcon( const float size, bool is_filled, const ImU32 color, const
 	for ( int i = 0; i < 3; ++i ) {
 		tl.x = baseTl.x;
 		br.x = baseBr.x;
-		drawList->AddRectFilled( tl, br, color );
-		
+		renderer->AddRectFilled( tl, br, color );
+
 		tl.x += w * 2;
 		br.x += w * 2;
 
-		if ( i != 1 || is_filled )
-			drawList->AddRectFilled( tl, br, color );
-		
+		if ( i != 1 || is_connected )
+			renderer->AddRectFilled( tl, br, color );
+
 		tl.x += w * 2;
 		br.x += w * 2;
-		drawList->AddRectFilled( tl, br, color );
+
+		renderer->AddRectFilled( tl, br, color );
 
 		tl.y += w * 2;
 		br.y += w * 2;
 	}
 
 	triangleStart = br.x + w + 1.0f / 24.0f * rect_w;
+}
 
-	ImGUI::Spacer( size, size );
+void ImGUI::NodeArrayPin( const bool is_connected, const ImColor&& color ) {
+	ImGUI::NodeArrayPin( is_connected, color );
 }
 
 void ImGUI::Text( const ImVec2& position, nString text, const ImColor& background, const ImColor& foreground ) {
@@ -449,6 +533,43 @@ void ImGUI::Image( const OpenGL::Frame& frame, const ImVec2& position, const ImV
 
 void ImGUI::Image( const OpenGL::Frame& frame, const ImVec2&& position, const ImVec2&& size ) {
 	ImGUI::Image( frame, position, size );
+}
+
+void ImGUI::EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor& color ) {
+	auto& style = ImGui::GetStyle( );
+	auto* renderer = ImGui::GetWindowDrawList( );
+	auto color_sep = ImColor( style.Colors[ ImGuiCol_Separator ] );
+	auto color_bg = ImColor( style.Colors[ ImGuiCol_Border ] );
+	auto pos = ImGui::GetWindowPos( ) + position * canvas.zoom + canvas.offset;
+
+	ImGui::EndGroup( );
+
+	auto node_rect = ImRect{
+		ImGui::GetItemRectMin( ) - style.ItemInnerSpacing * canvas.zoom,
+		( ImGui::GetItemRectMax( ) + ImVec2{ ImGUI::NODE_PIN_SIZE, 0.f } ) + style.ItemInnerSpacing * canvas.zoom
+	};
+
+	auto header_size = ImVec2{
+		ImGui::GetItemRectSize( ).x + ( ImGUI::NODE_PIN_SIZE - ImGUI::NODE_ROUNDING ) + style.ItemInnerSpacing.x * canvas.zoom,
+		ImGUI::GetTextSize( title ).y + 3.f
+	};
+
+	renderer->ChannelsSetCurrent( 0 );
+	renderer->AddRectFilled( node_rect.Min, node_rect.Max, color, ImGUI::NODE_ROUNDING );
+	renderer->AddRect( node_rect.Min, node_rect.Max, color_bg, ImGUI::NODE_ROUNDING );
+	renderer->AddLine( pos + ImVec2{ 0, header_size.y }, pos + header_size, color_sep );
+	renderer->ChannelsMerge( );
+
+	ImGui::PopID( );
+}
+
+void ImGUI::EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor&& color ) {
+	ImGUI::EndNode( canvas, title, position, color );
+}
+
+void ImGUI::EndCanvas( ) {
+	ImGui::SetWindowFontScale( 1.f );
+	ImGui::PopID( );
 }
 
 void ImGUI::EndPanel( ) {

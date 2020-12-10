@@ -119,6 +119,7 @@ void NutKernel::OnCreate( class NutEditor* editor ) {
     editor->OpenPanel<NutViewport>( editor );
 
     editor->OpenPanel<NutTextEditor>( editor );
+    editor->OpenPanel<NutNodeEditor>( editor );
 }
 
 void NutKernel::Process( class NutEditor* editor) { }

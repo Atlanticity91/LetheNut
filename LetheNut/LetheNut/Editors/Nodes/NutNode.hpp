@@ -37,121 +37,69 @@
 #ifndef _IGS_NUT_NODE_HPP_
 #define _IGS_NUT_NODE_HPP_
 
-	#include <LetheNut/NutBasic.hpp>
+	#include "NutNodeModel.hpp"
 
-	#define NPIN( TYPE, NAME, DESCRIPTION ) NutNodePin{ false, TYPE, NAME, DESCRIPTION }
-	#define NPIN_ARRAY( TYPE, NAME, DESCRIPTION ) NutNodePin{ true, TYPE, NAME, DESCRIPTION }
+	/**
+	 * NutNode final class
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Node class.
+	 **/
+	class NUT_API NutNode final {
 
-	enum class ENutPinTypes {
-
-		EPT_STRING,
-		EPT_BOOL,
-		EPT_INT8,
-		EPT_INT16,
-		EPT_INT32,
-		EPT_INT64,
-		EPT_FLOAT32,
-		EPT_FLOAT64,
-
-	};
-
-	struct NutNodePin {
-
-		bool is_array;
-		bool is_connected;
-		ENutPinTypes type;
-		nString name;
-		nString description;
-		struct {
-			char* value;
-			nUInt length;
-		} string;
-
-	};
-
-	struct NutNodeLink {
-
-		struct { 
-			nUInt node_id;
-			nUInt pin_id;
-		} source;
-		struct {
-			nUInt node_id;
-			nUInt pin_id;
-		} destination;
-		ImVec4 color;
-
-	};
-
-	enum class ENutNodeTypes {
-
-		ENT_FUNCTION,
-		ENT_EVENT,
-		ENT_CONSTANT,
-		ENT_VARIABLE,
-		ENT_BRANCH,
-		ENT_SWITCH,
-
-	};
-
-	NUT_ELEMENT( NutNode ) {
-
-		using PinList = std::vector<NutNodePin>;
+	public:
+		using PinList = NutNodeModel::PinList;
 
 	private:
-		ENutNodeTypes type;
-		nString description;
-		ImVec4 color;
-		PinList inputs;
-		PinList outputs;
+		ImVec2 position;
+		NutNodeModel model;
 
 	public:
-		NutNode( ENutNodeTypes type, nString name, nString description );
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param position : Position of the node.
+		 * @param model : Current node model.
+		 **/
+		NutNode( ImVec2 position, const NutNodeModel& model );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		virtual ~NutNode( );
 
-		virtual void AddIn( const NutNodePin& pin );
+		inline void ConnectIn( nUInt query_id );
 
-		inline void AddIn( const NutNodePin&& pin );
+		inline void DisConnectIn( nUInt query_id );
 
-		inline void AddIn( bool is_array, ENutPinTypes type, nString name, nString description );
+		inline void ToggleIn( nUInt query_id );
 
-		void ConnectIn( nUInt query_id );
+		inline void ConnectOut( nUInt query_id );
 
-		void DisConnectIn( nUInt query_id );
+		inline void DisConnectOut( nUInt query_id );
 
-		void ToggleIn( nUInt query_id );
-
-		virtual void AddOut( const NutNodePin& pin );
-
-		inline void AddOut( const NutNodePin&& pin );
-
-		inline void AddOut( bool is_array, ENutPinTypes type, nString name, nString description );
-
-		void ConnectOut( nUInt query_id );
-
-		void DisConnectOut( nUInt query_id );
-
-		void ToggleOut( nUInt query_id );
+		inline void ToggleOut( nUInt query_id );
 
 	public:
-		ENutNodeTypes GetType( ) const;
+		inline const ImVec2 GetPosition( ) const;
 
-		nString GetDescription( ) const;
+		inline ENutNodeTypes GetType( ) const;
 
-		const ImVec4& GetColor( ) const;
+		inline nString GetName( ) const;
 
-		bool HasInPin( nUInt query_id ) const;
+		inline nString GetDescription( ) const;
 
-		const NutNodePin& GetInPin( nUInt query_id ) const;
+		inline bool HasInPin( nUInt query_id ) const;
 
-		const PinList& GetInPins( ) const;
+		inline const NutNodePin& GetInPin( nUInt query_id ) const;
 
-		bool HasOutPin( nUInt query_id ) const;
+		inline const PinList& GetInPins( ) const;
 
-		const NutNodePin& GetOutPin( nUInt query_id ) const;
+		inline bool HasOutPin( nUInt query_id ) const;
 
-		const PinList& GetOutPins( ) const;
+		inline const NutNodePin& GetOutPin( nUInt query_id ) const;
+
+		inline const PinList& GetOutPins( ) const;
 
 	};
 

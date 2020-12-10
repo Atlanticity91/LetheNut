@@ -34,74 +34,72 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_NODE_EDITOR_HPP_
-#define _IGS_NUT_NODE_EDITOR_HPP_
+#ifndef _IGS_NUT_NODE_PARSER_HPP_
+#define _IGS_NUT_NODE_PARSER_HPP_
 
-	#include <LetheNut/Tools/NutTool.hpp>
+	#include "NutNode.hpp"
 
-	#include "NutNodeParser.hpp"
+	/**
+	 * NutNodeParser class [ NutBasic ]
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Node Parser core class.
+	 **/
+	NUT_ELEMENT( NutNodeParser ) {
 
-	NUT_TOOL( NutNodeEditor ) {
-
-	private:
-		ImGUI::ImCanvas canvas;
-		NutNodeParser* parser;
-		std::vector<NutNode*> nodes;
-		std::vector<NutNodeLink> links;
+	protected:
+		mutable std::vector<NutNodeModel> models;
 
 	public:
-		NutNodeEditor( );
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param name : Name of the node parser.
+		 **/
+		NutNodeParser( nString name );
 
-		virtual ~NutNodeEditor( );
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
+		virtual ~NutNodeParser( );
 
-		void CreateLink( const NutNodeLink& link );
-
-		void CreateLink( const NutNodeLink&& link );
-
-		void CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin );
-
-		void CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin, const ImVec4& color );
-
-		void CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin, const ImVec4&& color );
+		/**
+		 * Initialize virtual method
+		 * @author : ALVES Quentin
+		 * @note : Initialize current node parser.
+		 **/
+		virtual void Initialize( );
 
 	protected:
 		/**
-		 * OnEditorProcess virtual method
+		 * Create virtual function
 		 * @author : ALVES Quentin
-		 * @note : Process the current tool during rendering phase.
-		 * @param editor : Pointer to current editor.
+		 * @note : Create a new node model.
+		 * @param type : Type of the new node model.
+		 * @param name : Name of the new node model.
+		 * @param description : Description of the new node model.
+		 * @return : NutNodeModel*
 		 **/
-		virtual void OnEditorProcess( class NutEditor* editor ) override;
-
-		/**
-		 * OnEditorRender override method
-		 * @author : ALVES Quentin
-		 * @note : Called once a frame to render ImGUI stuff.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnEditorRender( class NutEditor* editor ) override;
-
-		virtual void InternalDraw( const NutNode* node, bool is_selected );
-
-		virtual void InternalDraw( const NutNode::PinList& pins, bool is_out );
-
-		virtual void InternalDraw( const NutNodePin& pin, bool is_out );
-
-		virtual void InternalDraw( const NutNodePin& pin, ImColor color );
-
-		virtual void InternalDraw( const NutNodeLink& link );
+		virtual NutNodeModel* Create( ENutNodeTypes type, nString name, nString description );
 
 	public:
-		template< typename Type = class NutNodeParser >
-		void SetParser( );
+		/**
+		 * GetModelCount const function
+		 * @author : ALVES Quentin
+		 * @note : Get current parser model count.
+		 * @return : const nUInt
+		 **/
+		const nUInt GetModelCount( ) const;
 
-	protected:
-		virtual const ImVec2 GetPinPosition( bool is_output, nUInt node_id, nUInt pin_id ) const;
-
-		virtual const ImColor GetPinColor( nUInt node_id, nUInt pin_id ) const;
+		/**
+		 * GetModel const function
+		 * @author : ALVES Quentin
+		 * @note : Get a node model from current parser.
+		 * @param query_id : Index of the query model.
+		 * @return : const NutNodeModel*
+		 **/
+		const NutNodeModel* GetModel( nUInt query_id ) const;
 
 	};
-
-	#include <Templates/NutNodeEditor.hpp>
 
 #endif

@@ -180,7 +180,7 @@
 	template< typename... Args >
 	void ImGUI::Text( const ImColor& color, nString format, Args... args ) {
 		if ( std::strlen( format ) > 0 ) {
-			ImGui::PushStyleColor( ImGuiCol_Text, color );
+			ImGui::PushStyleColor( ImGuiCol_Text, color.Value );
 			ImGui::Text( format, args... );
 			ImGui::PopStyleColor( );
 		}

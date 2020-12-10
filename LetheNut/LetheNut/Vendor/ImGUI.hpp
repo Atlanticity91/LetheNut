@@ -41,7 +41,9 @@
 	// TODO : TimeLine
 	// TODO : Patch Tooltip Rounding
 
-	#define IMGUI_DEFINE_MATH_OPERATORS
+	#ifndef IMGUI_DEFINE_MATH_OPERATORS
+		#define IMGUI_DEFINE_MATH_OPERATORS
+	#endif
 
 	#include <LetheNut/Core.hpp>
 	#include "OpenGL.hpp"
@@ -70,6 +72,10 @@
 		REG_VEC2( DEFAULT_PADDING, 1.f, 1.f );
 		REG_VEC4( DEFAULT_COLOR, .8f, .8f, .8f, 1.f );
 
+		REG_VAR( float, NODE_ROUNDING, 4.f );
+		REG_VAR( float, NODE_PIN_SIZE, 24.f );
+		REG_VAR( ImColor, NODE_PIN_INNER, { 32, 32, 32, 204 } );
+
 		// Internal colors
 		REG_VEC4( AxeX_Normal, .8f, .1f, .15f, 1.f );
 		REG_VEC4( AxeX_Hovered, .9f, .2f, .2f,  1.f );
@@ -79,6 +85,29 @@
 		REG_VEC4( AxeZ_Hovered, .2f, .35f, .9f, 1.f );
 		REG_VEC4( AxeW_Normal, .95f, .7f, .053f, 1.f );
 		REG_VEC4( AxeW_Hovered, 1.f, .8f, .063f, 1.f );
+
+		/**
+		 * ImCanvas struct
+		 * @author : ALVES Quentin
+		 * @note : Defined canvas struct.
+		 **/
+		struct ImCanvas {
+
+			float zoom;
+			ImVec2 offset;
+			float curve_thickness;
+			float connection_indent;
+
+			float zoom_min;  
+			float zoom_max;
+
+			/**
+			 * Constructor
+			 * @author : ALVES Quentin
+			 **/
+			ImCanvas( float zoom_min, float zoom_max );
+
+		};
 
 		/**
 		 * Initialize method
@@ -111,7 +140,7 @@
 		 * @note : Apply a style to ImGui.
 		 * @param style : Reference to query style to apply.
 		 **/
-		void NUT_API ApplyStyle( NutStyle& style );
+		void ApplyStyle( NutStyle& style );
 
 		/**
 		 * Internal_StyleHeader method
@@ -164,6 +193,38 @@
 		 * @return : const bool
 		 **/
 		const bool GetIsAltDown( );
+
+		/**
+		 * GetMouseRelPos function
+		 * @author : ALVES Quentin
+		 * @note : Get the real mouse position on window.
+		 * @return : const ImVec2
+		 **/
+		const ImVec2 GetMouseRelPos( );
+
+		/**
+		 * GetMouseDelta function
+		 * @author : ALVES Quentin
+		 * @note : Get current mouse delta value.
+		 * @return : const ImVec2
+		 **/
+		const ImVec2 GetMouseDelta( );
+
+		/**
+		 * GetScrollWheel function
+		 * @author : ALVES Quentin
+		 * @note : Get current mouse horizontal scroll wheel value.
+		 * @return : const float
+		 **/
+		const float GetScrollWheelH( );
+
+		/**
+		 * GetScrollWheel function
+		 * @author : ALVES Quentin
+		 * @note : Get current mouse scroll wheel value.
+		 * @return : const float
+		 **/
+		const float GetScrollWheel( );
 
 		/**
 		 * GetLineHeight const function
@@ -259,6 +320,24 @@
 		void BeginPanel( nString label, const ImVec2&& padding );
 
 		/**
+		 * BeginCanvas method
+		 * @author : ALVES Quentin
+		 * @note : Begin a canvas.
+		 * @param canvas : Query canvas context.
+		 **/
+		void BeginCanvas( ImCanvas& canvas );
+
+		/**
+		 * BeginNode method
+		 * @author : ALVES Quentin
+		 * @note : Create a node on a canvas.
+		 * @param canvas : Current context canvas where draw the node.
+		 * @param title : Title of the node.
+		 * @param position : Position of the node on the canvas.
+		 **/
+		void BeginNode( const ImCanvas& canvas, nString title, const ImVec2& position );
+
+		/**
 		 * MenurBar template method
 		 * @author : ALVES Quentin
 		 * @note : Wrapper for MenurBar.
@@ -295,85 +374,98 @@
 		void Spacer( const float x, const float y );
 
 		/**
-		 * Spring method
+		 * Link method
 		 * @author : ALVES Quentin
-		 * @note : Wrapper for Spring.
-		 * @param value : Spring value.
+		 * @note : Wrapper for Link using Bézier curve's.
+		 * @param canvas : Current node canvas.
+		 * @param source : Source point of the link.
+		 * @param destination : Destination point of the link.
+		 * @param color : Color of the link.
 		 **/
-		void Spring( nInt value );
-
-		/**
-		 * Spring method
-		 * @author : ALVES Quentin
-		 * @note : Wrapper for Spring.
-		 **/
-		void Spring( );
+		void NodeLink( const ImCanvas& canvas, const ImVec2& source, const ImVec2& destination, const ImColor& color );
 
 		/**
 		 * Link method
 		 * @author : ALVES Quentin
 		 * @note : Wrapper for Link using Bézier curve's.
+		 * @param canvas : Current node canvas.
 		 * @param source : Source point of the link.
 		 * @param destination : Destination point of the link.
 		 * @param color : Color of the link.
-		 * @param thickness : Thickness of the link.
 		 **/
-		void Link( const ImVec2& source, const ImVec2& destination, const ImVec4& color, float thickness );
+		void NodeLink( const ImCanvas& canvas, const ImVec2&& source, const ImVec2&& destination, const ImColor&& color );
 
 		/**
-		 * Link method
+		 * NodeCirclePin method
 		 * @author : ALVES Quentin
-		 * @note : Wrapper for Link using Bézier curve's.
-		 * @param source : Source point of the link.
-		 * @param destination : Destination point of the link.
-		 * @param color : Color of the link.
-		 * @param thickness : Thickness of the link.
+		 * @note : Create a node circle pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
 		 **/
-		void Link( const ImVec2&& source, const ImVec2&& destination, const ImVec4&& color, float thickness );
+		void NodeCirclePin( const bool is_connected, const ImColor& color );
 
 		/**
-		 * CircleIcon method
+		 * NodeCirclePin method
 		 * @author : ALVES Quentin
-		 * @note : Wrapper for drawing a circle icon.
-		 * @param size : Size of the icon.
-		 * @param is_filled : True to draw filled icon.
-		 * @param color : Color of the icon.
-		 * @param inner : Internal color of the icon if is not filled.
+		 * @note : Create a node circle pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
 		 **/
-		void CircleIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner );
+		void NodeCirclePin( const bool is_connected, const ImColor&& color );
 
 		/**
-		 * SquareIcon method
+		 * NodeSquarePin method
 		 * @author : ALVES Quentin
-		 * @note : Wrapper for drawing a square icon.
-		 * @param size : Size of the icon.
-		 * @param is_filled : True to draw filled icon.
-		 * @param color : Color of the icon.
-		 * @param inner : Internal color of the icon if is not filled.
+		 * @note : Create a node square pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
 		 **/
-		void SquareIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner );
+		void NodeSquarePin( const bool is_connected, const ImColor& color );
 
 		/**
-		 * DiamondIcon method
+		 * NodeSquarePin method
 		 * @author : ALVES Quentin
-		 * @note : Wrapper for drawing a diamond icon.
-		 * @param size : Size of the icon.
-		 * @param is_filled : True to draw filled icon.
-		 * @param color : Color of the icon.
-		 * @param inner : Internal color of the icon if is not filled.
+		 * @note : Create a node square pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
 		 **/
-		void DiamondIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner );
+		void NodeSquarePin( const bool is_connected, const ImColor&& color );
 
 		/**
-		 * GridIcon method
+		 * NodeDiamondPin method
 		 * @author : ALVES Quentin
-		 * @note : Wrapper for drawing a grid icon.
-		 * @param size : Size of the icon.
-		 * @param is_filled : True to draw filled icon.
-		 * @param color : Color of the icon.
-		 * @param inner : Internal color of the icon if is not filled.
+		 * @note : Create a node diamond pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
 		 **/
-		void GridIcon( const float size, bool is_filled, const ImU32 color, const ImU32 inner );
+		void NodeDiamondPin( const bool is_connected, const ImColor& color );
+
+		/**
+		 * NodeDiamondPin method
+		 * @author : ALVES Quentin
+		 * @note : Create a node diamond pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
+		 **/
+		void NodeDiamondPin( const bool is_connected, const ImColor&& color );
+
+		/**
+		 * NodeArrayPin method
+		 * @author : ALVES Quentin
+		 * @note : Create a node array pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
+		 **/
+		void NodeArrayPin( const bool is_connected, const ImColor& color );
+
+		/**
+		 * NodeArrayPin method
+		 * @author : ALVES Quentin
+		 * @note : Create a node array pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
+		 **/
+		void NodeArrayPin( const bool is_connected, const ImColor&& color );
 
 		/**
 		 * MenuButton template method
@@ -691,6 +783,35 @@
 		 **/
 		template< typename Content >
 		void RightClickPanel( Content&& content );
+
+		/**
+		 * EndNode method
+		 * @author : ALVES Quentin
+		 * @note : End the current node on a canvas.
+		 * @param canvas : Current context canvas where draw the node.
+		 * @param title : Title of the node.
+		 * @param position : Position of the node on the canvas.
+		 * @param color : Color of the node.
+		 **/
+		void EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor& color );
+
+		/**
+		 * EndNode method
+		 * @author : ALVES Quentin
+		 * @note : End the current node on a canvas.
+		 * @param canvas : Current context canvas where draw the node.
+		 * @param title : Title of the node.
+		 * @param position : Position of the node on the canvas.
+		 * @param color : Color of the node.
+		 **/
+		void EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor&& color );
+
+		/**
+		 * EndCanvas method
+		 * @author : ALVES Quentin
+		 * @note : End current canvas.
+		 **/
+		void EndCanvas( );
 
 		/**
 		 * EndPanel method

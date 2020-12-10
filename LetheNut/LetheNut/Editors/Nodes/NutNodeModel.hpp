@@ -34,21 +34,85 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_NODE_MODEL_HPP_
+#define _IGS_NUT_NODE_MODEL_HPP_
+	
+	#include "NutNodePin.hpp"
 
-#include <LetheNut/Tools/NutViewport.hpp>
+	enum ENutNodeTypes : nUInt {
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutViewport::NutViewport( )
-	: NutTool( "Viewport" )
-{ 
-}
+		ENT_FUNCTION,
+		ENT_EVENT,
+		ENT_CONSTANT,
+		ENT_VARIABLE,
+		ENT_BRANCH,
+		ENT_SWITCH,
 
-NutViewport::~NutViewport( ) {
-}
+	};
 
-void NutViewport::OnEditorRender( class NutEditor* editor ) { 
-	//ImGui::ShowDemoWindow( );
-}
+	NUT_ELEMENT( NutNodeModel ) {
+
+	public:
+		using PinList = std::vector<NutNodePin>;
+
+	private:
+		ENutNodeTypes type;
+		nString description;
+		PinList inputs;
+		PinList outputs;
+
+	public:
+		NutNodeModel( );
+
+		NutNodeModel( const NutNodeModel& other );
+
+		NutNodeModel( ENutNodeTypes type, nString name, nString description );
+
+		virtual ~NutNodeModel( );
+
+		virtual void AddIn( const NutNodePin& pin );
+
+		inline void AddIn( const NutNodePin&& pin );
+
+		inline void AddIn( bool is_array, ENutPinTypes type, nString name, nString description );
+
+		void ConnectIn( nUInt query_id );
+
+		void DisConnectIn( nUInt query_id );
+
+		void ToggleIn( nUInt query_id );
+
+		virtual void AddOut( const NutNodePin & pin );
+
+		inline void AddOut( const NutNodePin && pin );
+
+		inline void AddOut( bool is_array, ENutPinTypes type, nString name, nString description );
+
+		void ConnectOut( nUInt query_id );
+
+		void DisConnectOut( nUInt query_id );
+
+		void ToggleOut( nUInt query_id );
+
+	public:
+		const ImVec2 GetPosition( ) const;
+
+		ENutNodeTypes GetType( ) const;
+
+		nString GetDescription( ) const;
+
+		bool HasInPin( nUInt query_id ) const;
+
+		const NutNodePin& GetInPin( nUInt query_id ) const;
+
+		const PinList& GetInPins( ) const;
+
+		bool HasOutPin( nUInt query_id ) const;
+
+		const NutNodePin& GetOutPin( nUInt query_id ) const;
+
+		const PinList& GetOutPins( ) const;
+
+	};
+
+#endif

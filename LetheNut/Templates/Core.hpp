@@ -41,7 +41,24 @@
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template< typename Type >
-	Type* Alloc( size_t count ) { return (Type*)malloc( sizeof( Type ) * count ); }
+	Type* nHelper::Alloc( size_t count ) { return (Type*)malloc( sizeof( Type ) * count ); }
+
+	template< typename Type >
+	void nHelper::Copy( const Type& source, Type& destination ) {
+		nHelper::Copy( source, destination, 1 );
+	}
+
+	template< typename Type >
+	void nHelper::Copy( const Type& source, Type& destination, nULong count ) {
+		count = ( count > 0 ) ? count : 1;
+
+#ifdef _WIN64
+		memcpy_s( &destination, sizeof( Type ) * count, &source, sizeof( Type ) * count );
+		
+#else
+		memcpy( &destination, &source, sizeof( Type ) * count );
+#endif
+	}
 
 	template< typename Type >
 	void nHelper::Clamp( Type& value, Type min, Type max ) {
@@ -51,6 +68,14 @@
 			else if ( value > max )
 				value = max;
 		}
+	}
+
+	void nHelper::Copy( nString source, char* destination, nUInt size ) {
+#ifdef _WIN64
+		strcpy_s( destination, size, source );
+#else
+		strcpy( destination, source );
+#endif
 	}
 
 	nTimePoint nHelper::GetTime( ) {

@@ -104,6 +104,8 @@
     <ClCompile Include="sources\NutModule.cpp" />
     <ClCompile Include="sources\NutNode.cpp" />
     <ClCompile Include="sources\NutNodeEditor.cpp" />
+    <ClCompile Include="sources\NutNodeModel.cpp" />
+    <ClCompile Include="sources\NutNodeParser.cpp" />
     <ClCompile Include="sources\NutPanel.cpp" />
     <ClCompile Include="sources\NutPopup.cpp" />
     <ClCompile Include="sources\NutProfiler.cpp" />
@@ -165,7 +167,10 @@
   <ItemGroup>
     <ClInclude Include="LetheNut\Core.hpp" />
     <ClInclude Include="LetheNut\Editors\Nodes\NutNode.hpp" />
+    <ClInclude Include="LetheNut\Editors\Nodes\NutNodePin.hpp" />
     <ClInclude Include="LetheNut\Editors\Nodes\NutNodeEditor.hpp" />
+    <ClInclude Include="LetheNut\Editors\Nodes\NutNodeModel.hpp" />
+    <ClInclude Include="LetheNut\Editors\Nodes\NutNodeParser.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextDocument.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextEditor.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextParser.hpp" />
@@ -198,6 +203,7 @@
     <ClInclude Include="Templates\NutLibrary.hpp" />
     <ClInclude Include="Templates\NutMenu.hpp" />
     <ClInclude Include="Templates\NutMenuItem.hpp" />
+    <ClInclude Include="Templates\NutNodeEditor.hpp" />
     <ClInclude Include="Templates\NutPopup.hpp" />
     <ClInclude Include="Templates\NutTextEditor.hpp" />
     <ClInclude Include="Templates\NutTextParser.hpp" />

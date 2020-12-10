@@ -263,7 +263,7 @@ bool OpenGL::Create( Material& material, nString vertex, nString fragment, nStri
 
 bool OpenGL::Create( Material& material, nString vertex, nString fragment, nString geometry, nUInt size, nString* parameters ) {
 	if ( OpenGL::Create( material, vertex, fragment, nullptr ) && size > 0 && parameters ) {
-		material.Locations = Alloc<nUInt>( size );
+		material.Locations = nHelper::Alloc<nUInt>( size );
 		
 		if ( material.Locations ) {
 			glUseProgram( material.ID );

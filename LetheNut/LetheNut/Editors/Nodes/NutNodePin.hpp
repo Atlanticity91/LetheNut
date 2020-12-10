@@ -34,21 +34,70 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_NODE_PIN_HPP_
+#define _IGS_NUT_NODE_PIN_HPP_
 
-#include <LetheNut/Tools/NutViewport.hpp>
+	#include <LetheNut/NutBasic.hpp>
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutViewport::NutViewport( )
-	: NutTool( "Viewport" )
-{ 
-}
+	#define NPIN( TYPE, NAME, DESCRIPTION ) NutNodePin{ false, TYPE, NAME, DESCRIPTION }
+	#define NPIN_ARRAY( TYPE, NAME, DESCRIPTION ) NutNodePin{ true, TYPE, NAME, DESCRIPTION }
+	
+	enum ENutPinTypes : nUInt {
 
-NutViewport::~NutViewport( ) {
-}
+		EPT_STRING,
+		EPT_BOOL,
+		EPT_INT8,
+		EPT_INT16,
+		EPT_INT32,
+		EPT_INT64,
+		EPT_FLOAT32,
+		EPT_FLOAT64,
 
-void NutViewport::OnEditorRender( class NutEditor* editor ) { 
-	//ImGui::ShowDemoWindow( );
-}
+	};
+
+	struct NutNodePinString {
+
+		char* value;
+		nUInt length;
+
+	};
+
+	union NutNodePinData {
+
+		nByte int8;
+		nShort int16;
+		nInt int32;
+		nLong int64;
+		float float32;
+		double float64;
+		NutNodePinString string;
+
+	};
+
+	struct NutNodePin {
+
+		bool is_array;
+		bool is_connected;
+		ENutPinTypes type;
+		nString name;
+		nString description;
+		NutNodePinData data;
+
+	};
+
+	struct NutNodeLinkPin {
+
+		nUInt node_id;
+		nUInt pin_id;
+
+	};
+
+	struct NutNodeLink {
+
+		NutNodeLinkPin source;
+		NutNodeLinkPin destination;
+		ImVec4 color;
+
+	};
+
+#endif
