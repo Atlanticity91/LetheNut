@@ -41,6 +41,8 @@
 
 	#define NUT_ELEMENT( NAME, ... ) NUT_CLASS( NAME, NutBasic, __VA_ARGS__ )
 
+	class NutEditor;
+
 	/**
 	 * NutBasic class
 	 * @author : ALVES Quentin

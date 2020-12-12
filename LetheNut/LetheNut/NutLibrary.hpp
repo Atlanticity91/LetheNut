@@ -53,6 +53,8 @@
 	 **/
 	class NUT_API NutLibrary final {
 
+		friend class NutKernel;
+
 	private:
 #ifdef _WIN64
 		HMODULE handle;
@@ -70,6 +72,13 @@
 		/**
 		 * Constructor
 		 * @author : ALVES Quentin
+		 **/
+		NutLibrary( ) = default;
+
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param path : Path to the query library.
 		 **/
 		NutLibrary( std::string path );
 

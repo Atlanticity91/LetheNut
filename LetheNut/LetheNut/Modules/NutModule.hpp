@@ -89,7 +89,7 @@
 		 * @note : Initialize the current kernel module.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void Initialize( class NutEditor* editor ) = 0;
+		virtual void Initialize( NutEditor* editor ) = 0;
 
 		/**
 		 * OnCreate virtual method
@@ -97,7 +97,7 @@
 		 * @note : On create the current module
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnCreate( class NutEditor* editor ) = 0;
+		virtual void OnCreate( NutEditor* editor ) = 0;
 
 		/**
 		 * Process virtual method
@@ -105,7 +105,7 @@
 		 * @note : Process the current module
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void Process( class NutEditor* editor ) = 0;
+		virtual void Process( NutEditor* editor ) = 0;
 
 	public:
 		/**

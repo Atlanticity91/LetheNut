@@ -41,6 +41,9 @@
 	#include <LetheNut/NutLibrary.hpp>
 	#include <LetheNut/Vendor/JSON.hpp>
 
+	class NutMenuItem;
+	class NutPanel;
+
 	/**
 	 * NutKernel final class [ NutModule ]
 	 * @author : ALVES Quentin
@@ -72,7 +75,7 @@
 		 * @note : Initialize the current kernel module.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void Initialize( class NutEditor* editor ) override;
+		virtual void Initialize( NutEditor* editor ) override;
 
 		/**
 		 * OnCreate override method
@@ -80,7 +83,7 @@
 		 * @note : On create the kernel module
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnCreate( class NutEditor* editor ) override;
+		virtual void OnCreate( NutEditor* editor ) override;
 
 		/**
 		 * Process override method
@@ -88,7 +91,12 @@
 		 * @note : Process the kernel module
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void Process( class NutEditor* editor ) override;
+		virtual void Process( NutEditor* editor ) override;
+
+	private:
+		void LoadLibraries( NutEditor* editor );
+
+		void LoadModules( NutEditor* editor );
 
 	private:
 		/**
@@ -99,7 +107,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnOpen( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnOpen( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnOpenScene static method
@@ -109,7 +117,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnOpenScene( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnOpenScene( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnLoad static method
@@ -119,7 +127,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnLoad( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnLoad( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnSave static method
@@ -129,7 +137,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnSave( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnSave( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnImport static method
@@ -139,7 +147,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnImport( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnImport( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnExport static method
@@ -149,7 +157,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnExport( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnExport( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnOnExitSave static method
@@ -159,7 +167,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnExit( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnExit( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnUndo static method
@@ -169,7 +177,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnUndo( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnUndo( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnRedo static method
@@ -179,7 +187,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnRedo( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnRedo( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnCopy static method
@@ -189,7 +197,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnCopy( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnCopy( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnCut static method
@@ -199,7 +207,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnCut( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnCut( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnPaste static method
@@ -209,7 +217,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnPaste( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnPaste( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnTheme static method
@@ -219,7 +227,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnTheme( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnTheme( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 		/**
 		 * OnAbout static method
@@ -229,7 +237,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		static void OnAbout( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent );
+		static void OnAbout( NutMenuItem& item, NutEditor* editor, NutPanel& parent );
 
 	public:
 		/**

@@ -62,29 +62,16 @@ NutKernel::~NutKernel( ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutKernel::Initialize( class NutEditor* editor ) {
+void NutKernel::Initialize( NutEditor* editor ) {
     if ( this->config.Load( "NutEditor.json" ) ) {
-        for ( auto lib : this->config.Get<nJSON::StringArray>( "Libraries" ) ) {
-            if ( !lib.empty( ) ) {
-                NutLibrary* library = new NutLibrary( lib );
-
-                if ( library->GetIsValid( ) )
-                    this->libraries.emplace_back( library );
-                else
-                    delete library;
-            }
-        }
-
-        for ( auto module_ : this->config.Get<nJSON::StringArray>( "Modules" ) ) {
-            if ( !module_.empty( ) ) {
-            }
-        }
+        this->LoadLibraries( editor );
+        this->LoadModules( editor );
     }
 }
 
 #include <LetheNut/Editors/Nodes/NutNodeEditor.hpp>
 #include <LetheNut/Editors/Text/NutTextEditor.hpp>
-void NutKernel::OnCreate( class NutEditor* editor ) {
+void NutKernel::OnCreate(  NutEditor* editor ) {
     auto file_menu = editor->CreateMenu( "File" );
 
     file_menu->CreateButton( "Open", "Ctrl+O", NutKernel::OnOpen );
@@ -122,44 +109,77 @@ void NutKernel::OnCreate( class NutEditor* editor ) {
     editor->OpenPanel<NutNodeEditor>( editor );
 }
 
-void NutKernel::Process( class NutEditor* editor) { }
+void NutKernel::Process(  NutEditor* editor ) { }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PRIVATE
+///////////////////////////////////////////////////////////////////////////////////////////
+void NutKernel::LoadLibraries( NutEditor* editor ) {
+    for ( auto lib : this->config.Get<nJSON::StringArray>( "Libraries" ) ) {
+        if ( !lib.empty( ) ) {
+            NutLibrary* library = new NutLibrary( lib );
+
+            if ( library->GetIsValid( ) )
+                this->libraries.emplace_back( library );
+            else 
+                delete library;
+        }
+    }
+}
+
+void NutKernel::LoadModules( NutEditor* editor ) {
+    NutLibrary loader;
+
+    for ( auto path : this->config.Get<nJSON::StringArray>( "Modules" ) ) {
+        if ( !path.empty( ) ) {
+            loader = NutLibrary( path );
+
+            if ( loader.GetState( ) ) {
+                auto module_registration = loader.Get<void( * )( NutEditor* )>( "RegisterModule" );
+
+                if ( module_registration )
+                    module_registration( editor );
+            }
+        }
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PRIVATE STATIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutKernel::OnOpen( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) {
+void NutKernel::OnOpen(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) {
 }
 
-void NutKernel::OnOpenScene( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnOpenScene(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnLoad( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnLoad(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnSave( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { 
+void NutKernel::OnSave(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { 
 }
 
-void NutKernel::OnImport( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnImport(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnExport( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnExport(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnExit( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) {
+void NutKernel::OnExit(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) {
     // DISPLAY SAVE POPUP
 
     editor->Exit( );
 }
 
-void NutKernel::OnUndo( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnUndo(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnRedo( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnRedo(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnCopy( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnCopy(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnCut( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnCut(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnPaste( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnPaste(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnTheme( class NutMenuItem& item, class NutEditor* editor, class NutPanel& parent ) { }
+void NutKernel::OnTheme(  NutMenuItem& item,  NutEditor* editor,  NutPanel& parent ) { }
 
-void NutKernel::OnAbout( class NutMenuItem& item, class NutEditor*, class NutPanel& parent ) { }
+void NutKernel::OnAbout(  NutMenuItem& item,  NutEditor*,  NutPanel& parent ) { }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET

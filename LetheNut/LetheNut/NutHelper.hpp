@@ -53,6 +53,29 @@
 	#define NEXPORT( ... ) extern "C" { __VA_ARGS__ }
 
 	/**
+	 * NAPI macro
+	 * @author : ALVES Quentin
+	 * @note : Helper for API declaration.
+	 **/
+	#ifdef _WIN64
+		#define NAPI __declspec( dllexport )
+	#else
+		#define NAPI 
+	#endif
+
+	/**
+	 * NFUNC_DCL macro
+	 * @author : ALVES Quentin
+	 * @note : Helper for function exportation.
+	 * @usage : NFUNC( RETURN_TYPE, NAME, PARAMETERS );
+	 * @example :
+	 *		NFUNC( void, Hi );
+	 *
+	 *		-> Create method Hi declaration ready for export.
+	 **/
+	#define NFUNC_DCL( RETURN, NAME, ... ) static RETURN NAPI #NAME( __VA_ARGS__ )
+
+	/**
 	 * NFUNC macro
 	 * @author : ALVES Quentin
 	 * @note : Helper for function exportation.
@@ -62,11 +85,7 @@
 	 *
 	 *		-> Create static method Hi ready for export.
 	 **/
-	#ifdef _WIN64
-		#define NFUNC( RETURN, NAME, BODY, ... ) static RETURN __declspec( dllexport ) #NAME( __VA_ARGS__ ) { BODY }
-	#else
-		#define NFUNC( RETURN, NAME, BODY, ... ) static RETURN #NAME( __VA_ARGS__ ) { BODY }
-	#endif
+	#define NFUNC( RETURN, NAME, BODY, ... ) NFUNC_DCL( RETURN, NAME, __VA_ARGS__ ) { BODY }
 
 	/**
 	 * NLIBRARY_CREATE macro
@@ -128,7 +147,7 @@
 	 *
 	 *		-> Create the module ExempleModule with NutKernel as parent.
 	 **/
-	#define NMODULE( NAME, ... ) class NAME : public NutModule, __VA_ARGS__
+	#define NMODULE( NAME, ... ) class NAPI NAME : public NutModule, __VA_ARGS__
 
 	/**
 	 * NPANEL macro
@@ -143,7 +162,7 @@
 	 *
 	 *		-> Create the panel ExemplePanel with NutPanel as parent.
 	 **/
-	#define NPANEL( NAME, ... ) class NAME : public NutPanel, __VA_ARGS__
+	#define NPANEL( NAME, ... ) class NAPI NAME : public NutPanel, __VA_ARGS__
 	
 	/**
 	 * NTOOL macro
@@ -158,6 +177,6 @@
 	 *
 	 *		-> Create the tool ExempleTool with NutTool as parent.
 	 **/
-	#define NTOOL( NAME, ... ) class NAME : public NutTool, __VA_ARGS__
+	#define NTOOL( NAME, ... ) class NAPI NAME : public NutTool, __VA_ARGS__
 
 #endif
