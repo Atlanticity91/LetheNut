@@ -75,14 +75,21 @@ void NutTextDocument::Append( const std::string& string, nUInt line ) {
 }
 
 void NutTextDocument::Insert( char character, NutTextCursor& cursor ) {
-	this->Insert( character, cursor.line, cursor.position );
-
 	if ( character != '\n' ) {
+		this->Insert( character, cursor.line, cursor.position );
+
 		if ( character != '\t' )
 			cursor.position += 1;
 		else
 			cursor.position += 4;
-	}
+	} else if ( cursor.line < this->lines.size( ) ) {
+		std::string content;
+
+		this->lines.insert( this->lines.begin( ) + cursor.line, content );
+		this->lines[ cursor.line ].erase( cursor.position, this->lines[ cursor.line ].size( ) - cursor.position );
+
+		cursor.line += 1;
+	} 
 }
 
 void NutTextDocument::Insert( const std::string& string, NutTextCursor& cursor ) {

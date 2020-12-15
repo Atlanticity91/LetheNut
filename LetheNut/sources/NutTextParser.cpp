@@ -114,7 +114,7 @@ ENutTextStyleVars NutTextParser::FindSyntax( nString text ) {
 			if ( !strstr( text, string.c_str( ) ) )
 				continue;
 
-			return  pair.first;
+			return pair.first;
 		}
 	}
 

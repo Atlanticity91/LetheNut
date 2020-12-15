@@ -56,7 +56,7 @@ NutTextEditor::NutTextEditor( )
 
 	this->Create( "I'm a test" );
 	this->Get( ).Append( "func add ( a : int , b : int )", 0 );
-	this->Get( ).Append( "\treturn a + b ;", 1 );
+	this->Get( ).Append( "    return a + b ;", 1 );
 	this->Get( ).Append( "end", 2 );
 }
 
@@ -129,6 +129,11 @@ void NutTextEditor::MoveDown( ) {
 void NutTextEditor::MoveLeft( ) {
 	if ( this->renderer.Cursor.position > 0 )
 		this->renderer.Cursor.position -= 1;
+	else if ( this->renderer.Cursor.line > 0 ) {
+		this->MoveUp( );
+
+		this->renderer.Cursor.position = this->Get( ).GetLineSize( this->renderer.Cursor.line );
+	}
 }
 
 void NutTextEditor::MoveRight( ) {
@@ -136,40 +141,60 @@ void NutTextEditor::MoveRight( ) {
 
 	if ( this->renderer.Cursor.position < max )
 		this->renderer.Cursor.position += 1;
+	else if ( this->renderer.Cursor.line < this->Get( ) - 1 ) {
+		this->MoveDown( );
+
+		this->renderer.Cursor.position = 0;
+	}
 }
 
 void NutTextEditor::MoveTop( ) { 
-	this->renderer.Cursor.line = 0; 
-	this->renderer.Cursor.position = this->Get( ).GetLineSize( 0 ) - 1;
+	this->renderer.Cursor.line = 0;
+
+	this->Replace( );
 }
 
 void NutTextEditor::MoveBottom( ) { 
 	this->renderer.Cursor.line = this->Get( ) - 1; 
-	this->renderer.Cursor.position = this->Get( ).GetLineSize( this->Get( ) - 1 ) - 1;
+
+	this->Replace( );
+}
+
+void NutTextEditor::SelectAll( ) {
+}
+
+void NutTextEditor::Copy( ) {
+}
+
+void NutTextEditor::Cut( ) {
+}
+
+void NutTextEditor::Paste( ) {
+}
+
+void NutTextEditor::Undo( ) {
+}
+
+void NutTextEditor::Redo( ) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED 
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutTextEditor::OnEditorProcess( class NutEditor* editor ) {
-	this->InternalInputKeyboard( );
-	this->InternalInputMouse( );
-}
-
 void NutTextEditor::InternalInputKeyboard( ) {
 	if ( !ImGUI::GetIsCtrltDown( ) && !ImGUI::GetIsAltDown( ) && !ImGUI::GetIsShiftDown( ) ) {
-		if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_UpArrow ) ) )
+		if ( ImGui::IsKeyPressed( ImGuiKey_UpArrow ) ) 
 			this->MoveUp( );
-		else if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_DownArrow ) ) )
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_DownArrow ) ) 
 			this->MoveDown( );
-		else if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_LeftArrow ) ) )
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_LeftArrow ) ) 
 			this->MoveLeft( );
-		else if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_RightArrow ) ) )
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_RightArrow ) ) 
 			this->MoveRight( );
-		else if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_Enter ) ) )
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_Enter ) ) 
 			this->Get( ).Insert( '\n', this->renderer.Cursor );
-		else if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_Tab ) ) )
-			this->Get( ).Insert( '\t', this->renderer.Cursor );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_Tab ) ) 
+			this->Get( ).Insert( "    ", this->renderer.Cursor );
 		else {
 			ImGUI::DequeueCharacters(
 				[ & ]( char character ) {
@@ -177,20 +202,46 @@ void NutTextEditor::InternalInputKeyboard( ) {
 				}
 			);
 		}
+	} else if ( ImGUI::GetIsCtrltDown( ) ) {
+		if ( ImGUI::IsKeyPressed( ImGuiKey_A ) )
+			this->SelectAll( );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_C ) )
+			this->Copy( );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_X ) )
+			this->Cut( );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_V ) )
+			this->Paste( );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_Y ) )
+			this->Undo( );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_Z ) )
+			this->Redo( );
 	} else if ( ImGUI::GetIsAltDown( ) ) {
-		if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_UpArrow ) ) )
+		if ( ImGUI::IsKeyPressed( ImGuiKey_UpArrow ) )
 			this->MoveTop( );
-		else if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_DownArrow ) ) )
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_DownArrow ) )
 			this->MoveBottom( );
-		else if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_LeftArrow ) ) )
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_LeftArrow ) )
 			this->Prev( );
-		else if ( ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_RightArrow ) ) )
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_RightArrow ) )
 			this->Next( );
 	}
 }
 
 void NutTextEditor::InternalInputMouse( ) {
-	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) ) {
+	auto mouse = ImGUI::GetMouseRelPos( );
+
+	if ( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) ) {
+		if ( mouse.x > this->renderer.LeftPadding )
+			mouse.x -= this->renderer.LeftPadding;
+		else
+			mouse.x = 0;
+
+		mouse /= this->renderer.CharAdvance;
+
+		this->renderer.Cursor.line = mouse.y;
+		this->renderer.Cursor.position = mouse.x;
+
+		this->Replace( );
 	}
 }
 
@@ -206,9 +257,11 @@ void NutTextEditor::OnEditorRender( class NutEditor* editor ) {
 		auto line_id = 0;
 
 		ImGui::BeginChild( (nString)document, ImVec2( ), false, FLAGS );
-			
 			auto renderer = ImGui::GetWindowDrawList( );
 			auto cursor = ImGui::GetCursorScreenPos( );
+
+			this->InternalInputMouse( );
+			this->InternalInputKeyboard( );
 
 			this->InternalDraw( renderer, cursor );
 
@@ -227,7 +280,6 @@ void NutTextEditor::OnEditorRender( class NutEditor* editor ) {
 				this->InternalDraw( renderer, cursor, line_id );
 
 		ImGui::EndChild( );
-
 		ImGui::PopStyleVar( );
 	}
 
@@ -308,10 +360,15 @@ void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 cursor, const std
 //      PRIVATE 
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutTextEditor::Replace( ) {
-	auto size = (nUInt)this->Get( )[ this->renderer.Cursor.line ].size( );
+	auto line_id = this->Get( ) - 1;
+
+	if ( this->renderer.Cursor.line > line_id )
+		this->renderer.Cursor.line = line_id;
+	
+	auto size = this->Get( ).GetLineSize( this->renderer.Cursor.line );
 
 	if ( this->renderer.Cursor.position >= size )
-		this->renderer.Cursor.position = ( size > 0 ) ? size - 1 : 0;
+		this->renderer.Cursor.position = ( size > 0 ) ? size : 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -354,6 +411,30 @@ NutTextDocument& NutTextEditor::Get( ) const {  return this->documents[ this->do
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      OPERATOR
 ///////////////////////////////////////////////////////////////////////////////////////////
+NutTextDocument* NutTextEditor:: operator[ ]( nUInt query_id ) const {
+	if ( query_id < this->documents.size( ) )
+		return &this->documents.at( query_id );
+
+	return nullptr;
+}
+
+NutTextDocument* NutTextEditor::operator[ ]( nString name ) const {
+	if ( name && strcmp( name, "" ) != 0 ) {
+		for ( auto& document : this->documents ) {
+			if ( strcmp( document.GetName( ).c_str( ), name ) != 0 )
+				continue;
+
+			return &document;
+		}
+	}
+
+	return nullptr;
+}
+
+NutTextDocument* NutTextEditor::operator[ ]( const std::string& name ) const {
+	return (*this)[ name.c_str( ) ];
+}
+
 NutTextEditor& NutTextEditor::operator++( ) {
 	this->Next( );
 

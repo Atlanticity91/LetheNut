@@ -37,6 +37,7 @@
 #ifndef _IGS_NUT_VENDOR_IMGUI_HPP_
 #define _IGS_NUT_VENDOR_IMGUI_HPP_
 
+	// TODO : Remove Vec4 color to use ImColor.
 	// TODO : Description ToolTip
 	// TODO : TimeLine
 	// TODO : Patch Tooltip Rounding
@@ -54,6 +55,7 @@
 	#define REG_VEC2( NAME, X, Y ) REG_VEC( ImVec2, NAME, X, Y )
 	#define REG_VEC3( NAME, X, Y, Z ) REG_VEC( ImVec3, NAME, X, Y, Z )
 	#define REG_VEC4( NAME, X, Y, Z, W ) REG_VEC( ImVec4, NAME, X, Y, Z, W )
+	#define REG_COLOR( NAME, R, G, B, A ) REG_VAR( ImColor, NAME, { R, G, B, A } )
 
 	class NutStyle;
 
@@ -72,9 +74,13 @@
 		REG_VEC2( DEFAULT_PADDING, 1.f, 1.f );
 		REG_VEC4( DEFAULT_COLOR, .8f, .8f, .8f, 1.f );
 
+		REG_VAR( float, NODE_GRID_SIZE, 48.f );
 		REG_VAR( float, NODE_ROUNDING, 4.f );
 		REG_VAR( float, NODE_PIN_SIZE, 24.f );
-		REG_VAR( ImColor, NODE_PIN_INNER, { 32, 32, 32, 204 } );
+		REG_VEC2( NODE_SELECTION_SIZE, .1f, 1.f );
+		REG_COLOR( NODE_PIN_INNER, 32, 32, 32, 204 );
+		REG_COLOR( NODE_SELECTION_COLOR, 242, 178, 13, 255 );
+		REG_COLOR( NODE_COMMENT_COLOR, 32, 32, 32, 204 );
 
 		// Internal colors
 		REG_VEC4( AxeX_Normal, .8f, .1f, .15f, 1.f );
@@ -170,6 +176,8 @@
 		template< typename Callback, typename... Args >
 		void DequeueCharacters( Callback&& callback, Args... args );
 
+		const bool IsKeyPressed( ImGuiKey_ query_key );
+
 		/**
 		 * GetIsShiftDown function
 		 * @author : ALVES Quentin
@@ -225,6 +233,14 @@
 		 * @return : const float
 		 **/
 		const float GetScrollWheel( );
+
+		/**
+		 * GetPenPressure function
+		 * @author : ALVES Quentin
+		 * @note : Get current pen pressure value.
+		 * @return : const float
+		 **/
+		const float GetPenPressure( );
 
 		/**
 		 * GetLineHeight const function
@@ -466,6 +482,24 @@
 		 * @param color : Color of the pin.
 		 **/
 		void NodeArrayPin( const bool is_connected, const ImColor&& color );
+
+		/**
+		 * NodeTrianglePin method
+		 * @author : ALVES Quentin
+		 * @note : Create a node triangle pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
+		 **/
+		void NodeTrianglePin( const bool is_connected, const ImColor& color );
+
+		/**
+		 * NodeTrianglePin method
+		 * @author : ALVES Quentin
+		 * @note : Create a node triangle pin.
+		 * @param is_connected : State of the pin.
+		 * @param color : Color of the pin.
+		 **/
+		void NodeTrianglePin( const bool is_connected, const ImColor&& color );
 
 		/**
 		 * MenuButton template method
@@ -792,8 +826,9 @@
 		 * @param title : Title of the node.
 		 * @param position : Position of the node on the canvas.
 		 * @param color : Color of the node.
+		 * @param is_selected : Defined if the node is selected.
 		 **/
-		void EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor& color );
+		void EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor& color, bool is_selected );
 
 		/**
 		 * EndNode method
@@ -803,8 +838,9 @@
 		 * @param title : Title of the node.
 		 * @param position : Position of the node on the canvas.
 		 * @param color : Color of the node.
+		 * @param is_selected : Defined if the node is selected.
 		 **/
-		void EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor&& color );
+		void EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor&& color, bool is_selected );
 
 		/**
 		 * EndCanvas method

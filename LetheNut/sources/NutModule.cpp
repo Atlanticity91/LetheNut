@@ -45,13 +45,9 @@ NutModule::NutModule( nString name )
 	: NutBasic( name )
 { }
 
-void NutModule::Enable( ) {
-	this->is_active = true;
-}
+void NutModule::Enable( ) { this->is_active = true; }
 
-void NutModule::Disable( ) {
-	this->is_active = false;
-}
+void NutModule::Disable( ) { this->is_active = false; }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET 

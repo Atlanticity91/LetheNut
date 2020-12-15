@@ -44,6 +44,7 @@
 	
 	enum ENutPinTypes : nUInt {
 
+		EPT_FLOW,
 		EPT_STRING,
 		EPT_BOOL,
 		EPT_INT8,

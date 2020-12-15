@@ -44,6 +44,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 const ImColor Internal_PinColor( ENutPinTypes type ) {
     switch ( type ) {
+        case ENutPinTypes::EPT_FLOW     : return ImColor( 208, 208, 208 );
         case ENutPinTypes::EPT_STRING   : return ImColor( 124,  21, 153 );
         case ENutPinTypes::EPT_BOOL     : return ImColor( 220,  48,  48 );
         case ENutPinTypes::EPT_INT8     : return ImColor(  68, 201, 156 );
@@ -86,10 +87,12 @@ public:
         model->AddOut( false, ENutPinTypes::EPT_BOOL, "Is Active", "" );
 
         model = this->Create( ENutNodeTypes::ENT_FUNCTION, "Base Function", "Function test" );
+        model->AddIn( false, ENutPinTypes::EPT_FLOW, "", "" );
         model->AddIn( false, ENutPinTypes::EPT_BOOL, "Boolean", "Test pin" );
         model->AddIn( true, ENutPinTypes::EPT_INT32, "Int32", "Test pin" );
         model->AddIn( false, ENutPinTypes::EPT_FLOAT64, "Float64", "Test pin" );
         model->AddIn( false, ENutPinTypes::EPT_STRING, "String", "Test pin" );
+        model->AddOut( false, ENutPinTypes::EPT_FLOW, "", "" );
         model->AddOut( false, ENutPinTypes::EPT_BOOL, "Is Active", "" );
     }
 
@@ -176,9 +179,11 @@ void NutNodeEditor::OnEditorProcess( class NutEditor* editor ) {
             if ( this->nodes.size( ) > 1 ) {
                 for ( int i = 0; i < this->nodes[ this->nodes.size( ) - 2 ]->GetOutPins( ).size( ); i++ ) {
                     auto lnk = NutNodeLink( );
-                    lnk.source.node_id = this->nodes.size( ) - 2;
+                    auto size = (nUInt)this->nodes.size( );
+
+                    lnk.source.node_id = size - 2;
                     lnk.source.pin_id = i;
-                    lnk.destination.node_id = this->nodes.size( ) - 1;
+                    lnk.destination.node_id = size - 1;
                     lnk.destination.pin_id = i;
 
                     this->nodes[ lnk.destination.node_id ]->ConnectIn( i );
@@ -210,14 +215,14 @@ void NutNodeEditor::InternalDraw( const NutNode* node, bool is_selected ) {
         ImGui::SameLine( ImGui::GetItemRectSize( ).x + ImGUI::GetTextSize( "####" ).x );
         this->InternalDraw( node->GetOutPins( ), true );
 
-    ImGUI::EndNode( this->canvas, node->GetName( ), node->GetPosition( ), Internal_NodeColor( node->GetType( ) ) );
+    ImGUI::EndNode( this->canvas, node->GetName( ), node->GetPosition( ), Internal_NodeColor( node->GetType( ) ), true );
 }
 
 void NutNodeEditor::InternalDraw( const NutNode::PinList& pins, bool is_out ) {
     ImGui::BeginGroup( );
 
-    for ( auto& input : pins )
-        this->InternalDraw( input, is_out );
+    for ( auto& pin : pins ) 
+        this->InternalDraw( pin, is_out );
 
     ImGui::EndGroup( );
 }
@@ -247,15 +252,18 @@ void NutNodeEditor::InternalDraw( const NutNodePin& pin, bool is_out ) {
         this->InternalDraw( pin, color );
     }
 
-    cursor.y += ImGUI::NODE_PIN_SIZE;
+    cursor.y += ImGUI::NODE_PIN_SIZE - 4.f;
     ImGui::SetCursorScreenPos( cursor );
 }
 
 void NutNodeEditor::InternalDraw( const NutNodePin& pin, ImColor color ) {
-    if ( !pin.is_array )
-        ImGUI::NodeCirclePin( pin.is_connected, color );
-    else
-        ImGUI::NodeArrayPin( pin.is_connected, color );
+    if ( pin.type != ENutPinTypes::EPT_FLOW ) {
+        if ( !pin.is_array )
+            ImGUI::NodeCirclePin( pin.is_connected, color );
+        else
+            ImGUI::NodeArrayPin( pin.is_connected, color );
+    } else
+        ImGUI::NodeTrianglePin( pin.is_connected, color );
 }
 
 void NutNodeEditor::InternalDraw( const NutNodeLink& link ) {
@@ -272,7 +280,7 @@ void NutNodeEditor::InternalDraw( const NutNodeLink& link ) {
 const ImVec2 NutNodeEditor::GetPinPosition( bool is_output, nUInt node_id, nUInt pin_id ) const {
     auto node_offset = ImVec2{ 
         (!is_output ) ? 7.f : 13.f + ImGui::GetItemRectSize( ).x,
-        ImGUI::NODE_PIN_SIZE * pin_id + ImGUI::GetTextSize( "#" ).y + ImGui::GetTextLineHeightWithSpacing( )
+        ( ImGUI::NODE_PIN_SIZE - 4.f ) * pin_id + ImGUI::GetTextSize( "#" ).y + ImGui::GetTextLineHeightWithSpacing( )
     };
     auto node_position = this->nodes[ node_id ]->GetPosition( ) + node_offset;
 

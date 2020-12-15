@@ -43,11 +43,11 @@
 	#include "NutTextParser.hpp"
 
 	/**
-	 * NutTextRenderer struct
+	 * NutTextContext struct
 	 * @author : ALVES Quentin
 	 * @note : Defined nut text editor renderer.
 	 **/
-	struct NutTextRenderer {
+	struct NutTextContext {
 
 		NutTextCursor Cursor;
 		nTimePoint Record;
@@ -73,7 +73,7 @@
 		nUInt document_id;
 		NutTextStyle* style;
 		NutTextParser* parser;
-		mutable NutTextRenderer renderer;
+		mutable NutTextContext renderer;
 		mutable DocumentList documents;
 
 	public:
@@ -152,15 +152,49 @@
 		 **/
 		virtual void MoveBottom( );
 
-	protected:
 		/**
-		 * OnEditorProcess virtual method
+		 * SelectAll virtual method
 		 * @author : ALVES Quentin
-		 * @note : Process the current tool during rendering phase.
-		 * @param editor : Pointer to current editor.
+		 * @note : Select the entire document.
 		 **/
-		virtual void OnEditorProcess( class NutEditor* editor ) override;
+		virtual void SelectAll( );
 
+		/**
+		 * Copy virtual method
+		 * @author : ALVES Quentin
+		 * @note : Copy the current selection.
+		 **/
+		virtual void Copy( );
+
+		/**
+		 * Cut virtual method
+		 * @author : ALVES Quentin
+		 * @note : Cut the current selection.
+		 **/
+		virtual void Cut( );
+
+		/**
+		 * Paste virtual method
+		 * @author : ALVES Quentin
+		 * @note : Paste the current selection.
+		 **/
+		virtual void Paste( );
+
+		/**
+		 * Undo virtual method
+		 * @author : ALVES Quentin
+		 * @note : Undo the current modification.
+		 **/
+		virtual void Undo( );
+
+		/**
+		 * Redo virtual method
+		 * @author : ALVES Quentin
+		 * @note : Redo the current modification.
+		 **/
+		virtual void Redo( );
+
+	protected:
 		/**
 		 * InternalInputKeyboard virtual method
 		 * @author : ALVES Quentin
@@ -302,6 +336,33 @@
 		NutTextDocument& Get( ) const;
 
 	public:
+		/**
+		 * operator[ ] const
+		 * @author : ALVES Quentin
+		 * @note : Get an open document from the editor.
+		 * @param query_id : Index of the query document.
+		 * @return : NutTextDocument*
+		 **/
+		NutTextDocument* operator[ ]( nUInt query_id ) const;
+
+		/**
+		 * operator[ ] const
+		 * @author : ALVES Quentin
+		 * @note : Get an open document by name from the editor.
+		 * @param name : Query document name.
+		 * @return : NutTextDocument*
+		 **/
+		NutTextDocument* operator[ ]( nString name ) const;
+
+		/**
+		 * operator[ ] const
+		 * @author : ALVES Quentin
+		 * @note : Get an open document by name from the editor.
+		 * @param name : Query document name.
+		 * @return : NutTextDocument*
+		 **/
+		NutTextDocument* operator[ ]( const std::string& name ) const;
+
 		/**
 		 * operator++
 		 * @author : ALVES Quentin
