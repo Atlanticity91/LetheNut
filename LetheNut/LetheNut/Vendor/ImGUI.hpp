@@ -80,7 +80,7 @@
 		REG_VEC2( NODE_SELECTION_SIZE, .1f, 1.f );
 		REG_COLOR( NODE_PIN_INNER, 32, 32, 32, 204 );
 		REG_COLOR( NODE_SELECTION_COLOR, 242, 178, 13, 255 );
-		REG_COLOR( NODE_COMMENT_COLOR, 32, 32, 32, 204 );
+		REG_COLOR( NODE_COMMENT_COLOR, 208, 208, 208, 255 );
 
 		// Internal colors
 		REG_VEC4( AxeX_Normal, .8f, .1f, .15f, 1.f );
@@ -112,6 +112,15 @@
 			 * @author : ALVES Quentin
 			 **/
 			ImCanvas( float zoom_min, float zoom_max );
+
+		};
+
+		struct ImNodeContext {
+
+			nString name;
+			nString description;
+			ImVec2 position;
+			bool is_selected;
 
 		};
 
@@ -343,15 +352,18 @@
 		 **/
 		void BeginCanvas( ImCanvas& canvas );
 
+		void BeginCanvas( ImCanvas& canvas, const ImVec2& position, const ImVec2& size );
+
+		void BeginCanvas( ImCanvas& canvas, const ImVec2&& position, const ImVec2&& size );
+
 		/**
 		 * BeginNode method
 		 * @author : ALVES Quentin
 		 * @note : Create a node on a canvas.
 		 * @param canvas : Current context canvas where draw the node.
-		 * @param title : Title of the node.
-		 * @param position : Position of the node on the canvas.
+		 * @param node : Current node context.
 		 **/
-		void BeginNode( const ImCanvas& canvas, nString title, const ImVec2& position );
+		void BeginNode( const ImCanvas& canvas, const ImNodeContext& node );
 
 		/**
 		 * MenurBar template method
@@ -828,19 +840,21 @@
 		 * @param color : Color of the node.
 		 * @param is_selected : Defined if the node is selected.
 		 **/
-		void EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor& color, bool is_selected );
+		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color );
 
 		/**
 		 * EndNode method
 		 * @author : ALVES Quentin
 		 * @note : End the current node on a canvas.
 		 * @param canvas : Current context canvas where draw the node.
-		 * @param title : Title of the node.
-		 * @param position : Position of the node on the canvas.
+		 * @param node : Query node context.
 		 * @param color : Color of the node.
-		 * @param is_selected : Defined if the node is selected.
 		 **/
-		void EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor&& color, bool is_selected );
+		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color );
+
+		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color, const ImVec2& position );
+
+		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color, const ImVec2&& position );
 
 		/**
 		 * EndCanvas method

@@ -36,50 +36,18 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/Editors/Nodes/NutNode.hpp>
+#include <LetheNut/Framework/Nodes/NutGLSL.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutNode::NutNode( ImVec2 position, const NutNodeModel& model ) 
-	: position( position ),
-	model( model )
+NutGLSL::NutGLSL( ) 
+	: NutNodeParser( "Nut GLSL" )
 { }
 
-NutNode::~NutNode( ) 
-{ }
+NutGLSL::~NutGLSL( ) {
+}
 
-void NutNode::ConnectIn( nUInt query_id ) { this->model.ConnectIn( query_id ); }
-
-void NutNode::DisConnectIn( nUInt query_id ) { this->model.DisConnectIn( query_id ); }
-
-void NutNode::ToggleIn( nUInt query_id ) { this->model.ToggleIn( query_id ); }
-
-void NutNode::ConnectOut( nUInt query_id ) { this->model.ConnectOut( query_id ); }
-
-void NutNode::DisConnectOut( nUInt query_id ) { this->model.DisConnectOut( query_id ); }
-
-void NutNode::ToggleOut( nUInt query_id ) { this->model.ToggleOut( query_id ); }
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC GET
-///////////////////////////////////////////////////////////////////////////////////////////
-const ImVec2 NutNode::GetPosition( ) const { return this->position; }
-
-ENutNodeTypes NutNode::GetType( ) const { return this->model.GetType( ); }
-
-nString NutNode::GetName( ) const { return this->model.GetName( ); }
-
-nString NutNode::GetDescription( ) const { return this->model.GetDescription( ); }
-
-bool NutNode::HasInPin( nUInt query_id ) const { return this->model.HasInPin( query_id ); }
-
-const NutNodePin& NutNode::GetInPin( nUInt query_id ) const { return this->model.GetInPin( query_id ); }
-
-const NutNode::PinList& NutNode::GetInPins( ) const { return this->model.GetInPins( ); }
-
-bool NutNode::HasOutPin( nUInt query_id ) const { return this->model.HasOutPin( query_id ); }
-
-const NutNodePin& NutNode::GetOutPin( nUInt query_id ) const { return this->model.GetOutPin( query_id ); }
-
-const NutNode::PinList& NutNode::GetOutPins( ) const { return this->model.GetOutPins( ); }
+void NutGLSL::Initialize( ) {
+	NutNodeParser::Initialize( );
+}

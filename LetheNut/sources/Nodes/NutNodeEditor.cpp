@@ -75,28 +75,7 @@ const ImColor Internal_NodeColor( ENutNodeTypes type ) {
     return ImColor( 22, 38, 38 );
 }
 
-class def_parser : public NutNodeParser {
-
-public:
-    def_parser( ) : NutNodeParser( "Test" ) { }
-
-    ~def_parser( ) { }
-
-    virtual void Initialize( ) override {
-        auto* model = this->Create( ENutNodeTypes::ENT_EVENT, "Base Event", "Main event test" );
-        model->AddOut( false, ENutPinTypes::EPT_BOOL, "Is Active", "" );
-
-        model = this->Create( ENutNodeTypes::ENT_FUNCTION, "Base Function", "Function test" );
-        model->AddIn( false, ENutPinTypes::EPT_FLOW, "", "" );
-        model->AddIn( false, ENutPinTypes::EPT_BOOL, "Boolean", "Test pin" );
-        model->AddIn( true, ENutPinTypes::EPT_INT32, "Int32", "Test pin" );
-        model->AddIn( false, ENutPinTypes::EPT_FLOAT64, "Float64", "Test pin" );
-        model->AddIn( false, ENutPinTypes::EPT_STRING, "String", "Test pin" );
-        model->AddOut( false, ENutPinTypes::EPT_FLOW, "", "" );
-        model->AddOut( false, ENutPinTypes::EPT_BOOL, "Is Active", "" );
-    }
-
-};
+#include <LetheNut/Framework/Nodes/NutGLSL.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
@@ -107,7 +86,7 @@ NutNodeEditor::NutNodeEditor( )
 	nodes( ),
     links( )
 { 
-    this->SetParser<def_parser>( );
+    this->SetParser<NutGLSL>( );
 }
 
 NutNodeEditor::~NutNodeEditor( ) { 
@@ -169,29 +148,12 @@ void NutNodeEditor::OnEditorProcess( class NutEditor* editor ) {
 
     if ( ImGui::IsMouseClicked( ImGuiMouseButton_Right ) ) {
         auto pos = ImGUI::GetMouseRelPos( ) - this->canvas.offset;
-
-        auto* model = this->parser->GetModel( 1 );
+        
+        auto idx = rand( ) % this->parser->GetModelCount( );
+        auto* model = this->parser->GetModel( idx );
         if ( model ) {
             auto* n = new NutNode( pos, *model );
             this->nodes.emplace_back( n );
-
-            
-            if ( this->nodes.size( ) > 1 ) {
-                for ( int i = 0; i < this->nodes[ this->nodes.size( ) - 2 ]->GetOutPins( ).size( ); i++ ) {
-                    auto lnk = NutNodeLink( );
-                    auto size = (nUInt)this->nodes.size( );
-
-                    lnk.source.node_id = size - 2;
-                    lnk.source.pin_id = i;
-                    lnk.destination.node_id = size - 1;
-                    lnk.destination.pin_id = i;
-
-                    this->nodes[ lnk.destination.node_id ]->ConnectIn( i );
-                    this->nodes[ lnk.source.node_id ]->ConnectOut( i );
-
-                    this->links.emplace_back( lnk );
-                }
-            }
         }
     }
 }
@@ -209,25 +171,25 @@ void NutNodeEditor::OnEditorRender( NutEditor* editor ) {
 }
 
 void NutNodeEditor::InternalDraw( const NutNode* node, bool is_selected ) {
-    ImGUI::BeginNode( this->canvas, node->GetName( ), node->GetPosition( ) );
+    ImGUI::BeginNode( this->canvas, node->GetContext( ) );
 
-        this->InternalDraw( node->GetInPins( ), false );
-        ImGui::SameLine( ImGui::GetItemRectSize( ).x + ImGUI::GetTextSize( "####" ).x );
-        this->InternalDraw( node->GetOutPins( ), true );
+        this->InternalDraw( node->GetInPins( ), false, 0.f );
+        ImGui::SameLine( ImGui::GetItemRectSize( ).x + ImGUI::GetTextSize( "#####" ).x );
+        this->InternalDraw( node->GetOutPins( ), true, node->GetOutLength( ) );
 
-    ImGUI::EndNode( this->canvas, node->GetName( ), node->GetPosition( ), Internal_NodeColor( node->GetType( ) ), true );
+    ImGUI::EndNode( this->canvas, node->GetContext( ), Internal_NodeColor( node->GetType( ) ) );
 }
 
-void NutNodeEditor::InternalDraw( const NutNode::PinList& pins, bool is_out ) {
+void NutNodeEditor::InternalDraw( const NutNode::PinList& pins, bool is_out, const float out_length ) {
     ImGui::BeginGroup( );
 
     for ( auto& pin : pins ) 
-        this->InternalDraw( pin, is_out );
+        this->InternalDraw( pin, is_out, out_length );
 
     ImGui::EndGroup( );
 }
 
-void NutNodeEditor::InternalDraw( const NutNodePin& pin, bool is_out ) {
+void NutNodeEditor::InternalDraw( const NutNodePin& pin, bool is_out, const float out_length ) {
     auto cursor = ImGui::GetCursorScreenPos( );
     auto color = Internal_PinColor( pin.type );
 
@@ -245,10 +207,10 @@ void NutNodeEditor::InternalDraw( const NutNodePin& pin, bool is_out ) {
     } else 
         ImGui::SetCursorScreenPos( ImVec2{ cursor.x, cursor.y + 5.f } );
 
-    ImGUI::Text( color, pin.name );
+    ImGui::Text( pin.name );
 
     if ( is_out ) {
-        ImGui::SetCursorScreenPos( ImVec2{ cursor.x + ImGUI::GetTextSize( pin.name ).x, cursor.y } );
+        ImGui::SetCursorScreenPos( ImVec2{ cursor.x + out_length, cursor.y } );
         this->InternalDraw( pin, color );
     }
 
@@ -279,7 +241,7 @@ void NutNodeEditor::InternalDraw( const NutNodeLink& link ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 const ImVec2 NutNodeEditor::GetPinPosition( bool is_output, nUInt node_id, nUInt pin_id ) const {
     auto node_offset = ImVec2{ 
-        (!is_output ) ? 7.f : 13.f + ImGui::GetItemRectSize( ).x,
+        ( !is_output ) ? 8.f : 16.f + ImGui::GetItemRectSize( ).x,
         ( ImGUI::NODE_PIN_SIZE - 4.f ) * pin_id + ImGUI::GetTextSize( "#" ).y + ImGui::GetTextLineHeightWithSpacing( )
     };
     auto node_position = this->nodes[ node_id ]->GetPosition( ) + node_offset;

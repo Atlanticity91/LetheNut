@@ -95,6 +95,7 @@
     <ClCompile Include="sources\NutBasic.cpp" />
     <ClCompile Include="sources\NutBrowser.cpp" />
     <ClCompile Include="sources\NutEditor.cpp" />
+    <ClCompile Include="sources\Nodes\NutGLSL.cpp" />
     <ClCompile Include="sources\NutKernel.cpp" />
     <ClCompile Include="sources\NutLibrary.cpp" />
     <ClCompile Include="sources\NutLibrary_unix.cpp" />
@@ -102,20 +103,20 @@
     <ClCompile Include="sources\NutMenu.cpp" />
     <ClCompile Include="sources\NutMenuItem.cpp" />
     <ClCompile Include="sources\NutModule.cpp" />
-    <ClCompile Include="sources\NutNode.cpp" />
-    <ClCompile Include="sources\NutNodeEditor.cpp" />
-    <ClCompile Include="sources\NutNodeModel.cpp" />
-    <ClCompile Include="sources\NutNodeParser.cpp" />
+    <ClCompile Include="sources\Nodes\NutNode.cpp" />
+    <ClCompile Include="sources\Nodes\NutNodeEditor.cpp" />
+    <ClCompile Include="sources\Nodes\NutNodeModel.cpp" />
+    <ClCompile Include="sources\Nodes\NutNodeParser.cpp" />
     <ClCompile Include="sources\NutPanel.cpp" />
     <ClCompile Include="sources\NutPopup.cpp" />
     <ClCompile Include="sources\NutProfiler.cpp" />
     <ClCompile Include="sources\NutProperties.cpp" />
     <ClCompile Include="sources\NutScene.cpp" />
     <ClCompile Include="sources\NutStyle.cpp" />
-    <ClCompile Include="sources\NutTextDocument.cpp" />
-    <ClCompile Include="sources\NutTextEditor.cpp" />
-    <ClCompile Include="sources\NutTextParser.cpp" />
-    <ClCompile Include="sources\NutTextStyle.cpp" />
+    <ClCompile Include="sources\Text\NutTextDocument.cpp" />
+    <ClCompile Include="sources\Text\NutTextEditor.cpp" />
+    <ClCompile Include="sources\Text\NutTextParser.cpp" />
+    <ClCompile Include="sources\Text\NutTextStyle.cpp" />
     <ClCompile Include="sources\NutTool.cpp" />
     <ClCompile Include="sources\NutViewport.cpp" />
     <ClCompile Include="sources\NutWindow.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="sources\VendorImGUI.cpp" />
     <ClCompile Include="sources\VendorJSON.cpp" />
     <ClCompile Include="sources\VendorOpenGL.cpp" />
+    <ClCompile Include="sources\VendorSTB.cpp" />
     <ClCompile Include="sources\__main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -175,6 +177,7 @@
     <ClInclude Include="LetheNut\Editors\Text\NutTextEditor.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextParser.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextStyle.hpp" />
+    <ClInclude Include="LetheNut\Framework\Nodes\NutGLSL.hpp" />
     <ClInclude Include="LetheNut\Modules\NutKernel.hpp" />
     <ClInclude Include="LetheNut\Modules\NutModule.hpp" />
     <ClInclude Include="LetheNut\NutBasic.hpp" />
@@ -197,6 +200,7 @@
     <ClInclude Include="LetheNut\Vendor\ImGUI.hpp" />
     <ClInclude Include="LetheNut\Vendor\JSON.hpp" />
     <ClInclude Include="LetheNut\Vendor\OpenGL.hpp" />
+    <ClInclude Include="LetheNut\Vendor\STB.hpp" />
     <ClInclude Include="sources\__ui.hpp" />
     <ClInclude Include="Templates\Core.hpp" />
     <ClInclude Include="Templates\NutEditor.hpp" />

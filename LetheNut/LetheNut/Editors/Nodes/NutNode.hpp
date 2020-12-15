@@ -50,8 +50,9 @@
 		using PinList = NutNodeModel::PinList;
 
 	private:
-		ImVec2 position;
+		mutable ImGUI::ImNodeContext context;
 		NutNodeModel model;
+		float out_length;
 
 	public:
 		/**
@@ -81,7 +82,7 @@
 		inline void ToggleOut( nUInt query_id );
 
 	public:
-		inline const ImVec2 GetPosition( ) const;
+		inline ImGUI::ImNodeContext& GetContext( ) const;
 
 		inline ENutNodeTypes GetType( ) const;
 
@@ -89,11 +90,15 @@
 
 		inline nString GetDescription( ) const;
 
+		inline ImVec2& GetPosition( ) const;
+
 		inline bool HasInPin( nUInt query_id ) const;
 
 		inline const NutNodePin& GetInPin( nUInt query_id ) const;
 
 		inline const PinList& GetInPins( ) const;
+
+		inline const float GetOutLength( ) const;
 
 		inline bool HasOutPin( nUInt query_id ) const;
 

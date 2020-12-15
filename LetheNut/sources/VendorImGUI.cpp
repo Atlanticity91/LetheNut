@@ -37,11 +37,6 @@
 #include "__ui.hpp"
 
 #include <LetheNut/UI/NutStyle.hpp>
-#include <Thirdparty/GLFW/glfw3.h>
-#include <Thirdparty/ImGUI/imgui.h>
-#include <Thirdparty/ImGUI/imgui_internal.h>
-#include <Thirdparty/ImGUI/imgui_impl_glfw.h>
-#include <Thirdparty/ImGUI/imgui_impl_opengl3.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      INTERNAL
@@ -296,43 +291,52 @@ void ImGUI::BeginPanel( nString label, const ImVec2&& padding ) {
 }
 
 void ImGUI::BeginCanvas( ImCanvas& canvas ) {
-	const auto* window = ImGui::GetCurrentWindow( );
-	const auto pos = ImGui::GetWindowPos( );
+	const auto position = ImGui::GetWindowPos( );
 	const auto size = ImGui::GetWindowSize( );
+
+	ImGUI::BeginCanvas( canvas, position, size );
+}
+
+void ImGUI::BeginCanvas( ImCanvas& canvas, const ImVec2& position, const ImVec2& size ) {
 	const auto grid = ImGUI::NODE_GRID_SIZE * canvas.zoom;
 
 	auto& style = ImGui::GetStyle( );
 	auto* renderer = ImGui::GetWindowDrawList( );
+	auto region = ImRect( position, position + size );
 
 	ImGui::PushID( &canvas );
-	ImGui::ItemAdd( window->ContentRegionRect, ImGui::GetID( "canvas" ) );
+	ImGui::ItemAdd( region, ImGui::GetID( "canvas" ) );
 	ImGui::SetWindowFontScale( canvas.zoom );
 
 	ImU32 grid_color = ImColor( style.Colors[ ImGuiCol_Separator ] );
 	for ( float x = fmodf( canvas.offset.x, grid ); x < size.x; ) {
-		renderer->AddLine( ImVec2( x, 0 ) + pos, ImVec2( x, size.y ) + pos, grid_color );
+		renderer->AddLine( ImVec2( x, 0 ) + position, ImVec2( x, size.y ) + position, grid_color );
 		x += grid;
 	}
 
 	for ( float y = fmodf( canvas.offset.y, grid ); y < size.y; ) {
-		renderer->AddLine( ImVec2( 0, y ) + pos, ImVec2( size.x, y ) + pos, grid_color );
+		renderer->AddLine( ImVec2( 0, y ) + position, ImVec2( size.x, y ) + position, grid_color );
 		y += grid;
 	}
 }
 
-void ImGUI::BeginNode( const ImCanvas& canvas, nString title, const ImVec2& position ) {
+void ImGUI::BeginCanvas( ImCanvas& canvas, const ImVec2&& position, const ImVec2&& size ) {
+	ImGUI::BeginCanvas( canvas, position, size );
+}
+
+void ImGUI::BeginNode( const ImCanvas& canvas, const ImNodeContext& node ) {
 	auto* renderer = ImGui::GetWindowDrawList( );
-	auto pos = ImGui::GetWindowPos( ) + position * canvas.zoom + canvas.offset;
+	auto pos = ImGui::GetWindowPos( ) + node.position * canvas.zoom + canvas.offset;
 
 	renderer->ChannelsSplit( 2 );
 
 	ImGui::SetCursorScreenPos( pos );
-	ImGui::PushID( title );
+	ImGui::PushID( node.name );
 	ImGui::BeginGroup( );
 
 	renderer->ChannelsSetCurrent( 1 );
 
-	ImGui::TextUnformatted( title );
+	ImGui::TextUnformatted( node.name );
 }
 
 void ImGUI::Spacer( const ImVec2& spacing ) { ImGui::Dummy( spacing ); }
@@ -611,12 +615,22 @@ void ImGUI::Image( const OpenGL::Frame& frame, const ImVec2&& position, const Im
 	ImGUI::Image( frame, position, size );
 }
 
-void ImGUI::EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor& color, bool is_selected ) {
+void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color ) {
+	auto position = ImGui::GetWindowPos( );
+
+	ImGUI::EndNode( canvas, node, color, position );
+}
+
+void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color ) {
+	ImGUI::EndNode( canvas, node, color );
+}
+
+void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color, const ImVec2& position ) {
 	auto& style = ImGui::GetStyle( );
 	auto* renderer = ImGui::GetWindowDrawList( );
 	auto color_sep = ImColor( style.Colors[ ImGuiCol_Separator ] );
 	auto color_bg = ImColor( style.Colors[ ImGuiCol_Border ] );
-	auto pos = ImGui::GetWindowPos( ) + position * canvas.zoom + canvas.offset;
+	auto pos = position + node.position * canvas.zoom + canvas.offset;
 
 	ImGui::EndGroup( );
 
@@ -627,14 +641,14 @@ void ImGUI::EndNode( const ImCanvas& canvas, nString title, const ImVec2& positi
 
 	auto header_size = ImVec2{
 		ImGui::GetItemRectSize( ).x + ( ImGUI::NODE_PIN_SIZE - ImGUI::NODE_ROUNDING ) + style.ItemInnerSpacing.x * canvas.zoom,
-		ImGUI::GetTextSize( title ).y + 3.f
+		ImGUI::GetTextSize( node.name ).y + 3.f
 	};
 
 	renderer->ChannelsSetCurrent( 0 );
 	renderer->AddRectFilled( node_rect.Min, node_rect.Max, color, ImGUI::NODE_ROUNDING );
 	renderer->AddRect( node_rect.Min, node_rect.Max, color_bg, ImGUI::NODE_ROUNDING );
-	
-	if ( is_selected ) {
+
+	if ( node.is_selected ) {
 		auto rect_min = node_rect.Min - ImGUI::NODE_SELECTION_SIZE;
 		auto rect_max = node_rect.Max + ImGUI::NODE_SELECTION_SIZE;
 
@@ -644,11 +658,17 @@ void ImGUI::EndNode( const ImCanvas& canvas, nString title, const ImVec2& positi
 	renderer->AddLine( pos + ImVec2{ 0, header_size.y }, pos + header_size, color_sep );
 	renderer->ChannelsMerge( );
 
+	ImGUI::ToolTip(
+		[ & ]( const ImVec2& pos ) {
+			ImGui::Text( node.description );
+		}
+	);
+
 	ImGui::PopID( );
 }
 
-void ImGUI::EndNode( const ImCanvas& canvas, nString title, const ImVec2& position, const ImColor&& color, bool is_selected ) {
-	ImGUI::EndNode( canvas, title, position, color, is_selected );
+void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color, const ImVec2&& position ) {
+	ImGUI::EndNode( canvas, node, color, position );
 }
 
 void ImGUI::EndCanvas( ) {

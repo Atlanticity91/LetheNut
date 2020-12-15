@@ -34,17 +34,28 @@
  *
  ************************************************************************************/
 
-#ifndef _NUT_UI_HPP_
-#define _NUT_UI_HPP_
+#include "__ui.hpp"
 
-	#include <Thirdparty/OpenGL/glew.h>
-	#include <LetheNut/Vendor/GLFW.hpp>
-	#include <LetheNut/Vendor/ImGUI.hpp>
+#include <LetheNut/Vendor/STB.hpp>
 
-	#include <Thirdparty/GLFW/glfw3.h>
-	#include <Thirdparty/ImGUI/imgui.h>
-	#include <Thirdparty/ImGUI/imgui_internal.h>
-	#include <Thirdparty/ImGUI/imgui_impl_opengl3.h>
-	#include <Thirdparty/ImGUI/imgui_impl_glfw.h>
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC
+///////////////////////////////////////////////////////////////////////////////////////////
+STB::Image::Image( )
+	: data( nullptr )
+{ }
 
-#endif
+bool STB::Load( Image& image, nString path ) {
+	if ( !image.data && strcmp( path, "" ) != 0 ) {
+
+	}
+
+	return false;
+}
+
+void STB::Close( Image& image ) {
+	if ( image.data ) {
+		stbi_image_free( image.data );
+		image.data = nullptr;
+	}
+}

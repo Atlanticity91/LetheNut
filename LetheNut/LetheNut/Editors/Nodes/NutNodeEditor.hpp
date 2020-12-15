@@ -83,9 +83,9 @@
 
 		virtual void InternalDraw( const NutNode* node, bool is_selected );
 
-		virtual void InternalDraw( const NutNode::PinList& pins, bool is_out );
+		virtual void InternalDraw( const NutNode::PinList& pins, bool is_out, const float out_length );
 
-		virtual void InternalDraw( const NutNodePin& pin, bool is_out );
+		virtual void InternalDraw( const NutNodePin& pin, bool is_out, const float out_length );
 
 		virtual void InternalDraw( const NutNodePin& pin, ImColor color );
 

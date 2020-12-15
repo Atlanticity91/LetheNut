@@ -34,41 +34,32 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_VENDOR_STB_HPP_
+#define _IGS_NUT_VENDOR_STB_HPP_
 
-#include <LetheNut/Editors/Nodes/NutNodeParser.hpp>
+	#include <LetheNut/Core.hpp>
+	#include <Thirdparty/STB/Image.hpp>
+	#include <Thirdparty/STB/ImageResize.hpp>
+	#include <Thirdparty/STB/ImageWrite.hpp>
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutNodeParser::NutNodeParser( nString name )
-	: NutBasic( name ),
-	models( )
-{ }
+	namespace STB {
 
-NutNodeParser::~NutNodeParser( ) { }
+		struct Image {
 
-void NutNodeParser::Initialize( ) { }
+			nInt width;
+			nInt height;
+			nInt channels;
+			nULong size;
+			nUByte* data;
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PROTECTED
-///////////////////////////////////////////////////////////////////////////////////////////
-NutNodeModel* NutNodeParser::Create( ENutNodeTypes type, nString name, nString description ) {
-	auto model = NutNodeModel( type, name, description );
+			Image( );
 
-	this->models.emplace_back( model );
+		};
 
-	return &this->models[ this->models.size( ) - 1 ];
-}
+		bool Load( Image& image, nString path );
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC GET
-///////////////////////////////////////////////////////////////////////////////////////////
-const nUInt NutNodeParser::GetModelCount( ) const { return (nUInt)this->models.size( ); }
+		void Close( Image& image );
 
-const NutNodeModel* NutNodeParser::GetModel( nUInt query_id ) const {
-	if ( query_id < this->models.size( ) ) 
-		return  &this->models[ query_id ];
+	};
 
-	return nullptr;
-}
+#endif

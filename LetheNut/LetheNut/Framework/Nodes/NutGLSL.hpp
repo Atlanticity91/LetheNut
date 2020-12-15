@@ -34,89 +34,37 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_NODE_PARSER_HPP_
-#define _IGS_NUT_NODE_PARSER_HPP_
+#ifndef _IGS_NUT_GLSL_PARSER_HPP_
+#define _IGS_NUT_GLSL_PARSER_HPP_
 
-	#include "NutNode.hpp"
-
-	#define NUT_NODE_PARSER( NAME, ... ) NUT_CLASS( NAME,NutNodeParser, __VA_ARGS__ ) 
+	#include <LetheNut/Editors/Nodes/NutNodeParser.hpp>
 
 	/**
-	 * NutNodeParser class [ NutBasic ]
+	 * NutGLSL class [ NutNodeParser ]
 	 * @author : ALVES Quentin
-	 * @note : Defined Nut Node Parser core class.
+	 * @note : Defined Nut GLSL core class.
 	 **/
-	NUT_ELEMENT( NutNodeParser ) {
-
-	protected:
-		mutable std::vector<NutNodeModel> models;
+	NUT_NODE_PARSER( NutGLSL ) {
 
 	public:
 		/**
 		 * Constructor
 		 * @author : ALVES Quentin
-		 * @param name : Name of the node parser.
 		 **/
-		NutNodeParser( nString name );
+		NutGLSL( );
 
 		/**
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		virtual ~NutNodeParser( );
+		~NutGLSL( );
 
 		/**
-		 * Initialize virtual method
+		 * Initialize override method
 		 * @author : ALVES Quentin
-		 * @note : Initialize current node parser.
+		 * @note : Initialize the current GLSL node parser.
 		 **/
-		virtual void Initialize( );
-
-	protected:
-		/**
-		 * Create virtual function
-		 * @author : ALVES Quentin
-		 * @note : Create a new node model.
-		 * @param type : Type of the new node model.
-		 * @param name : Name of the new node model.
-		 * @param description : Description of the new node model.
-		 * @return : NutNodeModel*
-		 **/
-		virtual NutNodeModel* Create( ENutNodeTypes type, nString name, nString description );
-
-		/**
-		 * Create virtual function
-		 * @author : ALVES Quentin
-		 * @note : Create a new node model.
-		 * @param name : Name of the new node model.
-		 * @param description : Description of the new node model.
-		 * @return : NutNodeModel*
-		 **/
-		inline NutNodeModel* Create( nString name, nString description );
-
-		virtual void CreateOperation( ENutPinTypes type, nString name );
-
-		virtual void CreateLerp( ENutPinTypes type, nString name );
-
-		virtual void CreateForeach( ENutPinTypes type, nString name );
-
-	public:
-		/**
-		 * GetModelCount const function
-		 * @author : ALVES Quentin
-		 * @note : Get current parser model count.
-		 * @return : const nUInt
-		 **/
-		const nUInt GetModelCount( ) const;
-
-		/**
-		 * GetModel const function
-		 * @author : ALVES Quentin
-		 * @note : Get a node model from current parser.
-		 * @param query_id : Index of the query model.
-		 * @return : const NutNodeModel*
-		 **/
-		const NutNodeModel* GetModel( nUInt query_id ) const;
+		virtual void Initialize( ) override;
 
 	};
 

@@ -238,8 +238,8 @@ void NutTextEditor::InternalInputMouse( ) {
 
 		mouse /= this->renderer.CharAdvance;
 
-		this->renderer.Cursor.line = mouse.y;
-		this->renderer.Cursor.position = mouse.x;
+		this->renderer.Cursor.line = (nUInt)mouse.y;
+		this->renderer.Cursor.position = (nUInt)mouse.x;
 
 		this->Replace( );
 	}
