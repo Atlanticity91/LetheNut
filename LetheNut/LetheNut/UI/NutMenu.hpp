@@ -40,6 +40,8 @@
 	#include <LetheNut/NutBasic.hpp>
 	#include "NutMenuItem.hpp"
 
+	class NutPanel;
+
 	/**
 	 * NutMenu final class
 	 * @author : ALVES Quentin
@@ -122,7 +124,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Pointer to panel that own the menu.
 		 **/
-		virtual void OnRender( class NutEditor* editor, class NutPanel& parent );
+		virtual void OnRender( NutEditor* editor, NutPanel& parent );
 
 	public:
 		/**

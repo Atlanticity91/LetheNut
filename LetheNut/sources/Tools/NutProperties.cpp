@@ -34,72 +34,18 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_VIEWPORT_HPP_
-#define _IGS_NUT_VIEWPORT_HPP_
+#include "__ui.hpp"
 
-	#include <LetheNut/Framework/Maths/Matrix.hpp>
-	#include <LetheNut/Framework/Maths/Projection.hpp>
+#include <LetheNut/Tools/NutProperties.hpp>
 
-	#include "NutTool.hpp"
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC
+///////////////////////////////////////////////////////////////////////////////////////////
+NutProperties::NutProperties( )
+	: NutTool( "Properties", ImGUI::DEFAULT_PADDING )
+{ }
 
-	/**
-	 * NutViewport class [ NutTool ]
-	 * @author : ALVES Quentin
-	 * @note : Defined Nut Viewport tool core class.
-	 **/
-	NUT_TOOL( NutViewport ) {
-
-	protected:
-		mutable NutProjection projection;
-		NutMatrix projection_mat;
-
-	public:
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 **/
-		NutViewport( );
-
-		/**
-		 * Destructor
-		 * @author : ALVES Quentin
-		 **/
-		~NutViewport( ) = default;
-
-	protected:
-		/**
-		 * OnEditorProcess virtual method
-		 * @author : ALVES Quentin
-		 * @note : Process the current tool during rendering phase.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnEditorProcess( NutEditor* editor ) override;
-
-		/**
-		 * OnEditorRender override method
-		 * @author : ALVES Quentin
-		 * @note : Called once a frame to render ImGUI stuff.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnEditorRender( NutEditor* editor ) override;
-
-	public:
-		/**
-		 * GetProjection const function
-		 * @author : ALVES Quentin
-		 * @note : Get current viewport projection.
-		 * @return : NutProjection&
-		 **/
-		NutProjection& GetProjection( ) const;
-
-		/**
-		 * GetProjectionMatrix const function
-		 * @author : ALVES Quentin
-		 * @note : Get current viewport projection matrix.
-		 * @return : const NutMatrix&
-		 **/
-		const NutMatrix& GetProjectionMatrix( ) const;
-
-	};
-
-#endif
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PROTECTED 
+///////////////////////////////////////////////////////////////////////////////////////////
+void NutProperties::OnEditorRender( class NutEditor* editor ) { }

@@ -139,7 +139,7 @@
 		 * @note : Called once a frame to render ImGUI stuff.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnEditorRender( class NutEditor* editor ) override;
+		virtual void OnEditorRender( NutEditor* editor ) override;
 
 	private:
 		/**
@@ -148,7 +148,7 @@
 		 * @note : Process all tools of the current popup.
 		 * @param editor : Pointer to current editor.
 		 **/
-		void OnToolProcess( class NutEditor* editor );
+		void OnToolProcess( NutEditor* editor );
 
 		/**
 		 * OnPanelRender method
@@ -156,7 +156,7 @@
 		 * @note : Render all panels of the current popup.
 		 * @param editor : Pointer to current editor.
 		 **/
-		void OnPanelRender( class NutEditor* editor );
+		void OnPanelRender( NutEditor* editor );
 
 	public:
 		/**

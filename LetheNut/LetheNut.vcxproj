@@ -92,8 +92,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="sources\Maths\Matrix.cpp" />
     <ClCompile Include="sources\NutBasic.cpp" />
-    <ClCompile Include="sources\NutBrowser.cpp" />
+    <ClCompile Include="sources\Tools\NutBrowser.cpp" />
     <ClCompile Include="sources\NutEditor.cpp" />
     <ClCompile Include="sources\Nodes\NutGLSL.cpp" />
     <ClCompile Include="sources\NutKernel.cpp" />
@@ -109,16 +110,17 @@
     <ClCompile Include="sources\Nodes\NutNodeParser.cpp" />
     <ClCompile Include="sources\NutPanel.cpp" />
     <ClCompile Include="sources\NutPopup.cpp" />
-    <ClCompile Include="sources\NutProfiler.cpp" />
-    <ClCompile Include="sources\NutProperties.cpp" />
-    <ClCompile Include="sources\NutScene.cpp" />
+    <ClCompile Include="sources\Tools\NutProfiler.cpp" />
+    <ClCompile Include="sources\Tools\NutProperties.cpp" />
+    <ClCompile Include="sources\Tools\NutScene.cpp" />
     <ClCompile Include="sources\NutStyle.cpp" />
+    <ClCompile Include="sources\Maths\Projection.cpp" />
     <ClCompile Include="sources\Text\NutTextDocument.cpp" />
     <ClCompile Include="sources\Text\NutTextEditor.cpp" />
     <ClCompile Include="sources\Text\NutTextParser.cpp" />
     <ClCompile Include="sources\Text\NutTextStyle.cpp" />
     <ClCompile Include="sources\NutTool.cpp" />
-    <ClCompile Include="sources\NutViewport.cpp" />
+    <ClCompile Include="sources\Tools\NutViewport.cpp" />
     <ClCompile Include="sources\NutWindow.cpp" />
     <ClCompile Include="sources\VendorGLFW.cpp" />
     <ClCompile Include="sources\VendorImGUI.cpp" />
@@ -177,6 +179,8 @@
     <ClInclude Include="LetheNut\Editors\Text\NutTextEditor.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextParser.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextStyle.hpp" />
+    <ClInclude Include="LetheNut\Framework\Maths\Matrix.hpp" />
+    <ClInclude Include="LetheNut\Framework\Maths\Projection.hpp" />
     <ClInclude Include="LetheNut\Framework\Nodes\NutGLSL.hpp" />
     <ClInclude Include="LetheNut\Modules\NutKernel.hpp" />
     <ClInclude Include="LetheNut\Modules\NutModule.hpp" />

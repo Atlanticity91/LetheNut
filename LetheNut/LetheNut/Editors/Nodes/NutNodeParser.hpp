@@ -55,6 +55,12 @@
 		/**
 		 * Constructor
 		 * @author : ALVES Quentin
+		 **/
+		NutNodeParser( );
+		
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
 		 * @param name : Name of the node parser.
 		 **/
 		NutNodeParser( nString name );

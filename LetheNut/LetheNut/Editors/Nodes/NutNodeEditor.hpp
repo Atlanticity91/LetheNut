@@ -37,6 +37,10 @@
 #ifndef _IGS_NUT_NODE_EDITOR_HPP_
 #define _IGS_NUT_NODE_EDITOR_HPP_
 
+
+	// TODO : [NutNodeEditor] Create Style for node editor.
+
+
 	#include <LetheNut/Tools/NutTool.hpp>
 
 	#include "NutNodeParser.hpp"
@@ -71,7 +75,7 @@
 		 * @note : Process the current tool during rendering phase.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnEditorProcess( class NutEditor* editor ) override;
+		virtual void OnEditorProcess( NutEditor* editor ) override;
 
 		/**
 		 * OnEditorRender override method
@@ -79,7 +83,7 @@
 		 * @note : Called once a frame to render ImGUI stuff.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnEditorRender( class NutEditor* editor ) override;
+		virtual void OnEditorRender( NutEditor* editor ) override;
 
 		virtual void InternalDraw( const NutNode* node, bool is_selected );
 

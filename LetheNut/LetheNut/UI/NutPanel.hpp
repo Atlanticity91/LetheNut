@@ -112,7 +112,7 @@
 		 * @note : Called when the current panel is created.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnCreate( class NutEditor* editor );
+		virtual void OnCreate( NutEditor* editor );
 
 		/**
 		 * OnEditorRender virtual method
@@ -120,7 +120,7 @@
 		 * @note : Called once a frame to render ImGUI stuff.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnEditorRender( class NutEditor* editor );
+		virtual void OnEditorRender( NutEditor* editor );
 
 	public:
 		/**

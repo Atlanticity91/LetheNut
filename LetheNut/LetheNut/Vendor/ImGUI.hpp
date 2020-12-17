@@ -46,7 +46,6 @@
 		#define IMGUI_DEFINE_MATH_OPERATORS
 	#endif
 
-	#include <LetheNut/Core.hpp>
 	#include "OpenGL.hpp"
 	#include <Thirdparty/ImGUI/imgui_internal.h>
 
@@ -115,6 +114,11 @@
 
 		};
 
+		/**
+		 * ImNodeContext struct
+		 * @author : ALVES Quentin
+		 * @note : Defined node context struct.
+		 **/
 		struct ImNodeContext {
 
 			nString name;
@@ -185,6 +189,13 @@
 		template< typename Callback, typename... Args >
 		void DequeueCharacters( Callback&& callback, Args... args );
 
+		/**
+		 * IsKeyPressed function
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for ImGui::IsKeyPressed.
+		 * @param query_key : Query key as ImGuiKey_.
+		 * @return : const bool
+		 **/
 		const bool IsKeyPressed( ImGuiKey_ query_key );
 
 		/**
@@ -352,8 +363,24 @@
 		 **/
 		void BeginCanvas( ImCanvas& canvas );
 
+		/**
+		 * BeginCanvas method
+		 * @author : ALVES Quentin
+		 * @note : Begin a canvas.
+		 * @param canvas : Query canvas context.
+		 * @param position : Position of the canvas on the current window.
+		 * @param size : Size of the canvas.
+		 **/
 		void BeginCanvas( ImCanvas& canvas, const ImVec2& position, const ImVec2& size );
 
+		/**
+		 * BeginCanvas method
+		 * @author : ALVES Quentin
+		 * @note : Begin a canvas.
+		 * @param canvas : Query canvas context.
+		 * @param position : Position of the canvas on the current window.
+		 * @param size : Size of the canvas.
+		 **/
 		void BeginCanvas( ImCanvas& canvas, const ImVec2&& position, const ImVec2&& size );
 
 		/**
@@ -852,8 +879,26 @@
 		 **/
 		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color );
 
+		/**
+		 * EndNode method
+		 * @author : ALVES Quentin
+		 * @note : End the current node on a canvas.
+		 * @param canvas : Current context canvas where draw the node.
+		 * @param node : Query node context.
+		 * @param color : Color of the node.
+		 * @param position : Position offset of the node.
+		 **/
 		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color, const ImVec2& position );
 
+		/**
+		 * EndNode method
+		 * @author : ALVES Quentin
+		 * @note : End the current node on a canvas.
+		 * @param canvas : Current context canvas where draw the node.
+		 * @param node : Query node context.
+		 * @param color : Color of the node.
+		 * @param position : Position offset of the node.
+		 **/
 		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color, const ImVec2&& position );
 
 		/**

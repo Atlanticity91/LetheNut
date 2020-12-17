@@ -79,7 +79,7 @@
 		 * @author : ALVES Quentin
 		 * @note : Called when the current panel is created.
 		 **/
-		virtual void OnCreate( class NutEditor* editor ) override;
+		virtual void OnCreate( NutEditor* editor ) override;
 
 		/**
 		 * OnEditorRender override method
@@ -87,7 +87,7 @@
 		 * @note : Called once a frame to render ImGUI stuff.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnEditorRender( class NutEditor* editor ) override;
+		virtual void OnEditorRender( NutEditor* editor ) override;
 
 		/**
 		 * OnPopupRender method
@@ -95,7 +95,7 @@
 		 * @note : Render all popup's.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnPopupRender( class NutEditor* editor );
+		virtual void OnPopupRender( NutEditor* editor );
 
 	public:
 		/**

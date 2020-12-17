@@ -94,8 +94,20 @@
 		virtual void Process( NutEditor* editor ) override;
 
 	private:
+		/**
+		 * LoadLibraries method
+		 * @author : ALVES Quentin
+		 * @note : Load all libraries of the editor.
+		 * @param editor : Pointer to current editor.
+		 **/
 		void LoadLibraries( NutEditor* editor );
 
+		/**
+		 * LoadModules method
+		 * @author : ALVES Quentin
+		 * @note : Load all modules of the editor.
+		 * @param editor : Pointer to current editor.
+		 **/
 		void LoadModules( NutEditor* editor );
 
 	private:

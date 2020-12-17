@@ -127,7 +127,7 @@
 		 * @param editor : Pointer to current editor.
 		 * @param parent : Reference to the panel that contain the menu.
 		 **/
-		void Process( class NutEditor* editor, class NutPanel& parent );
+		void Process( NutEditor* editor, class NutPanel& parent );
 
 	public:
 		/**

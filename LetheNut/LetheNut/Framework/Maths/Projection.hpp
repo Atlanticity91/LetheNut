@@ -34,71 +34,100 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_VIEWPORT_HPP_
-#define _IGS_NUT_VIEWPORT_HPP_
+#ifndef _IGS_NUT_PROJECTION_HPP_
+#define _IGS_NUT_MATRIX_HPP_
 
-	#include <LetheNut/Framework/Maths/Matrix.hpp>
-	#include <LetheNut/Framework/Maths/Projection.hpp>
-
-	#include "NutTool.hpp"
+	#include <LetheNut/Core.hpp>
 
 	/**
-	 * NutViewport class [ NutTool ]
+	 * NutProjection class
 	 * @author : ALVES Quentin
-	 * @note : Defined Nut Viewport tool core class.
+	 * @note : Defined Nut Projection core class.
 	 **/
-	NUT_TOOL( NutViewport ) {
+	class NUT_API NutProjection {
 
-	protected:
-		mutable NutProjection projection;
-		NutMatrix projection_mat;
+	private:
+		float aspect_ratio;
+		float zoom;
+		float z_far;
+		float z_near;
+		float min_zoom;
+		float max_zoom;
 
 	public:
 		/**
-		 * Constructor
+		 * Constructor 
 		 * @author : ALVES Quentin
+		 * @param min_zoom : Minimum zoom level.
+		 * @param max_zoom : Maximum zoom level.
 		 **/
-		NutViewport( );
+		NutProjection( float min_zoom, float max_zoom );
 
 		/**
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutViewport( ) = default;
-
-	protected:
-		/**
-		 * OnEditorProcess virtual method
-		 * @author : ALVES Quentin
-		 * @note : Process the current tool during rendering phase.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnEditorProcess( NutEditor* editor ) override;
+		~NutProjection( ) = default;
 
 		/**
-		 * OnEditorRender override method
+		 * Zoom function
 		 * @author : ALVES Quentin
-		 * @note : Called once a frame to render ImGUI stuff.
-		 * @param editor : Pointer to current editor.
+		 * @note : Extend the current zoom level of value level.
+		 * @param level : Zooming value.
+		 * @return : NutProjection&
 		 **/
-		virtual void OnEditorRender( NutEditor* editor ) override;
+		NutProjection& Zoom( float level );
+
+		/**
+		 * SetZoom function
+		 * @author : ALVES Quentin
+		 * @note : Set the current zoom level.
+		 * @param level : Zoom level.
+		 * @return : NutProjection&
+		 **/
+		NutProjection& SetZoom( float level );
+
+		/**
+		 * SetAspectRatio function
+		 * @author : ALVES Quentin
+		 * @note : Set the current aspect ratio.
+		 * @param value : New aspect ratio.
+		 * @return : NutProjection&
+		 **/
+		NutProjection& SetAspectRatio( float value );
 
 	public:
 		/**
-		 * GetProjection const function
+		 * GetAspectRatio const function
 		 * @author : ALVES Quentin
-		 * @note : Get current viewport projection.
-		 * @return : NutProjection&
+		 * @note : Get current aspect ratio.
+		 * @return : float
 		 **/
-		NutProjection& GetProjection( ) const;
+		float GetAspectRatio( ) const;
 
 		/**
-		 * GetProjectionMatrix const function
+		 * GetZoom const function
 		 * @author : ALVES Quentin
-		 * @note : Get current viewport projection matrix.
-		 * @return : const NutMatrix&
+		 * @note : Get current zoom level.
+		 * @return : float
 		 **/
-		const NutMatrix& GetProjectionMatrix( ) const;
+		float GetZoom( ) const;
+
+		/**
+		 * GetZFar const function
+		 * @author : ALVES Quentin
+		 * @note : Get current Z-Far value.
+		 * @return : float
+		 **/
+		float GetZFar( ) const;
+
+		/**
+		 * GetZNear const function
+		 * @author : ALVES Quentin
+		 * @note : Get current Z-Near value.
+		 * @return : float
+		 **/
+		float GetZNear( ) const;
 
 	};
 

@@ -62,12 +62,10 @@
 
 	template< typename Type >
 	void nHelper::Clamp( Type& value, Type min, Type max ) {
-		if constexpr ( std::is_literal_type<Type>::value ) {
-			if ( value < min )
-				value = min;
-			else if ( value > max )
-				value = max;
-		}
+		if ( value < min )
+			value = min;
+		else if ( value > max )
+			value = max;
 	}
 
 	void nHelper::Copy( nString source, char* destination, nUInt size ) {
@@ -77,6 +75,10 @@
 		strcpy( destination, source );
 #endif
 	}
+	
+	void nHelper::ToDeg( float& radians ) { radians *= nHelper::RAD2DEG; }
+
+	void nHelper::ToRad( float& degree ) { degree *= nHelper::DEG2RAD; }
 
 	nTimePoint nHelper::GetTime( ) {
 		return std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now( ).time_since_epoch( ) ).count( );
@@ -93,6 +95,16 @@
 			if ( elapsed > duration * 2 )
 				time = timeEnd;
 		}
+	}
+
+	template< typename Function, typename... Args >
+	static void nHelper::Async( Function&& function, Args... args ) {
+		auto r = std::async( std::launch::async, function, args... );
+	}
+
+	template< typename Return, typename Function, typename... Args >
+	static std::future<Return> nHelper::Async( Function&& function, Args... args ) {
+		return std::async( std::launch::async, function, args... );
 	}
 
 #endif

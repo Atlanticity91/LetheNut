@@ -56,6 +56,7 @@
 	 **/
 	#include <bitset>
 	#include <chrono>
+	#include <future>
 	#include <map>
 	#include <memory>
 	#include <new>
@@ -210,6 +211,10 @@
 	 **/
 	namespace nHelper {
 
+		static const float PI = 3.14159265358979323846f;
+		static const float RAD2DEG = ( 180.f / PI );
+		static const float DEG2RAD = ( PI / 180.f );
+
 		/**
 		 * Alloc static template function
 		 * @author : ALVES Quentin
@@ -221,12 +226,37 @@
 		template< typename Type >
 		static Type* Alloc( size_t count );
 
+		/**
+		 * Copy static template
+		 * @author : ALVES Quentin
+		 * @note : Copy data.
+		 * @template Type : Type of data to copy.
+		 * @param source : Data to copy.
+		 * @param destination : Where store the data.
+		 **/
 		template< typename Type >
 		static void Copy( const Type& source, Type& destination );
 
+		/**
+		 * Copy static template
+		 * @author : ALVES Quentin
+		 * @note : Copy data from an array or pool.
+		 * @template Type : Type of data to copy.
+		 * @param source : Data to copy.
+		 * @param destination : Where store the data.
+		 * @param count : How many are copied.
+		 **/
 		template< typename Type >
 		static void Copy( const Type& source, Type& destination, nULong count );
 
+		/**
+		 * Copy static method
+		 * @author : ALVES Quentin
+		 * @note : Copy strings.
+		 * @param source : Source string.
+		 * @param destination : Where store the string.
+		 * @param count : How many are characters to copy.
+		 **/
 		static void Copy( nString source, char* destination, nUInt size );
 
 		/**
@@ -240,6 +270,22 @@
 		 **/
 		template< typename Type >
 		static void Clamp( Type& value, Type min, Type max );
+
+		/**
+		 * ToDeg static method
+		 * @author : ALVES Quentin
+		 * @note : Conert radians angle to degrees.
+		 * @param radians : Reference to radians angle.
+		 **/
+		static void ToDeg( float& radians );
+
+		/**
+		 * ToRad static method
+		 * @author : ALVES Quentin
+		 * @note : Conert degrees angle to radians.
+		 * @param degree : Reference to degree angle.
+		 **/
+		static void ToRad( float& degree );
 
 		/**
 		 * GetTime static function
@@ -262,6 +308,32 @@
 		 **/
 		template< typename Callback, typename... Args >
 		static void Blink( nTimePoint& time, nTimePoint duration, Callback&& callback, Args... args );
+
+		/**
+		 * Async static template method
+		 * @author : ALVES Quentin
+		 * @note : Execute a lambda asynchronously.
+		 * @template Function : Lambda capture.
+		 * @template Args : Lambda arguments types capture.
+		 * @param function : Query lambda to execute.
+		 * @param args : Arguements of the lambda.
+		 **/
+		template< typename Function, typename... Args >
+		static void Async( Function&& function, Args... args );
+
+		/**
+		 * Async static template function
+		 * @author : ALVES Quentin
+		 * @note : Execute a lambda asynchronously and get the return value.
+		 * @template Return : Return type of the lambda.
+		 * @template Function : Lambda capture.
+		 * @template Args : Lambda arguments types capture.
+		 * @param function : Query lambda to execute.
+		 * @param args : Arguements of the lambda.
+		 * @return : std::future<Return>
+		 **/
+		template< typename Return, typename Function, typename... Args >
+		static std::future<Return> Async( Function&& function, Args... args );
 
 	}
 

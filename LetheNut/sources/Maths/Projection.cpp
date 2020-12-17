@@ -36,16 +36,49 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/Tools/NutProperties.hpp>
+#include <LetheNut/Framework/Maths/Projection.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutProperties::NutProperties( )
-	: NutTool( "Properties", ImGUI::DEFAULT_PADDING )
+NutProjection::NutProjection( float min_zoom, float max_zoom )
+	: aspect_ratio( 16 / 9 ),
+	zoom( min_zoom ),
+	z_far( 100.f ),
+	z_near( -1.f ),
+	min_zoom( min_zoom ),
+	max_zoom( max_zoom )
 { }
 
-NutProperties::~NutProperties( ) {
+NutProjection& NutProjection::Zoom( float level ) {
+	this->zoom += level;
+
+	nHelper::Clamp( this->zoom, this->min_zoom, this->max_zoom );
+
+	return *this;
 }
 
-void NutProperties::OnEditorRender( class NutEditor* editor ) { }
+NutProjection& NutProjection::SetZoom( float level ) {
+	this->zoom = level;
+
+	nHelper::Clamp( this->zoom, this->min_zoom, this->max_zoom );
+
+	return *this;
+}
+
+NutProjection& NutProjection::SetAspectRatio( float value ) {
+	this->aspect_ratio = value;
+
+	return *this;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC GET
+///////////////////////////////////////////////////////////////////////////////////////////
+float NutProjection::GetAspectRatio( ) const { return this->aspect_ratio; }
+
+float NutProjection::GetZoom( ) const { return this->zoom; }
+
+float NutProjection::GetZFar( ) const { return this->z_far; }
+
+float NutProjection::GetZNear( ) const { return this->z_near; }

@@ -57,7 +57,7 @@
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutProfiler( );
+		~NutProfiler( ) = default;
 
 	protected:
 		/**
@@ -66,7 +66,7 @@
 		 * @note : Called once a frame to render ImGUI stuff.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnEditorRender( class NutEditor* editor ) override;
+		virtual void OnEditorRender( NutEditor* editor ) override;
 
 	};
 

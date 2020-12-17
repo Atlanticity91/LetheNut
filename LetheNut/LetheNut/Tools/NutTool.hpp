@@ -91,7 +91,7 @@
 		 * @note : Process the current tool.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void Process( class NutEditor* editor );
+		virtual void Process( NutEditor* editor );
 
 		/**
 		 * OnEditorProcess virtual method
@@ -99,7 +99,7 @@
 		 * @note : Process the current tool during editor rendering phase.
 		 * @param editor : Pointer to current editor.
 		 **/
-		virtual void OnEditorProcess( class NutEditor* editor );
+		virtual void OnEditorProcess( NutEditor* editor );
 
 	public:
 		/**

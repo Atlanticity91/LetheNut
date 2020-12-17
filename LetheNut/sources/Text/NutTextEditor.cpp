@@ -183,7 +183,7 @@ void NutTextEditor::Redo( ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutTextEditor::InternalInputKeyboard( ) {
 	if ( !ImGUI::GetIsCtrltDown( ) && !ImGUI::GetIsAltDown( ) && !ImGUI::GetIsShiftDown( ) ) {
-		if ( ImGui::IsKeyPressed( ImGuiKey_UpArrow ) ) 
+		if ( ImGUI::IsKeyPressed( ImGuiKey_UpArrow ) ) 
 			this->MoveUp( );
 		else if ( ImGUI::IsKeyPressed( ImGuiKey_DownArrow ) ) 
 			this->MoveDown( );
@@ -245,7 +245,7 @@ void NutTextEditor::InternalInputMouse( ) {
 	}
 }
 
-void NutTextEditor::OnEditorRender( class NutEditor* editor ) {
+void NutTextEditor::OnEditorRender( NutEditor* editor ) {
 	ImGui::PushStyleColor( ImGuiCol_ChildBg, this->style->GetBackground( ).Value );
 
 	if ( this->documents.size( ) > 0 ) {
