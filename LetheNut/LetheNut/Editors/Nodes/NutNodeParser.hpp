@@ -78,6 +78,8 @@
 		 **/
 		virtual void Initialize( );
 
+		virtual void CreateVar( ENutPinTypes type, bool is_array, nString name );
+
 	protected:
 		/**
 		 * Create virtual function
@@ -100,7 +102,9 @@
 		 **/
 		inline NutNodeModel* Create( nString name, nString description );
 
-		virtual void CreateOperation( ENutPinTypes type, nString name );
+		virtual void CreateOperation( ENutPinTypes type, nString name, nString description );
+
+		virtual void CreateClamp( ENutPinTypes type, nString name );
 
 		virtual void CreateLerp( ENutPinTypes type, nString name );
 

@@ -56,7 +56,7 @@ NutTextEditor::NutTextEditor( )
 
 	this->Create( "I'm a test" );
 	this->Get( ).Append( "func add ( a : int , b : int )" );
-	this->Get( ).Append( "    return a + b ;" );
+	this->Get( ).Append( " return a + b ;" );
 	this->Get( ).Append( "end" );
 }
 
@@ -164,12 +164,23 @@ void NutTextEditor::SelectAll( ) {
 }
 
 void NutTextEditor::Copy( ) {
+	auto text = std::string( );
+
+	ImGui::SetClipboardText( text.c_str( ) );
 }
 
 void NutTextEditor::Cut( ) {
+	auto text = std::string( );
+
+	ImGui::SetClipboardText( text.c_str( ) );
+
+	//this->Get( ).Erase( 0, 0, text.size( ) );
 }
 
 void NutTextEditor::Paste( ) {
+	auto text = std::string( ImGui::GetClipboardText( ) );
+
+	this->Insert( text );
 }
 
 void NutTextEditor::Undo( ) {
@@ -182,7 +193,25 @@ void NutTextEditor::Redo( ) {
 //      PROTECTED 
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutTextEditor::Insert( char character ) {
-	this->Get( ).Insert( character, this->renderer.Cursor.line, this->renderer.Cursor.position++ );
+	this->Get( ).Insert( character, this->renderer.Cursor.line, this->renderer.Cursor.position );
+
+	if ( character != '\n' )
+		this->renderer.Cursor.position += 1;
+	else {
+		this->renderer.Cursor.line += 1;
+		this->renderer.Cursor.position = 0;
+	}
+}
+
+void NutTextEditor::Insert( const std::string& string ) {
+	this->Get( ).Insert( string, this->renderer.Cursor.line, this->renderer.Cursor.position );
+
+	if ( string != "\n" )
+		this->renderer.Cursor.position += (nUInt)string.size( );
+	else {
+		this->renderer.Cursor.line += 1;
+		this->renderer.Cursor.position = 0;
+	}
 }
 
 void NutTextEditor::Delete( ) {
@@ -206,7 +235,7 @@ void NutTextEditor::InternalInputKeyboard( ) {
 			this->Insert( '\n' );
 		else if ( ImGUI::IsKeyPressed( ImGuiKey_Tab ) )
 			this->Insert( '\t' );
-		else if ( ImGUI::IsKeyPressed( ImGuiKey_Delete ) )
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_Backspace ) )
 			this->Delete( );
 		else {
 			ImGUI::DequeueCharacters(
@@ -268,12 +297,12 @@ void NutTextEditor::OnEditorRender( NutEditor* editor ) {
 		auto line_id = 0;
 
 		ImGui::BeginChild( (nString)document, ImVec2( ), false, FLAGS );
+
 			auto renderer = ImGui::GetWindowDrawList( );
 			auto cursor = ImGui::GetCursorScreenPos( );
 
 			this->InternalInputMouse( );
 			this->InternalInputKeyboard( );
-
 			this->InternalDraw( renderer, cursor );
 
 			if ( document > 0 ) {
@@ -334,16 +363,12 @@ void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 position ) {
 }
 
 void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 position, ENutTextStyleVars query_var, nString text ) {
-	/*
 	auto style = this->style->Get( query_var );
 
 	if ( style.background != this->style->GetBackground( ) )
 		ImGUI::Text( renderer, position, text, style.background, style.foreground );
 	else
 		renderer->AddText( position, style.foreground, text );
-		*/
-	auto style = this->style->Get( query_var );
-	renderer->AddText( position, style.foreground, text );
 }
 
 void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 position, nUInt line_id ) {
@@ -358,10 +383,13 @@ void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 position, nUInt l
 void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 cursor, const std::string& text ) {
 	cursor.x += this->renderer.LeftPadding;
 
-	auto style = ENutTextStyleVars::ETSV_DEFAULT;
+	auto style = ENutTextStyleVars::ETSV_KEYWORD;
 	auto string = text.c_str( );
 	auto offset = cursor;
 
+	this->InternalDraw( renderer, offset, style, string );
+
+	/*
 	this->parser->Parse( text );
 
 	while ( this->parser->GetNext( style, string ) ) {
@@ -369,6 +397,7 @@ void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 cursor, const std
 
 		offset.x += ImGUI::GetTextSize( string ).x + this->renderer.SpaceAdvance.x;
 	}
+	*/
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

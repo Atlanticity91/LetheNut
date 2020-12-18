@@ -335,8 +335,11 @@ void ImGUI::BeginNode( const ImCanvas& canvas, const ImNodeContext& node ) {
 	ImGui::BeginGroup( );
 
 	renderer->ChannelsSetCurrent( 1 );
-
-	ImGui::TextUnformatted( node.name );
+	
+	if ( !node.is_centered )
+		ImGui::TextUnformatted( node.name );
+	else
+		ImGui::SetCursorPosY( ImGui::GetCursorPosY( ) + ImGUI::GetTextSize( node.name ).y );
 }
 
 void ImGUI::Spacer( const ImVec2& spacing ) { ImGui::Dummy( spacing ); }
@@ -644,6 +647,12 @@ void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&
 		ImGUI::GetTextSize( node.name ).y + 3.f
 	};
 
+	if ( node.is_centered ) {
+		auto name_pos = pos + ImVec2{ ( header_size.x - ImGUI::GetTextSize( node.name ).x ) *.5f, 0 };
+
+		renderer->AddText( name_pos, ImColor{ ImGUI::DEFAULT_COLOR }, node.name );
+	}
+
 	renderer->ChannelsSetCurrent( 0 );
 	renderer->AddRectFilled( node_rect.Min, node_rect.Max, color, ImGUI::NODE_ROUNDING );
 	renderer->AddRect( node_rect.Min, node_rect.Max, color_bg, ImGUI::NODE_ROUNDING );
@@ -658,11 +667,13 @@ void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&
 	renderer->AddLine( pos + ImVec2{ 0, header_size.y }, pos + header_size, color_sep );
 	renderer->ChannelsMerge( );
 
-	ImGUI::ToolTip(
-		[ & ]( const ImVec2& pos ) {
-			ImGui::Text( node.description );
-		}
-	);
+	if ( node.description && strlen( node.description ) > 0 ) {
+		ImGUI::ToolTip(
+			[ & ]( const ImVec2& pos ) {
+				ImGui::Text( node.description );
+			}
+		);
+	}
 
 	ImGui::PopID( );
 }

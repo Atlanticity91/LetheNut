@@ -161,11 +161,13 @@ void NutNodeEditor::OnEditorProcess( class NutEditor* editor ) {
 void NutNodeEditor::OnEditorRender( NutEditor* editor ) {
     ImGUI::BeginCanvas( this->canvas );
 
-    for ( auto& node : this->nodes )
-        this->InternalDraw( node, false );
+    if ( this->parser ) {
+        for ( auto& node : this->nodes )
+            this->InternalDraw( node, false );
 
-    for ( auto& link : this->links )
-        this->InternalDraw( link );
+        for ( auto& link : this->links )
+            this->InternalDraw( link );
+    }
 
     ImGUI::EndCanvas( );
 }

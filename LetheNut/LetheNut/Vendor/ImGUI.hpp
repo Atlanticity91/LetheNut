@@ -125,6 +125,7 @@
 			nString description;
 			ImVec2 position;
 			bool is_selected;
+			bool is_centered;
 
 		};
 

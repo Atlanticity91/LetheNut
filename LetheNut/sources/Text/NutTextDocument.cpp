@@ -83,25 +83,25 @@ void NutTextDocument::AppendTo( const std::string& text, nUInt line ) {
 }
 
 void NutTextDocument::Insert( char character, nUInt line, nUInt position ) {
-	if ( line < this->GetLineCount( ) && position < this->lines[ line ].size( ) ) {
-		if ( character != '\n' )
-			this->lines[ line ].insert( this->lines[ line ].begin( ) + position, character );
-		else {
-			auto size = this->lines[ line ].size( ) - position;
-			auto text = this->lines[ line ].substr( position, size );
+	auto tmp = std::string( 1, character );
 
-			this->lines.insert( this->lines.begin( ) + line + 1, text );
-			this->lines[ line ].erase( position, size );
-		}
-	}
+	this->Insert( tmp, line, position );
 }
 
 void NutTextDocument::Insert( const std::string& text, nUInt line, nUInt position ) {
 	// TODO : IF FOUND \n BREAK INTO MULTIPLE STRING
 
 	if ( !text.empty( ) && line < this->GetLineCount( ) ) {
-		if ( position < this->lines[ line ].size( ) )
+		if ( text != "\n" && position < this->lines[ line ].size( ) )
 			this->lines[ line ].insert( position, text );
+		else if ( text == "\n" ) {
+			auto size = this->lines[ line ].size( ) - position;
+			auto text = this->lines[ line ].substr( position, size );
+
+			this->lines.insert( this->lines.begin( ) + line + 1, text );
+			this->lines[ line ].erase( position, size );
+		} else
+			this->AppendTo( text, line );
 	}
 }
 

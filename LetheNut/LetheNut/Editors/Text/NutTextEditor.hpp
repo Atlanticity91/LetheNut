@@ -37,6 +37,14 @@
 #ifndef _IGS_NUT_TEXT_EDITOR_HPP_
 #define _IGS_NUT_TEXT_EDITOR_HPP_
 
+
+	// TODO : Text Parsing.
+	// TODO : COPY
+	// TOOD : CUT
+	// TOOD : UNDO
+	// TOOD : REDO
+
+
 	#include <LetheNut/Tools/NutTool.hpp>
 
 	#include "NutTextDocument.hpp"
@@ -195,8 +203,27 @@
 		virtual void Redo( );
 
 	protected:
+		/**
+		 * Insert virtual method
+		 * @author : ALVES Quentin
+		 * @note : Insert a character to current document.
+		 * @param character : Query character to insert.
+		 **/
 		virtual void Insert( char character );
 
+		/**
+		 * Insert virtual method
+		 * @author : ALVES Quentin
+		 * @note : Insert a string to current document.
+		 * @param string : Query string to insert.
+		 **/
+		virtual void Insert( const std::string& string );
+
+		/**
+		 * Delete virtual method
+		 * @author : ALVES Quentin
+		 * @note : Delete the character at current cursor position.
+		 **/
 		virtual void Delete( );
 
 		/**

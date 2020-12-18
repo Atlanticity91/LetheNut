@@ -59,26 +59,33 @@ void NutNodeParser::Initialize( ) {
 	branch->AddOut( false, ENutPinTypes::EPT_FLOW, "True", "" );
 	branch->AddOut( false, ENutPinTypes::EPT_FLOW, "False", "" );
 
-	this->CreateOperation( ENutPinTypes::EPT_INT8, "Add (int8)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT16, "Add (int16)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT32, "Add (int32)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT64, "Add (int64)" );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Add (float32)" );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Add (float64)" );
+	this->CreateOperation( ENutPinTypes::EPT_INT8, "Add (int8)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT16, "Add (int16)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT32, "Add (int32)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT64, "Add (int64)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Add (float32)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Add (float64)", "Add two value." );
 
-	this->CreateOperation( ENutPinTypes::EPT_INT8, "Subtract (int8)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT16, "Subtract (int16)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT32, "Subtract (int32)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT64, "Subtract (int64)" );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Subtract (float32)" );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Subtract (float64)" );
+	this->CreateOperation( ENutPinTypes::EPT_INT8, "Subtract (int8)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT16, "Subtract (int16)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT32, "Subtract (int32)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT64, "Subtract (int64)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Subtract (float32)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Subtract (float64)", "Subtract two value." );
 
-	this->CreateOperation( ENutPinTypes::EPT_INT8, "Multiply (int8)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT16, "Multiply (int16)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT32, "Multiply (int32)" );
-	this->CreateOperation( ENutPinTypes::EPT_INT64, "Multiply (int64)" );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Multiply (float32)" );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Multiply (float64)" );
+	this->CreateOperation( ENutPinTypes::EPT_INT8, "Multiply (int8)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT16, "Multiply (int16)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT32, "Multiply (int32)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT64, "Multiply (int64)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Multiply (float32)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Multiply (float64)", "Multiply two value." );
+
+	this->CreateClamp( ENutPinTypes::EPT_INT8, "Clamp (int8)" );
+	this->CreateClamp( ENutPinTypes::EPT_INT16, "Clamp (int16)" );
+	this->CreateClamp( ENutPinTypes::EPT_INT32, "Clamp (int32)" );
+	this->CreateClamp( ENutPinTypes::EPT_INT64, "Clamp (int64)" );
+	this->CreateClamp( ENutPinTypes::EPT_FLOAT32, "Clamp (float32)" );
+	this->CreateClamp( ENutPinTypes::EPT_FLOAT64, "Clamp (float64)" );
 
 	this->CreateLerp( ENutPinTypes::EPT_INT8, "Lerp (int8)" );
 	this->CreateLerp( ENutPinTypes::EPT_INT16, "Lerp (int16)" );
@@ -91,6 +98,15 @@ void NutNodeParser::Initialize( ) {
 	this->CreateForeach( ENutPinTypes::EPT_INT64, "Foreach (int64)" );
 	this->CreateForeach( ENutPinTypes::EPT_FLOAT32, "Foreach (float32)" );
 	this->CreateForeach( ENutPinTypes::EPT_FLOAT64, "Foreach (float64)" );
+
+	this->CreateVar( ENutPinTypes::EPT_BOOL, true, "_TEST_0_" );
+}
+
+void NutNodeParser::CreateVar( ENutPinTypes type, bool is_array, nString name ) {
+	auto var = this->Create( ENutNodeTypes::ENT_VARIABLE, name, "" );
+
+	var->AddIn( is_array, type, "", "" );
+	var->AddOut( is_array, type, "", "" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -113,11 +129,19 @@ NutNodeModel* NutNodeParser::Create( nString name, nString description ) {
 	return node;
 }
 
-void NutNodeParser::CreateOperation( ENutPinTypes type, nString name ) {
-	auto* operation = this->Create( ENutNodeTypes::ENT_OPERATION, name, "" );
+void NutNodeParser::CreateOperation( ENutPinTypes type, nString name, nString description ) {
+	auto* operation = this->Create( ENutNodeTypes::ENT_OPERATION, name, description );
 	operation->AddIn( false, type, "Value A", "" );
 	operation->AddIn( false, type, "Value B", "" );
 	operation->AddOut( false, type, "Return", "" );
+}
+
+void NutNodeParser::CreateClamp( ENutPinTypes type, nString name ) {
+	auto* clamp = this->Create( name, "Clamp a value between minimum and maximum." );
+	clamp->AddIn( false, type, "Mimimum", "" );
+	clamp->AddIn( false, type, "Maximum", "" );
+	clamp->AddIn( false, type, "Value", "" );
+	clamp->AddOut( false, type, "Return", "" );
 }
 
 void NutNodeParser::CreateLerp( ENutPinTypes type, nString name ) {
