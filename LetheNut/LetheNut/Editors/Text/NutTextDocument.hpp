@@ -63,6 +63,7 @@
 
 	private:
 		std::string name;
+		std::string path;
 		mutable NutTextCursor cursor;
 		mutable Lines lines;
 
@@ -78,20 +79,29 @@
 		 * @author : ALVES Quentin
 		 * @param name : Name of the new document.
 		 **/
-		NutTextDocument( nString name );
+		NutTextDocument( const std::string& name );
 
 		/**
 		 * Constructor
 		 * @author : ALVES Quentin
 		 * @param name : Name of the new document.
+		 * @param path : Path to the document file.
 		 **/
-		NutTextDocument( const std::string& name );
+		NutTextDocument( const std::string& name, const std::string& path );
 
 		/**
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutTextDocument( );
+		~NutTextDocument( ) = default;
+
+		/**
+		 * SetPath method
+		 * @author : ALVES Quentin
+		 * @note : Set the current docuemtn path value.
+		 * @param path : Query document path.
+		 **/
+		void SetPath( const std::string& path );
 
 		/**
 		 * SetCursor method
@@ -101,91 +111,29 @@
 		 **/
 		void SetCursor( const NutTextCursor& cursor );
 
-		/**
-		 * Append method
-		 * @author : ALVES Quentin
-		 * @note : Add a character to the end of a line.
-		 * @param character : The character to add.
-		 * @param line : Index of the query line.
-		 **/
-		void Append( char character, nUInt line );
+		void Append( char character );
 
-		/**
-		 * Append method
-		 * @author : ALVES Quentin
-		 * @note : Add a string to the end of a line.
-		 * @param string : The string to add.
-		 * @param line : Index of the query line.
-		 **/
-		void Append( const std::string& string, nUInt line );
+		void Append( const std::string& text );
 
-		/**
-		 * Insert method
-		 * @author : ALVES Quentin
-		 * @note : Insert a character to a line.
-		 * @param character : The character to add.
-		 * @param cursor : Current text cursor position.
-		 **/
-		void Insert( char character, NutTextCursor& cursor );
+		void AppendTo( char character, nUInt line );
 
-		/**
-		 * Insert method
-		 * @author : ALVES Quentin
-		 * @note : Insert a string to a line.
-		 * @param string : The string to add.
-		 * @param cursor : Current text cursor position.
-		 **/
-		void Insert( const std::string& string, NutTextCursor& cursor );
+		void AppendTo( const std::string& text, nUInt line );
 
-		/**
-		 * Insert method
-		 * @author : ALVES Quentin
-		 * @note : Insert a character to a line.
-		 * @param character : The character to add.
-		 * @param line : Index of the query line.
-		 * @param postion : Position where character the string on the line.
-		 **/
 		void Insert( char character, nUInt line, nUInt position );
 
-		/**
-		 * Insert method
-		 * @author : ALVES Quentin
-		 * @note : Insert a string to a line.
-		 * @param string : The string to add.
-		 * @param line : Index of the query line.
-		 * @param postion : Position where insert the string on the line.
-		 **/
-		void Insert( const std::string& string, nUInt line, nUInt position );
+		void Insert( const std::string& text, nUInt line, nUInt position );
 
-		/**
-		 * Delete method
-		 * @author : ALVES Quentin
-		 * @note : Delete a character from a line.
-		 * @param line : Index of the query line.
-		 * @param position : Position of the character on the line.
-		 **/
+		void Merge( nUInt start_line, nUInt stop_line );
+
+		void NewLine( );
+
 		void Delete( nUInt line, nUInt position );
 
-		/**
-		 * Delete method
-		 * @author : ALVES Quentin
-		 * @note : Delete a string from a line.
-		 * @param line : Index of the query line.
-		 * @param position : Position of the first character on the line.
-		 * @param length : Length of the deleted string.
-		 **/
-		void Delete( nUInt line, nUInt position, nUInt length );
+		void Erase( nUInt line, nUInt position, nUInt size );
 
-	private:
-		/** 
-		 * CreateLine function
-		 * @author : ALVES Quentin
-		 * @note : Create a new line after the last line, this will automaticly add empty lines.
-		 * @param string : The query line text.
-		 * @parma line : Index of the query new line.
-		 * @return : NutTextDocument& 
-		 **/
-		NutTextDocument& CreateLine( const std::string& string, nUInt line );
+		void Erase( nUInt from_line, nUInt from_position, nUInt to_line, nUInt to_position );
+
+		void DeleteLine( nUInt line_id );
 
 	public:
 		/**
@@ -196,106 +144,36 @@
 		 **/
 		const std::string& GetName( ) const;
 
-		/**
-		 * GetSize const function
-		 * @author : ALVES Quentin
-		 * @note : Get the current document size.
-		 * @return : const nUInt
-		 **/
-		const nUInt GetSize( ) const;
+		const std::string& GetPath( ) const;
 
-		/**
-		 * GetCursor const function
-		 * @author : ALVES Quentin
-		 * @note : Get the saved cursor of the document.
-		 * @return : const NutTextCursor&
-		 **/
 		const NutTextCursor& GetCursor( ) const;
 
-		/**
-		 * GetLine const function
-		 * @author : ALVES Quentin
-		 * @note : Get a line of the document or the last if index is out of bound.
-		 * @param query_id : index of the query line.
-		 * @return : const NutTextCursor&
-		 **/
-		Line& GetLine( nUInt query_id ) const;
+		const nUInt GetLineCount( ) const;
 
-		/**
-		 * GetLines const function
-		 * @author : ALVES Quentin
-		 * @note : Get all lines of the docuement.
-		 * @return : const Lines&
-		 **/
 		const Lines& GetLines( ) const;
 
-		/**
-		 * GetLineSize const function
-		 * @author : ALVES Quentin
-		 * @note : Get the size if a line.
-		 * @return : const nUInt 
-		 **/
-		const nUInt GetLineSize( nUInt query_id ) const;
+		const nUInt GetLineSize( nUInt line_id ) const;
+
+		const std::string& GetLine( nUInt line_id ) const;
+
+		const char At( nUInt line, nUInt position );
 
 	public:
-		/**
-		 * operator nString const
-		 * @author : ALVES Quentin
-		 * @note : Conversion operator for nString.
-		 * @return : nString
-		 **/
 		operator nString( ) const;
 
-		/**
-		 * operator const NutTextCursor& const
-		 * @author : ALVES Quentin
-		 * @note : Conversion operator for const NutTextCursor&.
-		 * @return : const NutTextCursor&
-		 **/
+		operator const std::string& ( ) const;
+
+		operator nUInt( ) const;
+
 		operator const NutTextCursor&( ) const;
 
-		/**
-		 * operator const nUInt const
-		 * @author : ALVES Quentin
-		 * @note : Conversion operator for const nUInt.
-		 * @return : const nUInt
-		 **/
-		operator const nUInt( ) const;
-
-		/**
-		 * operator const Lines& const
-		 * @author : ALVES Quentin
-		 * @note : Conversion operator for const Lines&.
-		 * @return : const Lines&
-		 **/
 		operator const Lines&( ) const;
 
-		/**
-		 * operator[] const
-		 * @author : ALVES Quentin
-		 * @note : Get a line of the document or the last if index is out of bound.
-		 * @param query_id : index of the query line.
-		 * @return : Line&
-		 **/
-		Line& operator[]( nUInt query_id ) const;
+		NutTextDocument& operator=( const NutTextCursor& cursor );
 
-		/**
-		 * operator+=
-		 * @author : ALVES Quentin
-		 * @note : Add a new line on the end of the document.
-		 * @param string : New line content.
-		 * @return : NutTextDocument&
-		 **/
-		NutTextDocument& operator+=( nString string );
+		NutTextDocument& operator+=( const std::string& text );
 
-		/**
-		 * operator+=
-		 * @author : ALVES Quentin
-		 * @note : Add a new line on the end of the document.
-		 * @param string : New line content.
-		 * @return : NutTextDocument&
-		 **/
-		NutTextDocument& operator+=( const std::string& string );
+		NutTextDocument& operator+=( const std::string&& text );
 
 	};
 

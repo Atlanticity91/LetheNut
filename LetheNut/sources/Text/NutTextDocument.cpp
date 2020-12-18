@@ -41,135 +41,158 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC 
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutTextDocument::NutTextDocument( nString name )
-	: NutTextDocument( std::string( name ) )
+NutTextDocument::NutTextDocument( const std::string& name )
+	: NutTextDocument( name, "" )
 { }
 
-NutTextDocument::NutTextDocument( const std::string& name ) 
+NutTextDocument::NutTextDocument( const std::string& name, const std::string& path )
 	: name( name ),
-	cursor{ 0, 0 },
+	path( path ),
+	cursor( ),
 	lines( )
-{ 
-	this->lines.emplace_back( std::string( ) );
-}
+{ }
 
-NutTextDocument::~NutTextDocument( ) { }
-
+void NutTextDocument::SetPath( const std::string& path ) { this->path = path; }
+	
 void NutTextDocument::SetCursor( const NutTextCursor& cursor ) { this->cursor = cursor; }
 
-void NutTextDocument::Append( char character, nUInt line ) {
-	auto str = std::string( );
-	str += character;
-
-	this->Append( str, line );
-}
-
-void NutTextDocument::Append( const std::string& string, nUInt line ) {
-	if ( line < this->lines.size( ) ) {
-		if ( !string.empty( ) )
-			this->lines[ line ] += string;
-		else
-			this->lines.insert( this->lines.begin( ) + line, "" );
-	} else 
-		this->CreateLine( string, line );
-}
-
-void NutTextDocument::Insert( char character, NutTextCursor& cursor ) {
+void NutTextDocument::Append( char character ) {
 	if ( character != '\n' ) {
-		this->Insert( character, cursor.line, cursor.position );
+		auto tmp = std::string( 1, character );
 
-		if ( character != '\t' )
-			cursor.position += 1;
-		else
-			cursor.position += 4;
-	} else if ( cursor.line < this->lines.size( ) ) {
-		std::string content;
-
-		this->lines.insert( this->lines.begin( ) + cursor.line, content );
-		this->lines[ cursor.line ].erase( cursor.position, this->lines[ cursor.line ].size( ) - cursor.position );
-
-		cursor.line += 1;
-	} 
+		this->Append( tmp );
+	} else
+		this->NewLine( );
 }
 
-void NutTextDocument::Insert( const std::string& string, NutTextCursor& cursor ) {
-	this->Insert( string, cursor.line, cursor.position );
+void NutTextDocument::Append( const std::string& text ) { 
+	this->lines.emplace_back( text ); 
+}
+
+void NutTextDocument::AppendTo( char character, nUInt line ) {
+	auto tmp = std::string( 1, character );
+
+	this->AppendTo( tmp, line );
+}
+
+void NutTextDocument::AppendTo( const std::string& text, nUInt line ) {
+	if ( line < this->GetLineCount( ) )
+		this->lines[ line ] += text;
+	else
+		this->Append( text );
 }
 
 void NutTextDocument::Insert( char character, nUInt line, nUInt position ) {
-	auto str = std::string( );
-	str += character;
+	if ( line < this->GetLineCount( ) && position < this->lines[ line ].size( ) ) {
+		if ( character != '\n' )
+			this->lines[ line ].insert( this->lines[ line ].begin( ) + position, character );
+		else {
+			auto size = this->lines[ line ].size( ) - position;
+			auto text = this->lines[ line ].substr( position, size );
 
-	this->Insert( str, line, position );
-}
-
-void NutTextDocument::Insert( const std::string& string, nUInt line, nUInt position ) {
-	if ( line < this->lines.size( ) ) {
-		if ( !string.empty( ) && position < this->lines.size( ) ) {
-			auto insert_pos = this->lines[ line ].begin( ) + position;
-
-			for ( auto idx = 0; idx < string.size( ); idx++ )
-				this->lines[ line ].insert( insert_pos + idx, string[ idx ] );
-		} else
-			this->lines.insert( this->lines.begin( ) + line, "" );
-	} else
-		this->CreateLine( string, line );
-}
-
-void NutTextDocument::Delete( nUInt line, nUInt position ) {
-	this->Delete( line, position, 1 );
-}
-
-void NutTextDocument::Delete( nUInt line, nUInt position, nUInt length ) {
-	if ( line < this->lines.size( ) && position < this->lines[ line ].size( ) ) {
-		auto size = this->lines[ line ].size( ) - position;
-		auto idx = ( length < size ) ? length : size;
-
-		while ( idx > 0 ) {
-			idx -= 1;
-
-			this->lines[ line ].erase( this->lines[ line ].begin( ) + position );
+			this->lines.insert( this->lines.begin( ) + line + 1, text );
+			this->lines[ line ].erase( position, size );
 		}
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PRIVATE
-///////////////////////////////////////////////////////////////////////////////////////////
-NutTextDocument& NutTextDocument::CreateLine( const std::string& string, nUInt line ) {
-	auto query = line - this->lines.size( );
+void NutTextDocument::Insert( const std::string& text, nUInt line, nUInt position ) {
+	// TODO : IF FOUND \n BREAK INTO MULTIPLE STRING
 
-	while ( query > 0 ) {
-		query -= 1;
-
-		this->lines.emplace_back( "" );
+	if ( !text.empty( ) && line < this->GetLineCount( ) ) {
+		if ( position < this->lines[ line ].size( ) )
+			this->lines[ line ].insert( position, text );
 	}
+}
 
-	this->lines.emplace_back( string );
+void NutTextDocument::Merge( nUInt start_line, nUInt stop_line ) {
+	if ( start_line < stop_line && stop_line < this->GetLineCount( ) ) {
+		this->lines[ start_line ] += this->lines[ stop_line ];
+		this->DeleteLine( stop_line );
+	}
+}
 
-	return *this;
+void NutTextDocument::NewLine( ) { this->lines.emplace_back( "" ); }
+
+void NutTextDocument::Delete( nUInt line, nUInt position ) {
+	if ( line < this->GetLineCount( ) && position < this->lines[ line ].size( ) )
+		this->lines[ line ].erase( position, 1 );
+}
+
+void NutTextDocument::Erase( nUInt line, nUInt position, nUInt size ) {
+	auto line_size = this->GetLineSize( line );
+	auto target_size = line_size - position;
+
+	if ( position < line_size ) {
+		if ( size > target_size )
+			size = target_size;
+
+		if ( size != line_size )
+			this->lines[ line ].erase( position, size );
+		else
+			this->DeleteLine( line );
+	}
+}
+
+void NutTextDocument::Erase( nUInt from_line, nUInt from_position, nUInt to_line, nUInt to_position ) {
+	auto size = this->GetLineCount( ) - 1;
+
+	nHelper::Clamp<nUInt>( from_line, 0, size );
+	nHelper::Clamp<nUInt>( to_line,   0, size );
+
+	if ( from_line != to_line ) {
+		auto from_size = (nUInt)this->lines[ from_line ].size( );
+		auto to_size   = (nUInt)this->lines[ to_line   ].size( );
+
+		nHelper::Clamp<nUInt>( from_position, 0, from_size );
+		nHelper::Clamp<nUInt>( to_position,   0, to_size   );
+
+		this->lines[ to_line ] = this->lines[ to_line ].substr( to_position );
+		this->Erase( from_line, from_position, from_size - from_position );
+		this->Merge( from_line, to_line );
+
+		for ( nUInt idx = 0; idx < ( to_line - 1 ) - from_line; idx++ )
+			this->DeleteLine( from_line + 1 );
+	}
+}
+
+void NutTextDocument::DeleteLine( nUInt line_id ) {
+	if ( line_id < this->GetLineCount( ) )
+		this->lines.erase( this->lines.begin( ) + line_id );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
 const std::string& NutTextDocument::GetName( ) const { return this->name; }
-
-const nUInt NutTextDocument::GetSize( ) const { return (nUInt)this->lines.size( ); }
+	
+const std::string& NutTextDocument::GetPath( ) const { return this->path; }
 
 const NutTextCursor& NutTextDocument::GetCursor( ) const { return this->cursor; }
 
-NutTextDocument::Line& NutTextDocument::GetLine( nUInt query_id ) const {
-	if ( query_id < this->lines.size( ) )
-		return this->lines[ query_id ];
-
-	return this->lines[ this->lines.size( ) - 1 ];
-}
+const nUInt NutTextDocument::GetLineCount( ) const { return (nUInt)this->lines.size( ); }
 
 const NutTextDocument::Lines& NutTextDocument::GetLines( ) const { return this->lines; }
 
-const nUInt NutTextDocument::GetLineSize( nUInt query_id ) const {
-	return (nUInt)this->GetLine( query_id ).size( );
+const nUInt NutTextDocument::GetLineSize( nUInt line_id ) const { 
+	if ( line_id < this->GetLineCount( ) )
+		return (nUInt)this->lines[ line_id ].size( ); 
+
+	return 0;
+}
+
+const std::string& NutTextDocument::GetLine( nUInt line_id ) const {
+	if ( line_id < this->GetLineCount( ) )
+		return this->lines[ line_id ];
+	
+	return "";
+}
+
+const char NutTextDocument::At( nUInt line, nUInt position ) {
+	if ( line < this->lines.size( ) && position < this->lines[ line ].size( ) )
+		return this->lines[ line ][ position ];
+
+	return '\0';
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -177,20 +200,28 @@ const nUInt NutTextDocument::GetLineSize( nUInt query_id ) const {
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutTextDocument::operator nString( ) const { return this->name.c_str( ); }
 
-NutTextDocument::operator const NutTextCursor& ( ) const { return this->cursor; }
+NutTextDocument::operator const std::string&( ) const { return this->name; }
 
-NutTextDocument::operator const nUInt( ) const { return this->GetSize( ); }
+NutTextDocument::operator nUInt( ) const { return this->GetLineCount( ); }
 
-NutTextDocument::operator const NutTextDocument::Lines&( ) const {  return this->lines; }
+NutTextDocument::operator const NutTextCursor&( ) const { return this->cursor; }
 
-NutTextDocument::Line& NutTextDocument::operator[]( nUInt query_id ) const {
-	return this->GetLine( query_id );
+NutTextDocument::operator const Lines&( ) const { return this->lines; }
+
+NutTextDocument& NutTextDocument::operator=( const NutTextCursor& cursor ) {
+	this->cursor = cursor;
+
+	return *this;
 }
 
-NutTextDocument& NutTextDocument::operator+=( nString string ) {
-	return this->CreateLine( string, (nUInt)this->lines.size( ) );
+NutTextDocument& NutTextDocument::operator+=( const std::string& text ) {
+	this->Append( text );
+
+	return *this;
 }
 
-NutTextDocument& NutTextDocument::operator+=( const std::string& string ) {
-	return this->CreateLine( string, (nUInt)this->lines.size( ) );
+NutTextDocument& NutTextDocument::operator+=( const std::string&& text ) {
+	this->Append( text );
+
+	return *this;
 }

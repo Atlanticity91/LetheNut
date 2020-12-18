@@ -55,9 +55,9 @@ NutTextEditor::NutTextEditor( )
 	this->renderer.Record = nHelper::GetTime( );
 
 	this->Create( "I'm a test" );
-	this->Get( ).Append( "func add ( a : int , b : int )", 0 );
-	this->Get( ).Append( "    return a + b ;", 1 );
-	this->Get( ).Append( "end", 2 );
+	this->Get( ).Append( "func add ( a : int , b : int )" );
+	this->Get( ).Append( "    return a + b ;" );
+	this->Get( ).Append( "end" );
 }
 
 NutTextEditor::~NutTextEditor( ) {
@@ -181,25 +181,36 @@ void NutTextEditor::Redo( ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED 
 ///////////////////////////////////////////////////////////////////////////////////////////
+void NutTextEditor::Insert( char character ) {
+	this->Get( ).Insert( character, this->renderer.Cursor.line, this->renderer.Cursor.position++ );
+}
+
+void NutTextEditor::Delete( ) {
+	if ( this->Get( ).GetLineSize( this->renderer.Cursor.line ) > 0 )
+		this->Get( ).Delete( this->renderer.Cursor.line, --this->renderer.Cursor.position );
+	else
+		this->Get( ).DeleteLine( this->renderer.Cursor.line-- );
+}
+
 void NutTextEditor::InternalInputKeyboard( ) {
 	if ( !ImGUI::GetIsCtrltDown( ) && !ImGUI::GetIsAltDown( ) && !ImGUI::GetIsShiftDown( ) ) {
-		if ( ImGUI::IsKeyPressed( ImGuiKey_UpArrow ) ) 
+		if ( ImGUI::IsKeyPressed( ImGuiKey_UpArrow ) )
 			this->MoveUp( );
-		else if ( ImGUI::IsKeyPressed( ImGuiKey_DownArrow ) ) 
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_DownArrow ) )
 			this->MoveDown( );
-		else if ( ImGUI::IsKeyPressed( ImGuiKey_LeftArrow ) ) 
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_LeftArrow ) )
 			this->MoveLeft( );
-		else if ( ImGUI::IsKeyPressed( ImGuiKey_RightArrow ) ) 
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_RightArrow ) )
 			this->MoveRight( );
-		else if ( ImGUI::IsKeyPressed( ImGuiKey_Enter ) ) 
-			this->Get( ).Insert( '\n', this->renderer.Cursor );
-		else if ( ImGUI::IsKeyPressed( ImGuiKey_Tab ) ) 
-			this->Get( ).Insert( "    ", this->renderer.Cursor );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_Enter ) )
+			this->Insert( '\n' );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_Tab ) )
+			this->Insert( '\t' );
+		else if ( ImGUI::IsKeyPressed( ImGuiKey_Delete ) )
+			this->Delete( );
 		else {
 			ImGUI::DequeueCharacters(
-				[ & ]( char character ) {
-					this->Get( ).Insert( character, this->renderer.Cursor );
-				}
+				[ & ]( char character ) { this->Insert( character ); }
 			);
 		}
 	} else if ( ImGUI::GetIsCtrltDown( ) ) {
@@ -323,12 +334,16 @@ void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 position ) {
 }
 
 void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 position, ENutTextStyleVars query_var, nString text ) {
+	/*
 	auto style = this->style->Get( query_var );
 
 	if ( style.background != this->style->GetBackground( ) )
 		ImGUI::Text( renderer, position, text, style.background, style.foreground );
 	else
 		renderer->AddText( position, style.foreground, text );
+		*/
+	auto style = this->style->Get( query_var );
+	renderer->AddText( position, style.foreground, text );
 }
 
 void NutTextEditor::InternalDraw( ImDrawList* renderer, ImVec2 position, nUInt line_id ) {

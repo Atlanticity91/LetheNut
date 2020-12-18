@@ -195,6 +195,10 @@
 		virtual void Redo( );
 
 	protected:
+		virtual void Insert( char character );
+
+		virtual void Delete( );
+
 		/**
 		 * InternalInputKeyboard virtual method
 		 * @author : ALVES Quentin
