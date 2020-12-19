@@ -82,14 +82,14 @@
 		REG_COLOR( NODE_COMMENT_COLOR, 208, 208, 208, 255 );
 
 		// Internal colors
-		REG_VEC4( AxeX_Normal, .8f, .1f, .15f, 1.f );
-		REG_VEC4( AxeX_Hovered, .9f, .2f, .2f,  1.f );
-		REG_VEC4( AxeY_Normal, .2f, .7f, .2f, 1.f );
-		REG_VEC4( AxeY_Hovered, .3f, .8f, .3f, 1.f );
-		REG_VEC4( AxeZ_Normal, .1f, .25f, .8f, 1.f );
-		REG_VEC4( AxeZ_Hovered, .2f, .35f, .9f, 1.f );
-		REG_VEC4( AxeW_Normal, .95f, .7f, .053f, 1.f );
-		REG_VEC4( AxeW_Hovered, 1.f, .8f, .063f, 1.f );
+		REG_COLOR( AxeX_Normal, .8f, .1f, .15f, 1.f );
+		REG_COLOR( AxeX_Hovered, .9f, .2f, .2f,  1.f );
+		REG_COLOR( AxeY_Normal, .2f, .7f, .2f, 1.f );
+		REG_COLOR( AxeY_Hovered, .3f, .8f, .3f, 1.f );
+		REG_COLOR( AxeZ_Normal, .1f, .25f, .8f, 1.f );
+		REG_COLOR( AxeZ_Hovered, .2f, .35f, .9f, 1.f );
+		REG_COLOR( AxeW_Normal, .95f, .7f, .053f, 1.f );
+		REG_COLOR( AxeW_Hovered, 1.f, .8f, .063f, 1.f );
 
 		/**
 		 * ImCanvas struct

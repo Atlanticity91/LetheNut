@@ -44,7 +44,7 @@
 	
 	enum ENutPinTypes : nUInt {
 
-		EPT_FLOW,
+		EPT_FLOW = 0,
 		EPT_STRING,
 		EPT_BOOL,
 		EPT_INT8,
@@ -53,6 +53,13 @@
 		EPT_INT64,
 		EPT_FLOAT32,
 		EPT_FLOAT64,
+		EPT_VECT2,
+		EPT_VECT3,
+		EPT_VECT4,
+		EPT_MAT2,
+		EPT_MAT3,
+		EPT_MAT4,
+		EPT_CUSTOM,
 
 	};
 
@@ -79,7 +86,7 @@
 
 		bool is_array;
 		bool is_connected;
-		ENutPinTypes type;
+		nUInt type;
 		nString name;
 		nString description;
 		NutNodePinData data;

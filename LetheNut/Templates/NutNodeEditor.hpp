@@ -41,6 +41,15 @@
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template< typename Type >
+	void NutNodeEditor::SetStyle( ) {
+		if ( this->style )
+			delete this->style;
+
+		this->style = new Type( );
+		this->style->Initialize( );
+	}
+
+	template< typename Type >
 	void NutNodeEditor::SetParser( ) {
 		if ( this->parser )
 			delete this->parser;

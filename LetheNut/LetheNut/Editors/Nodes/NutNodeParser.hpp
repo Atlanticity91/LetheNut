@@ -41,12 +41,23 @@
 
 	#define NUT_NODE_PARSER( NAME, ... ) NUT_CLASS( NAME,NutNodeParser, __VA_ARGS__ ) 
 
+	enum ETypeMatches : nUInt {
+
+		ETM_MATCH = 0,
+		ETM_NONE,
+		ETM_DOWNCAST,
+		ETM_UPCAST
+
+	};
+
 	/**
 	 * NutNodeParser class [ NutBasic ]
 	 * @author : ALVES Quentin
 	 * @note : Defined Nut Node Parser core class.
 	 **/
 	NUT_ELEMENT( NutNodeParser ) {
+
+		using NodeList = std::vector<NutNode*>;
 
 	protected:
 		mutable std::vector<NutNodeModel> models;
@@ -80,6 +91,8 @@
 
 		virtual void CreateVar( ENutPinTypes type, bool is_array, nString name );
 
+		virtual void Parse( const NodeList& nodes );
+
 	protected:
 		/**
 		 * Create virtual function
@@ -111,6 +124,8 @@
 		virtual void CreateForeach( ENutPinTypes type, nString name );
 
 	public:
+		virtual const ETypeMatches TypeMatch( ENutPinTypes left, ENutPinTypes right ) const;
+
 		/**
 		 * GetModelCount const function
 		 * @author : ALVES Quentin

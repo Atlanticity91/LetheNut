@@ -34,25 +34,39 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_NODE_STYLE_HPP_
+#define _IGS_NUT_NODE_STYLE_HPP_
 
-#include <LetheNut/Framework/Nodes/NutGLSL.hpp>
+	#include <LetheNut/NutBasic.hpp>
+	#include <LetheNut/Vendor/ImGUI.hpp>
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutGLSL::NutGLSL( ) 
-	: NutNodeParser( "Nut GLSL" )
-{ }
+	#include "NutNodeModel.hpp"
 
-NutGLSL::~NutGLSL( ) {
-}
+	NUT_ELEMENT( NutNodeStyle ) {
 
-void NutGLSL::Initialize( ) {
-	NutNodeParser::Initialize( );
+	private:
+		std::map<nUInt, ImColor> node_colors;
+		std::map<nUInt, ImColor> pin_colors;
 
-	auto* material = this->Create( ENutNodeTypes::ENT_OPERATION, "Material", "" );
-	material->AddIn( false, EGLSLTypes::EGT_SAMPLER2D, "Diffuse", "Diffuse color of the material." );
-	material->AddIn( false, EGLSLTypes::EGT_SAMPLER2D, "Specular", "Specular map of the material." );
-	material->AddIn( false, EGLSLTypes::EGT_SAMPLER2D, "Normal", "Normal map of the material." );
-}
+	public:
+		NutNodeStyle( );
+
+		NutNodeStyle( nString name );
+
+		virtual ~NutNodeStyle( ) = default;
+
+		virtual void Initialize( );
+
+	protected:
+		void RegisterNode( nUInt query, ImColor color );
+
+		void RegisterPin( nUInt query, ImColor color );
+
+	public:
+		const ImColor& GetNode( nUInt query ) const;
+
+		const ImColor& GetPin( nUInt query ) const;
+
+	};
+
+#endif

@@ -62,6 +62,10 @@ NutNodeModel::NutNodeModel( const NutNodeModel& other )
 	}
 }
 
+NutNodeModel::NutNodeModel( ENutNodeTypes type, nString name )
+	: NutNodeModel( type, name, "" )
+{ }
+
 NutNodeModel::NutNodeModel( ENutNodeTypes type, nString name, nString description )
 	: NutBasic( name ),
 	type( type ),
@@ -86,10 +90,20 @@ void NutNodeModel::AddIn( const NutNodePin& pin ) { this->inputs.emplace_back( p
 
 void NutNodeModel::AddIn( const NutNodePin&& pin ) { this->AddIn( pin ); }
 
-void NutNodeModel::AddIn( bool is_array, ENutPinTypes type, nString name, nString description ) {
+void NutNodeModel::AddIn( bool is_array, nUInt type ) { this->AddIn( is_array, type, "", "" ); }
+
+void NutNodeModel::AddIn( bool is_array, ENutPinTypes type ) { 
+	this->AddIn( is_array, (nUInt)type, "", "" );
+}
+
+void NutNodeModel::AddIn( bool is_array, nUInt type, nString name, nString description ) {
 	auto pin = NutNodePin{ is_array, false, type, name, description };
 
 	this->AddIn( pin );
+}
+
+void NutNodeModel::AddIn( bool is_array, ENutPinTypes type, nString name, nString description ) {
+	this->AddIn( is_array, (nUInt)type, name, description );
 }
 
 void NutNodeModel::ConnectIn( nUInt query_id ) {
@@ -111,11 +125,23 @@ void NutNodeModel::AddOut( const NutNodePin& pin ) { this->outputs.emplace_back(
 
 void NutNodeModel::AddOut( const NutNodePin&& pin ) { this->AddOut( pin ); }
 
-void NutNodeModel::AddOut( bool is_array, ENutPinTypes type, nString name, nString description ) {
+void NutNodeModel::AddOut( bool is_array, nUInt type ) {
+	this->AddOut( is_array, type, "", "" );
+}
+
+void NutNodeModel::AddOut( bool is_array, ENutPinTypes type ) {
+	this->AddOut( is_array, (nUInt)type, "", "" );
+}
+
+void NutNodeModel::AddOut( bool is_array, nUInt type, nString name, nString description ) {
 	auto pin = NutNodePin{ is_array, false, type, name, description };
 	pin.data.string.value = nullptr;
 
 	this->AddOut( pin );
+}
+
+void NutNodeModel::AddOut( bool is_array, ENutPinTypes type, nString name, nString description ) {
+	this->AddOut( is_array, (nUInt)type, name, description );
 }
 
 void NutNodeModel::ConnectOut( nUInt query_id ) {

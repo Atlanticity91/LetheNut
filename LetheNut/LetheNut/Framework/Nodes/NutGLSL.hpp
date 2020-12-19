@@ -39,6 +39,14 @@
 
 	#include <LetheNut/Editors/Nodes/NutNodeParser.hpp>
 
+	enum EGLSLTypes : nUInt {
+
+		EGT_COLOR	  = ENutPinTypes::EPT_VECT4,
+		EGT_SAMPLER2D = ENutPinTypes::EPT_CUSTOM,
+		EGT_SAMPLER3D,
+
+	};
+
 	/**
 	 * NutGLSL class [ NutNodeParser ]
 	 * @author : ALVES Quentin

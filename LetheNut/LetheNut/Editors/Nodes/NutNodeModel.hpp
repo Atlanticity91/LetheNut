@@ -67,6 +67,8 @@
 
 		NutNodeModel( const NutNodeModel& other );
 
+		NutNodeModel( ENutNodeTypes type, nString name );
+
 		NutNodeModel( ENutNodeTypes type, nString name, nString description );
 
 		virtual ~NutNodeModel( );
@@ -74,6 +76,12 @@
 		virtual void AddIn( const NutNodePin& pin );
 
 		inline void AddIn( const NutNodePin&& pin );
+
+		inline void AddIn( bool is_array, nUInt type );
+
+		inline void AddIn( bool is_array, ENutPinTypes type );
+
+		inline void AddIn( bool is_array, nUInt type, nString name, nString description );
 
 		inline void AddIn( bool is_array, ENutPinTypes type, nString name, nString description );
 
@@ -86,6 +94,12 @@
 		virtual void AddOut( const NutNodePin & pin );
 
 		inline void AddOut( const NutNodePin && pin );
+
+		inline void AddOut( bool is_array, nUInt type );
+
+		inline void AddOut( bool is_array, ENutPinTypes type );
+
+		inline void AddOut( bool is_array, nUInt type, nString name, nString description );
 
 		inline void AddOut( bool is_array, ENutPinTypes type, nString name, nString description );
 

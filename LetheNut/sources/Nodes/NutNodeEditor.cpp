@@ -38,43 +38,6 @@
 
 #include <LetheNut/Editors/Nodes/NutNodeEditor.hpp>
 #include <LetheNut/Vendor/ImGUI.hpp>
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      INTERNAL
-///////////////////////////////////////////////////////////////////////////////////////////
-const ImColor Internal_PinColor( ENutPinTypes type ) {
-    switch ( type ) {
-        case ENutPinTypes::EPT_FLOW     : return ImColor( 208, 208, 208 );
-        case ENutPinTypes::EPT_STRING   : return ImColor( 124,  21, 153 );
-        case ENutPinTypes::EPT_BOOL     : return ImColor( 220,  48,  48 );
-        case ENutPinTypes::EPT_INT8     : return ImColor(  68, 201, 156 );
-        case ENutPinTypes::EPT_INT16    : return ImColor(  68, 201, 156 );
-        case ENutPinTypes::EPT_INT32    : return ImColor(  68, 201, 156 );
-        case ENutPinTypes::EPT_INT64    : return ImColor(  68, 201, 156 );
-        case ENutPinTypes::EPT_FLOAT32  : return ImColor( 147, 226,  74 );
-        case ENutPinTypes::EPT_FLOAT64  : return ImColor( 147, 226,  74 );
-
-        default : break;
-    }
-
-    return ImColor( 255, 255, 255 );
-}
-
-const ImColor Internal_NodeColor( ENutNodeTypes type ) {
-    switch ( type ) {
-        case ENutNodeTypes::ENT_BRANCH   : return ImColor( 220,  48,  48 );
-        case ENutNodeTypes::ENT_CONSTANT : return ImColor(  68, 201, 156 );
-        case ENutNodeTypes::ENT_EVENT    : return ImColor( 220,  48,  48 );
-        case ENutNodeTypes::ENT_FUNCTION : return ImColor(  22,  38,  38 );
-        case ENutNodeTypes::ENT_SWITCH   : return ImColor( 124,  21, 153 );
-        case ENutNodeTypes::ENT_VARIABLE : return ImColor(  22,  38,  38 );
-
-        default : break;
-    }
-
-    return ImColor( 22, 38, 38 );
-}
-
 #include <LetheNut/Framework/Nodes/NutGLSL.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -86,12 +49,36 @@ NutNodeEditor::NutNodeEditor( )
 	nodes( ),
     links( )
 { 
+    this->SetStyle<NutNodeStyle>( );
     this->SetParser<NutGLSL>( );
 }
 
 NutNodeEditor::~NutNodeEditor( ) { 
+    if ( this->style )
+        delete this->style;
+
+    if ( this->parser )
+        delete this->parser;
+
     for ( auto node : this->nodes )
         delete node;
+}
+
+void NutNodeEditor::CreateVar( ImVec2 position, ENutNodeTypes type, bool is_array, nString name ) {
+    this->CreateVar( position, (nUInt)type, is_array, name );
+}
+
+void NutNodeEditor::CreateVar( ImVec2 position, nUInt type, bool is_array, nString name ) {
+    if ( strlen( name ) > 0 ) {
+        auto model = NutNodeModel( ENutNodeTypes::ENT_CONSTANT, name );
+        model.AddIn( is_array, type );
+        model.AddOut( is_array, type );
+
+        auto* node = new NutNode( position, model );
+
+        if ( node )
+            this->nodes.emplace_back( node );
+    }
 }
 
 void NutNodeEditor::CreateLink( const NutNodeLink& link ) { 
@@ -149,6 +136,7 @@ void NutNodeEditor::OnEditorProcess( class NutEditor* editor ) {
     if ( ImGui::IsMouseClicked( ImGuiMouseButton_Right ) ) {
         auto pos = ImGUI::GetMouseRelPos( ) - this->canvas.offset;
         
+        //auto idx = /*rand( ) %*/ this->parser->GetModelCount( ) - 1;
         auto idx = rand( ) % this->parser->GetModelCount( );
         auto* model = this->parser->GetModel( idx );
         if ( model ) {
@@ -179,7 +167,7 @@ void NutNodeEditor::InternalDraw( const NutNode* node, bool is_selected ) {
         ImGui::SameLine( ImGui::GetItemRectSize( ).x + ImGUI::GetTextSize( "#####" ).x );
         this->InternalDraw( node->GetOutPins( ), true, node->GetOutLength( ) );
 
-    ImGUI::EndNode( this->canvas, node->GetContext( ), Internal_NodeColor( node->GetType( ) ) );
+    ImGUI::EndNode( this->canvas, node->GetContext( ), this->style->GetNode( node->GetType( ) ) );
 }
 
 void NutNodeEditor::InternalDraw( const NutNode::PinList& pins, bool is_out, const float out_length ) {
@@ -193,7 +181,7 @@ void NutNodeEditor::InternalDraw( const NutNode::PinList& pins, bool is_out, con
 
 void NutNodeEditor::InternalDraw( const NutNodePin& pin, bool is_out, const float out_length ) {
     auto cursor = ImGui::GetCursorScreenPos( );
-    auto color = Internal_PinColor( pin.type );
+    auto color = this->style->GetNode( pin.type );
 
     if ( !is_out ) {
         this->InternalDraw( pin, color );
@@ -239,6 +227,11 @@ void NutNodeEditor::InternalDraw( const NutNodeLink& link ) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC GET 
+///////////////////////////////////////////////////////////////////////////////////////////
+const NutNodeStyle* NutNodeEditor::GetStyle( ) const { return this->style; }
+
+///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTETED GET 
 ///////////////////////////////////////////////////////////////////////////////////////////
 const ImVec2 NutNodeEditor::GetPinPosition( bool is_output, nUInt node_id, nUInt pin_id ) const {
@@ -252,5 +245,5 @@ const ImVec2 NutNodeEditor::GetPinPosition( bool is_output, nUInt node_id, nUInt
 }
 
 const ImColor NutNodeEditor::GetPinColor( nUInt node_id, nUInt pin_id ) const {
-    return Internal_PinColor( this->nodes[ node_id ]->GetInPin( pin_id ).type );
+    return this->style->GetNode( this->nodes[ node_id ]->GetInPin( pin_id ).type );
 }

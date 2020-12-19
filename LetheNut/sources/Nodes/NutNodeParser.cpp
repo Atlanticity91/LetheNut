@@ -80,6 +80,13 @@ void NutNodeParser::Initialize( ) {
 	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Multiply (float32)", "Multiply two value." );
 	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Multiply (float64)", "Multiply two value." );
 
+	this->CreateOperation( ENutPinTypes::EPT_INT8, "Divide (int8)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT16, "Divide (int16)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT32, "Divide (int32)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT64, "Divide (int64)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Divide (float32)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Divide (float64)", "Divide two value." );
+
 	this->CreateClamp( ENutPinTypes::EPT_INT8, "Clamp (int8)" );
 	this->CreateClamp( ENutPinTypes::EPT_INT16, "Clamp (int16)" );
 	this->CreateClamp( ENutPinTypes::EPT_INT32, "Clamp (int32)" );
@@ -99,7 +106,7 @@ void NutNodeParser::Initialize( ) {
 	this->CreateForeach( ENutPinTypes::EPT_FLOAT32, "Foreach (float32)" );
 	this->CreateForeach( ENutPinTypes::EPT_FLOAT64, "Foreach (float64)" );
 
-	this->CreateVar( ENutPinTypes::EPT_BOOL, true, "_TEST_0_" );
+	this->CreateVar( ENutPinTypes::EPT_BOOL, false, "_TEST_0_" );
 }
 
 void NutNodeParser::CreateVar( ENutPinTypes type, bool is_array, nString name ) {
@@ -107,6 +114,9 @@ void NutNodeParser::CreateVar( ENutPinTypes type, bool is_array, nString name ) 
 
 	var->AddIn( is_array, type, "", "" );
 	var->AddOut( is_array, type, "", "" );
+}
+
+void NutNodeParser::Parse( const NutNodeParser::NodeList& nodes ) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +175,21 @@ void NutNodeParser::CreateForeach( ENutPinTypes type, nString name ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
+const ETypeMatches NutNodeParser::TypeMatch( ENutPinTypes left, ENutPinTypes right ) const {
+	if ( left != ENutPinTypes::EPT_FLOW && right != ENutPinTypes::EPT_FLOW ) {
+		if ( left == right )
+			return ETypeMatches::ETM_MATCH;
+		else if ( left != ENutPinTypes::EPT_STRING && right != ENutPinTypes::EPT_STRING ) {
+			if ( left < right )
+				return ETypeMatches::ETM_DOWNCAST;
+			else if ( left > right )
+				return ETypeMatches::ETM_UPCAST;
+		}
+	}
+
+	return ETypeMatches::ETM_NONE;
+}
+
 const nUInt NutNodeParser::GetModelCount( ) const { return (nUInt)this->models.size( ); }
 
 const NutNodeModel* NutNodeParser::GetModel( nUInt query_id ) const {

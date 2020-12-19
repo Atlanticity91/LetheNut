@@ -94,6 +94,7 @@
   <ItemGroup>
     <ClCompile Include="sources\Maths\Matrix.cpp" />
     <ClCompile Include="sources\NutBasic.cpp" />
+    <ClCompile Include="sources\Nodes\NutNodeStyle.cpp" />
     <ClCompile Include="sources\Tools\NutBrowser.cpp" />
     <ClCompile Include="sources\NutEditor.cpp" />
     <ClCompile Include="sources\Nodes\NutGLSL.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="LetheNut\Editors\Nodes\NutNodeEditor.hpp" />
     <ClInclude Include="LetheNut\Editors\Nodes\NutNodeModel.hpp" />
     <ClInclude Include="LetheNut\Editors\Nodes\NutNodeParser.hpp" />
+    <ClInclude Include="LetheNut\Editors\Nodes\NutNodeStyle.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextDocument.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextEditor.hpp" />
     <ClInclude Include="LetheNut\Editors\Text\NutTextParser.hpp" />

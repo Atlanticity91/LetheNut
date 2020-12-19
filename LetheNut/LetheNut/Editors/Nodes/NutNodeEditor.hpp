@@ -44,11 +44,13 @@
 	#include <LetheNut/Tools/NutTool.hpp>
 
 	#include "NutNodeParser.hpp"
+	#include "NutNodeStyle.hpp"
 
 	NUT_TOOL( NutNodeEditor ) {
 
 	private:
 		ImGUI::ImCanvas canvas;
+		NutNodeStyle* style;
 		NutNodeParser* parser;
 		std::vector<NutNode*> nodes;
 		std::vector<NutNodeLink> links;
@@ -57,6 +59,10 @@
 		NutNodeEditor( );
 
 		virtual ~NutNodeEditor( );
+
+		inline void CreateVar( ImVec2 position, ENutNodeTypes type, bool is_array, nString name );
+
+		void CreateVar( ImVec2 position, nUInt type, bool is_array, nString name );
 
 		void CreateLink( const NutNodeLink& link );
 
@@ -96,8 +102,14 @@
 		virtual void InternalDraw( const NutNodeLink& link );
 
 	public:
+		template< typename Type = class NutNodeStyle >
+		void SetStyle( );
+
 		template< typename Type = class NutNodeParser >
 		void SetParser( );
+
+	public:
+		const NutNodeStyle* GetStyle( ) const;
 
 	protected:
 		virtual const ImVec2 GetPinPosition( bool is_output, nUInt node_id, nUInt pin_id ) const;
