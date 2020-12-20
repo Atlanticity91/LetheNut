@@ -40,6 +40,8 @@
 	#include "NutModule.hpp"
 	#include <LetheNut/NutLibrary.hpp>
 	#include <LetheNut/Vendor/JSON.hpp>
+	#include <LetheNut/Vendor/OpenGL.hpp>
+	#include <LetheNut/Vendor/STB.hpp>
 
 	class NutMenuItem;
 	class NutPanel;
@@ -53,7 +55,9 @@
 	
 	private:
 		nJSON config;
+		STB::Image image_loader;
 		std::vector<NutLibrary*> libraries;
+		std::map<nString, OpenGL::Texture> images;
 
 	public:
 		/**
@@ -67,6 +71,8 @@
 		 * @author : ALVES Quentin
 		 **/
 		~NutKernel( );
+
+		bool LoadImage( nString alias, nString path );
 
 	protected:
 		/**
@@ -275,6 +281,8 @@
 		 * @return : NutLibrary*
 		 **/
 		NutLibrary* GetLibrary( nString name ) const;
+
+		const ImTextureID GetImage( nString name ) const;
 
 	};
 

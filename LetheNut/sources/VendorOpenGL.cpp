@@ -53,15 +53,17 @@ bool internal_CreateRender( nUInt& render, const nUInt width, const nUInt height
 	return render > 0;
 }
 
-bool internal_CreateTexture( nUInt& texture, const nUInt width, const nUInt height ) {
-	glCreateTextures( GL_TEXTURE_2D, 1, &texture );
+bool internal_CreateTexture( nUInt& texture, const nUInt width, const nUInt height, nUByte* pixels ) {
+	if ( width > 0 && height > 0 ) {
+		glCreateTextures( GL_TEXTURE_2D, 1, &texture );
 
-	if ( texture > 0 ) {
-		glBindTexture( GL_TEXTURE_2D, texture );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr );
-		glBindTexture( GL_TEXTURE_2D, 0 );
+		if ( texture > 0 ) {
+			glBindTexture( GL_TEXTURE_2D, texture );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+			glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const void*)pixels );
+			glBindTexture( GL_TEXTURE_2D, 0 );
+		}
 	}
 
 	return texture > 0;
@@ -194,7 +196,7 @@ bool OpenGL::Create( Frame& frame, nUInt width, nUInt height ) {
 
 	if ( OpenGL::IsValid( frame ) ) {
 		if ( 
-			internal_CreateTexture( frame.color, width, height ) && 
+			internal_CreateTexture( frame.color, width, height, nullptr ) && 
 			internal_CreateRender( frame.render, width, height ) 
 		) {
 			glBindFramebuffer( GL_FRAMEBUFFER, frame.ID );
@@ -223,7 +225,11 @@ bool OpenGL::Create( Texture& texture, const ImVec2&& size ) {
 }
 
 bool OpenGL::Create( Texture& texture, nUInt width, nUInt height ) {
-	if ( internal_CreateTexture( texture.ID, width, height ) ) {
+	return OpenGL::Create( texture, width, height, nullptr );
+}
+
+bool OpenGL::Create( Texture& texture, nUInt width, nUInt height, nUByte* pixels ) {
+	if ( internal_CreateTexture( texture.ID, width, height, pixels ) ) {
 		texture.Width = width;
 		texture.Height = height;
 	}
@@ -352,6 +358,17 @@ void OpenGL::Refresh( const Frame& frame, const ImVec4& color ) {
 }
 
 void OpenGL::Refresh( const Frame& frame, const ImVec4&& color ) { OpenGL::Refresh( frame, color ); }
+
+void OpenGL::Fill( const Texture& texture, const void* pixels ) {
+	OpenGL::Fill( texture, 0, 0, 0, texture.Width, texture.Height, pixels );
+}
+
+void OpenGL::Fill( const Texture& texture, nUInt level, nUInt offset_x, nUInt offset_y, nUInt width, nUInt height, const void* pixels ) {
+	if ( pixels && OpenGL::IsValid( texture ) ) {
+		glBindTexture( GL_TEXTURE_2D, 0 );
+		glTexSubImage2D( GL_TEXTURE_2D, level, offset_x, offset_y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels );
+	}
+}
 
 void OpenGL::Fill( const Buffer& vertex, const nUInt size, const void* data ) { OpenGL::Fill( vertex, 0, size, data ); }
 

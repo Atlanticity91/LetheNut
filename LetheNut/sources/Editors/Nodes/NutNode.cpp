@@ -42,7 +42,7 @@
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutNode::NutNode( ImVec2 position, const NutNodeModel& model ) 
-	: context{ model.GetName( ), model.GetDescription( ), position, false, model.GetType( ) == ENutNodeTypes::ENT_VARIABLE },
+	: context{ model.GetName( ), model.GetDescription( ), position, true, model.GetType( ) == ENutNodeTypes::ENT_VARIABLE },
 	model( model ),
 	out_length( 0.f )
 { 

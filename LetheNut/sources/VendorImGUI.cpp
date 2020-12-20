@@ -63,6 +63,62 @@ void internal_Image( const nULong texture, const ImVec2& position, const ImVec2&
 	}
 }
 
+void internal_Node( const ImGUI::ImCanvas& canvas, const ImVec2& position, const ImGUI::ImNodeContext& node, const ImColor& color, const ImColor& separator, ImTextureID texture ) {
+	auto& style = ImGui::GetStyle( );
+	auto* renderer = ImGui::GetWindowDrawList( );
+	auto color_bg = ImColor( style.Colors[ ImGuiCol_Border ] );
+	auto pos = position + node.position * canvas.zoom + canvas.offset;
+
+	ImGui::EndGroup( );
+
+	const auto node_rect = ImRect{
+		ImGui::GetItemRectMin( ) - style.ItemInnerSpacing * canvas.zoom,
+		( ImGui::GetItemRectMax( ) + ImVec2{ ImGUI::NODE_PIN_SIZE, 0.f } ) + style.ItemInnerSpacing * canvas.zoom
+	};
+
+	const auto header_size = ImVec2{
+		ImGui::GetItemRectSize( ).x + ( ImGUI::NODE_PIN_SIZE - ImGUI::NODE_ROUNDING ) + style.ItemInnerSpacing.x * canvas.zoom,
+		ImGUI::GetTextSize( node.name ).y + 3.f
+	};
+
+	const auto uv = ImVec2{
+			( node_rect.Max.x - node_rect.Min.x ) * ImGUI::NODE_TILING,
+			( node_rect.Max.y - node_rect.Min.y ) * ImGUI::NODE_TILING
+	};
+
+	if ( node.is_centered ) {
+		auto name_pos = pos + ImVec2{ ( header_size.x - ImGUI::GetTextSize( node.name ).x ) * .5f, 0 };
+
+		renderer->AddText( name_pos, ImColor{ ImGUI::DEFAULT_COLOR }, node.name );
+	}
+
+	renderer->ChannelsSetCurrent( 0 );
+	renderer->AddRectFilled( node_rect.Min, node_rect.Max, color, ImGUI::NODE_ROUNDING );
+	renderer->AddImageRounded( texture, node_rect.Min, node_rect.Max, ImGUI::UV_MIN, uv, ImGUI::NODE_HEADER_COLOR, ImGUI::NODE_ROUNDING );
+	renderer->AddRect( node_rect.Min, node_rect.Max, color_bg, ImGUI::NODE_ROUNDING );
+
+	if ( node.is_selected ) {
+		auto rect_min = node_rect.Min - ImGUI::NODE_SELECTION_SIZE;
+		auto rect_max = node_rect.Max + ImGUI::NODE_SELECTION_SIZE;
+
+		renderer->AddRect( rect_min, rect_max, ImGUI::NODE_SELECTION_COLOR, ImGUI::NODE_ROUNDING );
+	}
+
+	renderer->AddLine( pos + ImVec2{ 0, header_size.y }, pos + header_size, separator );
+
+	renderer->ChannelsMerge( );
+
+	if ( node.description && strlen( node.description ) > 0 ) {
+		ImGUI::ToolTip(
+			[ & ]( const ImVec2& pos ) {
+				ImGui::Text( node.description );
+			}
+		);
+	}
+
+	ImGui::PopID( );
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -86,8 +142,8 @@ void ImGUI::Initialize( nPointer& window ) {
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-	//io.Fonts->AddFontFromFileTTF( "Assets/Fonts/OpenSans-Regular.ttf", 18.f );
-	//io.Fonts->AddFontFromFileTTF( "Assets/Fonts/OpenSans-Bold.ttf", 18.f );
+	io.Fonts->AddFontFromFileTTF( "Assets/Fonts/OpenSans-Regular.ttf", 18.f );
+	io.Fonts->AddFontFromFileTTF( "Assets/Fonts/OpenSans-Bold.ttf", 18.f );
 
 	if ( io.Fonts->Fonts.Size > 0 )
 		io.FontDefault = io.Fonts->Fonts[ ImGUI::FONT_DEFAULT ];
@@ -231,11 +287,11 @@ const float ImGUI::GetPenPressure( ) {
 }
 
 const float ImGUI::GetLineHeight( ) {
-	return GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	return GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.f;
 }
 
 const ImVec2 ImGUI::GetTextSize( nString text ) {
-	return ImGui::GetFont( )->CalcTextSizeA( ImGui::GetFontSize( ), FLT_MAX, -1.0f, text, nullptr, nullptr );
+	return ImGui::GetFont( )->CalcTextSizeA( ImGui::GetFontSize( ), FLT_MAX, -1.f, text, nullptr, nullptr );
 }
 
 void ImGUI::Begin( ) {
@@ -254,8 +310,8 @@ void ImGUI::BeginPopup( nString label, ImGuiWindowFlags flags, ImVec2& size, flo
 	} else {
 		ImVec2 pos = viewport->Pos;
 
-		pos.x += ( viewport->Size.x - size.x ) * 0.5f;
-		pos.y += ( viewport->Size.y - size.y ) * 0.5f;
+		pos.x += ( viewport->Size.x - size.x ) * .5f;
+		pos.y += ( viewport->Size.y - size.y ) * .5f;
 
 		ImGui::SetNextWindowPos( pos );
 		ImGui::SetNextWindowSize( size );
@@ -265,7 +321,7 @@ void ImGUI::BeginPopup( nString label, ImGuiWindowFlags flags, ImVec2& size, flo
 	ImGui::SetNextWindowBgAlpha( 1.f );
 	ImGui::PushStyleVar( ImGuiStyleVar_WindowBorderSize, border_size );
 
-	ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.0f, 0.0f ) );
+	ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.f,0.f ) );
 	ImGui::Begin( label, is_open, flags );
 	ImGui::PopStyleVar( );
 	ImGui::PopStyleVar( 1 );
@@ -277,7 +333,7 @@ void ImGUI::BeginDockspace( ) {
 	if ( io.ConfigFlags & ImGuiConfigFlags_DockingEnable ) {
 		auto dockspace_id = ImGui::GetID( "Dockspace" );
 
-		ImGui::DockSpace( dockspace_id, ImVec2( 0.0f, 0.0f ), ImGuiDockNodeFlags_None );
+		ImGui::DockSpace( dockspace_id, ImVec2( 0.f,0.f ), ImGuiDockNodeFlags_None );
 	}
 }
 
@@ -367,19 +423,19 @@ void ImGUI::NodeCirclePin( const bool is_connected, const ImColor& color ) {
 
 	auto rect = ImRect( cursor, ImVec2{ cursor.x + ImGUI::NODE_PIN_SIZE, cursor.y + ImGUI::NODE_PIN_SIZE } );
 	auto rect_w = rect.Max.x - rect.Min.x;
-	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * 0.5f, ( rect.Min.y + rect.Max.y ) * 0.5f );
-	const auto outline_scale = rect_w / 24.0f;
+	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * .5f, ( rect.Min.y + rect.Max.y ) * .5f );
+	const auto outline_scale = rect_w / 24.f;
 	const auto extra_segments = static_cast<int>( 2 * outline_scale );
 
 	if ( !is_connected ) {
-		const auto r = 0.5f * rect_w / 2.0f - 0.5f;
+		const auto r = .5f * rect_w / 2.f - .5f;
 
 		if ( ImGUI::NODE_PIN_INNER &0xFF000000 )
 			renderer->AddCircleFilled( rect_center, r, ImGUI::NODE_PIN_INNER, 12 + extra_segments );
 
-		renderer->AddCircle( rect_center, r, color, 12 + extra_segments, 2.0f * outline_scale );
+		renderer->AddCircle( rect_center, r, color, 12 + extra_segments, 2.f * outline_scale );
 	} else
-		renderer->AddCircleFilled( rect_center, 0.5f * rect_w / 2.0f, color, 12 + extra_segments );
+		renderer->AddCircleFilled( rect_center, .5f * rect_w / 2.f, color, 12 + extra_segments );
 }
 
 void ImGUI::NodeCirclePin( const bool is_connected, const ImColor&& color ) { 
@@ -392,25 +448,25 @@ void ImGUI::NodeSquarePin( const bool is_connected, const ImColor& color ) {
 
 	auto rect = ImRect( cursor, ImVec2{ cursor.x + ImGUI::NODE_PIN_SIZE, cursor.y + ImGUI::NODE_PIN_SIZE } );
 	auto rect_w = rect.Max.x - rect.Min.x;
-	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * 0.5f, ( rect.Min.y + rect.Max.y ) * 0.5f );
-	const auto outline_scale = rect_w / 24.0f;
+	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * .5f, ( rect.Min.y + rect.Max.y ) * .5f );
+	const auto outline_scale = rect_w / 24.f;
 	const auto extra_segments = static_cast<int>( 2 * outline_scale );
 
 	if ( is_connected ) {
-		const auto r = 0.5f * rect_w / 2.0f;
+		const auto r = .5f * rect_w / 2.f;
 		const auto p0 = rect_center - ImVec2( r, r );
 		const auto p1 = rect_center + ImVec2( r, r );
 
 		renderer->AddRectFilled( p0, p1, color, 0, 15 + extra_segments );
 	} else {
-		const auto r = 0.5f * rect_w / 2.0f - 0.5f;
+		const auto r = .5f * rect_w / 2.f - .5f;
 		const auto p0 = rect_center - ImVec2( r, r );
 		const auto p1 = rect_center + ImVec2( r, r );
 
 		if ( ImGUI::NODE_PIN_INNER & 0xFF000000 )
 			renderer->AddRectFilled( p0, p1, ImGUI::NODE_PIN_INNER, 0, 15 + extra_segments );
 
-		renderer->AddRect( p0, p1, color, 0, 15 + extra_segments, 2.0f * outline_scale );
+		renderer->AddRect( p0, p1, color, 0, 15 + extra_segments, 2.f * outline_scale );
 	}
 }
 
@@ -424,11 +480,11 @@ void ImGUI::NodeDiamondPin( const bool is_connected, const ImColor& color ) {
 
 	auto rect = ImRect( cursor, ImVec2{ cursor.x + ImGUI::NODE_PIN_SIZE, cursor.y + ImGUI::NODE_PIN_SIZE } );
 	auto rect_w = rect.Max.x - rect.Min.x;
-	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * 0.5f, ( rect.Min.y + rect.Max.y ) * 0.5f );
-	const auto outline_scale = rect_w / 24.0f;
+	const auto rect_center = ImVec2( ( rect.Min.x + rect.Max.x ) * .5f, ( rect.Min.y + rect.Max.y ) * .5f );
+	const auto outline_scale = rect_w / 24.f;
 
 	if ( is_connected ) {
-		const auto r = 0.607f * rect_w / 2.0f;
+		const auto r = 0.607f * rect_w / 2.f;
 		const auto c = rect_center;
 
 		renderer->PathLineTo( c + ImVec2(  0, -r ) );
@@ -437,7 +493,7 @@ void ImGUI::NodeDiamondPin( const bool is_connected, const ImColor& color ) {
 		renderer->PathLineTo( c + ImVec2( -r,  0 ) );
 		renderer->PathFillConvex( color );
 	} else {
-		const auto r = 0.607f * rect_w / 2.0f - 0.5f;
+		const auto r = 0.607f * rect_w / 2.f - .5f;
 		const auto c = rect_center;
 
 		renderer->PathLineTo( c + ImVec2( 0, -r ) );
@@ -448,7 +504,7 @@ void ImGUI::NodeDiamondPin( const bool is_connected, const ImColor& color ) {
 		if ( ImGUI::NODE_PIN_INNER & 0xFF000000 )
 			renderer->AddConvexPolyFilled( renderer->_Path.Data, renderer->_Path.Size, ImGUI::NODE_PIN_INNER );
 
-		renderer->PathStroke( color, true, 2.0f * outline_scale );
+		renderer->PathStroke( color, true, 2.f * outline_scale );
 	}
 }
 
@@ -462,11 +518,11 @@ void ImGUI::NodeArrayPin( const bool is_connected, const ImColor& color ) {
 
 	auto rect = ImRect( cursor, ImVec2{ cursor.x + ImGUI::NODE_PIN_SIZE, cursor.y + ImGUI::NODE_PIN_SIZE } );
 	auto rect_w = rect.Max.x - rect.Min.x;
-	auto rect_center_x = ( rect.Min.x + rect.Max.x ) * 0.5f;
-	auto rect_center_y = ( rect.Min.y + rect.Max.y ) * 0.5f;
+	auto rect_center_x = ( rect.Min.x + rect.Max.x ) * .5f;
+	auto rect_center_y = ( rect.Min.y + rect.Max.y ) * .5f;
 	auto triangleStart = rect_center_x + 0.32f * rect_w;
 
-	const auto r = 0.5f * rect_w / 2.0f;
+	const auto r = .5f * rect_w / 2.f;
 	const auto w = ceilf( r / 3.0f );
 
 	const auto baseTl = ImVec2( floorf( rect_center_x - w * 2.5f ), floorf( rect_center_y - w * 2.5f ) );
@@ -510,8 +566,8 @@ void ImGUI::NodeTrianglePin( const bool is_connected, const ImColor& color ) {
 
 	const auto origin_scale = rect_w / 24.0f;
 	const auto offset_x = 1.0f * origin_scale;
-	const auto offset_y = 0.0f * origin_scale;
-	const auto margin = ( is_connected ? 2.0f : 2.0f ) * origin_scale;
+	const auto offset_y = 0.f * origin_scale;
+	const auto margin = ( is_connected ? 2.f : 2.f ) * origin_scale;
 	const auto rounding = 0.1f * origin_scale;
 	const auto tip_round = 0.7f;
 	const auto canvas = ImRect(
@@ -525,14 +581,14 @@ void ImGUI::NodeTrianglePin( const bool is_connected, const ImColor& color ) {
 	const auto canvas_w = canvas.Max.x - canvas.Min.x;
 	const auto canvas_h = canvas.Max.y - canvas.Min.y;
 
-	const auto left = canvas_x + canvas_w * 0.5f * 0.3f;
-	const auto right = canvas_x + canvas_w - canvas_w * 0.5f * 0.3f;
-	const auto top = canvas_y + canvas_h * 0.5f * 0.2f;
-	const auto bottom = canvas_y + canvas_h - canvas_h * 0.5f * 0.2f;
-	const auto center_y = ( top + bottom ) * 0.5f;
-	const auto tip_top = ImVec2( canvas_x + canvas_w * 0.5f, top );
+	const auto left = canvas_x + canvas_w * .5f * 0.3f;
+	const auto right = canvas_x + canvas_w - canvas_w * .5f * 0.3f;
+	const auto top = canvas_y + canvas_h * .5f * 0.2f;
+	const auto bottom = canvas_y + canvas_h - canvas_h * .5f * 0.2f;
+	const auto center_y = ( top + bottom ) * .5f;
+	const auto tip_top = ImVec2( canvas_x + canvas_w * .5f, top );
 	const auto tip_right = ImVec2( right, center_y );
-	const auto tip_bottom = ImVec2( canvas_x + canvas_w * 0.5f, bottom );
+	const auto tip_bottom = ImVec2( canvas_x + canvas_w * .5f, bottom );
 
 	renderer->PathLineTo( ImVec2( left, top ) + ImVec2( 0, rounding ) );
 	renderer->PathBezierCurveTo(
@@ -559,7 +615,7 @@ void ImGUI::NodeTrianglePin( const bool is_connected, const ImColor& color ) {
 		if ( ImGUI::NODE_PIN_INNER & 0xFF000000 )
 			renderer->AddConvexPolyFilled( renderer->_Path.Data, renderer->_Path.Size, ImGUI::NODE_PIN_INNER );
 
-		renderer->PathStroke( color, true, 2.0f * origin_scale );
+		renderer->PathStroke( color, true, 2.f * origin_scale );
 	} else
 		renderer->PathFillConvex( color );
 }
@@ -629,57 +685,23 @@ void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&
 }
 
 void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color, const ImVec2& position ) {
-	auto& style = ImGui::GetStyle( );
-	auto* renderer = ImGui::GetWindowDrawList( );
-	auto color_sep = ImColor( style.Colors[ ImGuiCol_Separator ] );
-	auto color_bg = ImColor( style.Colors[ ImGuiCol_Border ] );
-	auto pos = position + node.position * canvas.zoom + canvas.offset;
+	auto separator = ImColor( ImGui::GetStyle( ).Colors[ ImGuiCol_Separator ] );
 
-	ImGui::EndGroup( );
-
-	auto node_rect = ImRect{
-		ImGui::GetItemRectMin( ) - style.ItemInnerSpacing * canvas.zoom,
-		( ImGui::GetItemRectMax( ) + ImVec2{ ImGUI::NODE_PIN_SIZE, 0.f } ) + style.ItemInnerSpacing * canvas.zoom
-	};
-
-	auto header_size = ImVec2{
-		ImGui::GetItemRectSize( ).x + ( ImGUI::NODE_PIN_SIZE - ImGUI::NODE_ROUNDING ) + style.ItemInnerSpacing.x * canvas.zoom,
-		ImGUI::GetTextSize( node.name ).y + 3.f
-	};
-
-	if ( node.is_centered ) {
-		auto name_pos = pos + ImVec2{ ( header_size.x - ImGUI::GetTextSize( node.name ).x ) *.5f, 0 };
-
-		renderer->AddText( name_pos, ImColor{ ImGUI::DEFAULT_COLOR }, node.name );
-	}
-
-	renderer->ChannelsSetCurrent( 0 );
-	renderer->AddRectFilled( node_rect.Min, node_rect.Max, color, ImGUI::NODE_ROUNDING );
-	renderer->AddRect( node_rect.Min, node_rect.Max, color_bg, ImGUI::NODE_ROUNDING );
-
-	if ( node.is_selected ) {
-		auto rect_min = node_rect.Min - ImGUI::NODE_SELECTION_SIZE;
-		auto rect_max = node_rect.Max + ImGUI::NODE_SELECTION_SIZE;
-
-		renderer->AddRect( rect_min, rect_max, ImGUI::NODE_SELECTION_COLOR, ImGUI::NODE_ROUNDING );
-	}
-
-	renderer->AddLine( pos + ImVec2{ 0, header_size.y }, pos + header_size, color_sep );
-	renderer->ChannelsMerge( );
-
-	if ( node.description && strlen( node.description ) > 0 ) {
-		ImGUI::ToolTip(
-			[ & ]( const ImVec2& pos ) {
-				ImGui::Text( node.description );
-			}
-		);
-	}
-
-	ImGui::PopID( );
+	internal_Node( canvas, position, node, color, separator, 0 );
 }
 
 void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color, const ImVec2&& position ) {
 	ImGUI::EndNode( canvas, node, color, position );
+}
+
+void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle& style ) {
+	auto position = ImGui::GetWindowPos( );
+
+	internal_Node( canvas, position, node, style.background, style.separator, style.texture );
+}
+
+void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle&& style ) {
+	ImGUI::EndNode( canvas, node, style );
 }
 
 void ImGUI::EndCanvas( ) {

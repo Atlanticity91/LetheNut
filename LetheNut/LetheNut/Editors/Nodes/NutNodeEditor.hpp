@@ -75,6 +75,8 @@
 		void CreateLink( nUInt source_node, nUInt source_pin, nUInt destination_node, nUInt destination_pin, const ImVec4&& color );
 
 	protected:
+		virtual void Initialize( NutEditor* editor ) override;
+
 		/**
 		 * OnEditorProcess virtual method
 		 * @author : ALVES Quentin
@@ -91,7 +93,7 @@
 		 **/
 		virtual void OnEditorRender( NutEditor* editor ) override;
 
-		virtual void InternalDraw( const NutNode* node, bool is_selected );
+		virtual void InternalDraw( const NutNode* node, ImTextureID node_bg );
 
 		virtual void InternalDraw( const NutNode::PinList& pins, bool is_out, const float out_length );
 

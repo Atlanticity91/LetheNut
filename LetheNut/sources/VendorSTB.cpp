@@ -36,6 +36,11 @@
 
 #include "__ui.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_PERLIN_IMPLEMENTATION
+
 #include <LetheNut/Vendor/STB.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -46,11 +51,10 @@ STB::Image::Image( )
 { }
 
 bool STB::Load( Image& image, nString path ) {
-	if ( !image.data && strcmp( path, "" ) != 0 ) {
+	if ( !image.data && strcmp( path, "" ) != 0 )
+		image.data = stbi_load( path, &image.width, &image.height, &image.channels, 4 );
 
-	}
-
-	return false;
+	return image.data;
 }
 
 void STB::Close( Image& image ) {

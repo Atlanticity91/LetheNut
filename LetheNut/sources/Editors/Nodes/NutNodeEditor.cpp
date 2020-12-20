@@ -36,6 +36,7 @@
 
 #include "__ui.hpp"
 
+#include <LetheNut/NutEditor.hpp>
 #include <LetheNut/Editors/Nodes/NutNodeEditor.hpp>
 #include <LetheNut/Vendor/ImGUI.hpp>
 #include <LetheNut/Framework/Nodes/NutGLSL.hpp>
@@ -108,7 +109,12 @@ void NutNodeEditor::CreateLink( nUInt source_node, nUInt source_pin, nUInt desti
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTETED
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutNodeEditor::OnEditorProcess( class NutEditor* editor ) {
+void NutNodeEditor::Initialize( NutEditor* editor ) {
+    if ( editor->GetKernel( )->LoadImage( "NodeBG", "Assets/Media/node_background.png" ) )
+        printf( "Rock !\n" );
+}
+
+void NutNodeEditor::OnEditorProcess( NutEditor* editor ) {
     if ( !ImGui::IsMouseDown( ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) ) {
         if ( ImGui::IsMouseDragging( ImGuiMouseButton_Middle ) )
             this->canvas.offset += ImGUI::GetMouseDelta( );
@@ -150,8 +156,10 @@ void NutNodeEditor::OnEditorRender( NutEditor* editor ) {
     ImGUI::BeginCanvas( this->canvas );
 
     if ( this->parser ) {
+        auto node_bg = editor->GetKernel( )->GetImage( "NodeBG" );
+
         for ( auto& node : this->nodes )
-            this->InternalDraw( node, false );
+            this->InternalDraw( node, node_bg );
 
         for ( auto& link : this->links )
             this->InternalDraw( link );
@@ -160,14 +168,20 @@ void NutNodeEditor::OnEditorRender( NutEditor* editor ) {
     ImGUI::EndCanvas( );
 }
 
-void NutNodeEditor::InternalDraw( const NutNode* node, bool is_selected ) {
+void NutNodeEditor::InternalDraw( const NutNode* node, ImTextureID node_bg ) {
+    auto style = ImGUI::ImNodeStyle{ 
+        this->style->GetNode( node->GetType( ) ),
+        ImColor( ImGui::GetStyle( ).Colors[ ImGuiCol_Separator ] ), 
+        node_bg
+    };
+
     ImGUI::BeginNode( this->canvas, node->GetContext( ) );
 
         this->InternalDraw( node->GetInPins( ), false, 0.f );
         ImGui::SameLine( ImGui::GetItemRectSize( ).x + ImGUI::GetTextSize( "#####" ).x );
         this->InternalDraw( node->GetOutPins( ), true, node->GetOutLength( ) );
 
-    ImGUI::EndNode( this->canvas, node->GetContext( ), this->style->GetNode( node->GetType( ) ) );
+    ImGUI::EndNode( this->canvas, node->GetContext( ), style );
 }
 
 void NutNodeEditor::InternalDraw( const NutNode::PinList& pins, bool is_out, const float out_length ) {

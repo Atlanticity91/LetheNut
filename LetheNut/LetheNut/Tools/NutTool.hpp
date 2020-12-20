@@ -85,6 +85,8 @@
 		virtual ~NutTool( ) = default;
 
 	protected:
+		virtual void Initialize( NutEditor* editor );
+
 		/**
 		 * Process virtual method
 		 * @author : ALVES Quentin

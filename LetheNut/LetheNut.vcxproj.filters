@@ -99,34 +99,7 @@
     <ClCompile Include="Thirdparty\ImGUI\imgui_tables.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Nodes\NutGLSL.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="sources\VendorSTB.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Nodes\NutNode.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Nodes\NutNodeEditor.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Nodes\NutNodeModel.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Nodes\NutNodeParser.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Text\NutTextDocument.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Text\NutTextEditor.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Text\NutTextParser.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Text\NutTextStyle.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="sources\Maths\Matrix.cpp">
@@ -150,7 +123,34 @@
     <ClCompile Include="sources\Tools\NutViewport.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Nodes\NutNodeStyle.cpp">
+    <ClCompile Include="sources\Editors\Nodes\NutGLSL.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Nodes\NutNode.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Nodes\NutNodeEditor.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Nodes\NutNodeModel.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Nodes\NutNodeParser.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Nodes\NutNodeStyle.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Text\NutTextDocument.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Text\NutTextEditor.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Text\NutTextParser.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Text\NutTextStyle.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -41,10 +41,13 @@
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template< typename Type, typename... Args >
-	Type* NutPopup::OpenPanel( class NutEditor* editor, Args... args ) {
+	Type* NutPopup::OpenPanel( NutEditor* editor, Args... args ) {
 		auto* panel = new Type( args... );
 
 		if ( panel ) {
+			if ( dynamic_cast<NutTool*>( panel ) )
+				static_cast<NutTool*>( panel )->Initialize( editor );
+
 			this->panels.emplace_back( panel );
 
 			 reinterpret_cast<NutPanel*>( panel )->OnCreate( editor );

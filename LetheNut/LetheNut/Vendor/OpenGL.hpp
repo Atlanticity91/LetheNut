@@ -164,6 +164,8 @@
 		bool Create( Texture& texture, const ImVec2&& size );
 
 		bool Create( Texture& texture, nUInt width, nUInt height );
+
+		bool Create( Texture& texture, nUInt width, nUInt height, nUByte* pixels );
 		
 		bool Create( Material& material, nString vertex, nString fragment );
 
@@ -200,6 +202,10 @@
 		void Refresh( const Frame& frame, const ImVec4& color );
 
 		void Refresh( const Frame& frame, const ImVec4&& color );
+
+		void Fill( const Texture& texture, const void* pixels );
+
+		void Fill( const Texture& texture, nUInt level, nUInt offset_x, nUInt offset_y, nUInt width, nUInt height, const void* pixels );
 
 		void Fill( const Buffer& vertex, const nUInt size, const void* data );
 

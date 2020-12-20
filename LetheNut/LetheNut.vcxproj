@@ -94,10 +94,10 @@
   <ItemGroup>
     <ClCompile Include="sources\Maths\Matrix.cpp" />
     <ClCompile Include="sources\NutBasic.cpp" />
-    <ClCompile Include="sources\Nodes\NutNodeStyle.cpp" />
+    <ClCompile Include="sources\Editors\Nodes\NutNodeStyle.cpp" />
     <ClCompile Include="sources\Tools\NutBrowser.cpp" />
     <ClCompile Include="sources\NutEditor.cpp" />
-    <ClCompile Include="sources\Nodes\NutGLSL.cpp" />
+    <ClCompile Include="sources\Editors\Nodes\NutGLSL.cpp" />
     <ClCompile Include="sources\NutKernel.cpp" />
     <ClCompile Include="sources\NutLibrary.cpp" />
     <ClCompile Include="sources\NutLibrary_unix.cpp" />
@@ -105,10 +105,10 @@
     <ClCompile Include="sources\NutMenu.cpp" />
     <ClCompile Include="sources\NutMenuItem.cpp" />
     <ClCompile Include="sources\NutModule.cpp" />
-    <ClCompile Include="sources\Nodes\NutNode.cpp" />
-    <ClCompile Include="sources\Nodes\NutNodeEditor.cpp" />
-    <ClCompile Include="sources\Nodes\NutNodeModel.cpp" />
-    <ClCompile Include="sources\Nodes\NutNodeParser.cpp" />
+    <ClCompile Include="sources\Editors\Nodes\NutNode.cpp" />
+    <ClCompile Include="sources\Editors\Nodes\NutNodeEditor.cpp" />
+    <ClCompile Include="sources\Editors\Nodes\NutNodeModel.cpp" />
+    <ClCompile Include="sources\Editors\Nodes\NutNodeParser.cpp" />
     <ClCompile Include="sources\NutPanel.cpp" />
     <ClCompile Include="sources\NutPopup.cpp" />
     <ClCompile Include="sources\Tools\NutProfiler.cpp" />
@@ -116,10 +116,10 @@
     <ClCompile Include="sources\Tools\NutScene.cpp" />
     <ClCompile Include="sources\NutStyle.cpp" />
     <ClCompile Include="sources\Maths\Projection.cpp" />
-    <ClCompile Include="sources\Text\NutTextDocument.cpp" />
-    <ClCompile Include="sources\Text\NutTextEditor.cpp" />
-    <ClCompile Include="sources\Text\NutTextParser.cpp" />
-    <ClCompile Include="sources\Text\NutTextStyle.cpp" />
+    <ClCompile Include="sources\Editors\Text\NutTextDocument.cpp" />
+    <ClCompile Include="sources\Editors\Text\NutTextEditor.cpp" />
+    <ClCompile Include="sources\Editors\Text\NutTextParser.cpp" />
+    <ClCompile Include="sources\Editors\Text\NutTextStyle.cpp" />
     <ClCompile Include="sources\NutTool.cpp" />
     <ClCompile Include="sources\Tools\NutViewport.cpp" />
     <ClCompile Include="sources\NutWindow.cpp" />

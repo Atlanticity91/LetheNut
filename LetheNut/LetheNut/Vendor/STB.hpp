@@ -41,6 +41,7 @@
 	#include <Thirdparty/STB/Image.hpp>
 	#include <Thirdparty/STB/ImageResize.hpp>
 	#include <Thirdparty/STB/ImageWrite.hpp>
+	#include <Thirdparty/STB/Perlin.hpp>
 
 	namespace STB {
 
@@ -49,7 +50,6 @@
 			nInt width;
 			nInt height;
 			nInt channels;
-			nULong size;
 			nUByte* data;
 
 			Image( );

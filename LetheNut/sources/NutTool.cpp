@@ -42,8 +42,7 @@
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutTool::NutTool( nString name ) 
-	: NutPanel( name, true, ImVec2{ 0.f, 0.f } ),
-	is_running( true )
+	: NutTool( name, ImVec2{ 0.f, 0.f } )
 { }
 
 NutTool::NutTool( nString name, const ImVec2& padding )
@@ -52,13 +51,17 @@ NutTool::NutTool( nString name, const ImVec2& padding )
 { }
 
 NutTool::NutTool( nString name, const ImVec2&& padding )
-	: NutPanel( name, true, padding ),
-	is_running( true ) 
+	: NutTool( name, padding )
 { }
 
-void NutTool::Process( class NutEditor* editor ) { }
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PROTECTED
+///////////////////////////////////////////////////////////////////////////////////////////
+void NutTool::Initialize( NutEditor* editor ) { }
 
-void NutTool::OnEditorProcess( class NutEditor* editor ) { }
+void NutTool::Process( NutEditor* editor ) { }
+
+void NutTool::OnEditorProcess( NutEditor* editor ) { }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET

@@ -72,13 +72,18 @@
 		REG_VEC2( NO_PADDING, 0.f, 0.f );
 		REG_VEC2( DEFAULT_PADDING, 1.f, 1.f );
 		REG_VEC4( DEFAULT_COLOR, .8f, .8f, .8f, 1.f );
+		REG_VEC2( UV_MIN, 0.f, 0.f );
+		REG_VEC2( UV_MAX, 1.f, 1.f );
+		REG_COLOR( WHITE, 255, 255, 255, 255 );
 
 		REG_VAR( float, NODE_GRID_SIZE, 48.f );
 		REG_VAR( float, NODE_ROUNDING, 4.f );
 		REG_VAR( float, NODE_PIN_SIZE, 24.f );
+		REG_VAR( float, NODE_TILING, 1.f / 128.f );
 		REG_VEC2( NODE_SELECTION_SIZE, .1f, 1.f );
 		REG_COLOR( NODE_PIN_INNER, 32, 32, 32, 204 );
 		REG_COLOR( NODE_SELECTION_COLOR, 242, 178, 13, 255 );
+		REG_COLOR( NODE_HEADER_COLOR, 255, 255, 255, 28 );
 		REG_COLOR( NODE_COMMENT_COLOR, 208, 208, 208, 255 );
 
 		// Internal colors
@@ -126,6 +131,14 @@
 			ImVec2 position;
 			bool is_selected;
 			bool is_centered;
+
+		};
+
+		struct ImNodeStyle {
+
+			ImColor background;
+			ImColor separator;
+			ImTextureID texture;
 
 		};
 
@@ -879,6 +892,26 @@
 		 * @param color : Color of the node.
 		 **/
 		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color );
+
+		/**
+		 * EndNode method
+		 * @author : ALVES Quentin
+		 * @note : End the current node on a canvas.
+		 * @param canvas : Current context canvas where draw the node.
+		 * @param node : Query node context.
+		 * @param style : Current node style.
+		 **/
+		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle& style );
+
+		/**
+		 * EndNode method
+		 * @author : ALVES Quentin
+		 * @note : End the current node on a canvas.
+		 * @param canvas : Current context canvas where draw the node.
+		 * @param node : Query node context.
+		 * @param style : Current node style.
+		 **/
+		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle&& style );
 
 		/**
 		 * EndNode method

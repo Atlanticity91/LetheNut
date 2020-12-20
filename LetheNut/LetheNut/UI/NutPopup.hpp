@@ -37,6 +37,7 @@
 #ifndef _IGS_NUT_POPUP_HPP_
 #define _IGS_NUT_POPUP_HPP_
 
+	#include <LetheNut/Tools/NutTool.hpp>
 	#include <LetheNut/Vendor/ImGUI.hpp>
 
 	#include "NutPanel.hpp"

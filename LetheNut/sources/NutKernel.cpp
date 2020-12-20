@@ -51,12 +51,36 @@
 NutKernel::NutKernel( )
 	: NutModule( "Kernel" ),
     config( ),
-    libraries( )
+    libraries( ),
+    images( )
 { }
 
 NutKernel::~NutKernel( ) { 
     for ( auto lib : this->libraries )
         delete lib;
+
+    for ( auto image : this->images )
+        OpenGL::Destroy( image.second );
+}
+
+bool NutKernel::LoadImage( nString alias, nString path ) {
+    if ( path && strlen( path ) > 0 && !this->GetImage( alias ) ) {
+        auto pair = std::make_pair( alias, OpenGL::Texture( ) );
+        
+        if ( 
+            STB::Load( this->image_loader, path ) && 
+            OpenGL::Create( pair.second, this->image_loader.width, this->image_loader.height, this->image_loader.data )
+        ) {
+            //OpenGL::Fill( pair.second, this->image_loader.data );
+            STB::Close( this->image_loader );
+
+            this->images.emplace( pair );
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -199,4 +223,13 @@ NutLibrary* NutKernel::GetLibrary( nString name ) const {
     }
 
     return nullptr;
+}
+
+const ImTextureID NutKernel::GetImage( nString name ) const {
+    auto iterator = this->images.find( name );
+
+    if ( iterator != this->images.end( ) )
+        return reinterpret_cast<ImTextureID>( ( *iterator ).second.ID );
+
+    return 0;
 }
