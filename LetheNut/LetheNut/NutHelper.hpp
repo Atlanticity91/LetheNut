@@ -73,7 +73,7 @@
 	 *
 	 *		-> Create method Hi declaration ready for export.
 	 **/
-	#define NFUNC_DCL( RETURN, NAME, ... ) static RETURN NAPI #NAME( __VA_ARGS__ )
+	#define NFUNC_DCL( RETURN, NAME, ... ) RETURN NAPI NAME( __VA_ARGS__ )
 
 	/**
 	 * NFUNC macro
@@ -147,7 +147,7 @@
 	 *
 	 *		-> Create the module ExempleModule with NutKernel as parent.
 	 **/
-	#define NMODULE( NAME, ... ) class NAPI NAME : public NutModule, __VA_ARGS__
+	#define NMODULE( NAME ) class NAPI NAME : public NutModule
 
 	/**
 	 * NPANEL macro
@@ -162,7 +162,7 @@
 	 *
 	 *		-> Create the panel ExemplePanel with NutPanel as parent.
 	 **/
-	#define NPANEL( NAME, ... ) class NAPI NAME : public NutPanel, __VA_ARGS__
+	#define NPANEL( NAME ) class NAPI NAME : public NutPanel
 	
 	/**
 	 * NTOOL macro
@@ -177,6 +177,6 @@
 	 *
 	 *		-> Create the tool ExempleTool with NutTool as parent.
 	 **/
-	#define NTOOL( NAME, ... ) class NAPI NAME : public NutTool, __VA_ARGS__
+	#define NTOOL( NAME ) class NAPI NAME : public NutTool
 
 #endif

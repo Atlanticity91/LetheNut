@@ -40,19 +40,14 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
-	template< typename Return, typename Type, typename... Args >
-	Return NutLibrary::Call( nString name, Args... args ) {
-		Type function = this->Get<Type>( name );
+	template< typename Functor, typename... Args >
+	auto NutLibrary::Call( nString name, Args... args ) {
+		decltype( Functor ) function = this->handle[ name ];
 
-		return ( function ) ? (Return)function( args... ) : Return( );
+		if ( function )
+			return function( args... );
+
+		return { };
 	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////
-	//      PUBLIC GET
-	///////////////////////////////////////////////////////////////////////////////////////////
-	template< typename Type >
-	Type NutLibrary::Get( nString name ) const {
-		return (Type)this->Get( name ); 
-	};
 
 #endif

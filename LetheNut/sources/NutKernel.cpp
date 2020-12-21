@@ -71,7 +71,6 @@ bool NutKernel::LoadImage( nString alias, nString path ) {
             STB::Load( this->image_loader, path ) && 
             OpenGL::Create( pair.second, this->image_loader.width, this->image_loader.height, this->image_loader.data )
         ) {
-            //OpenGL::Fill( pair.second, this->image_loader.data );
             STB::Close( this->image_loader );
 
             this->images.emplace( pair );
@@ -87,7 +86,7 @@ bool NutKernel::LoadImage( nString alias, nString path ) {
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutKernel::Initialize( NutEditor* editor ) {
-    if ( this->config.Load( "NutEditor.json" ) ) {
+    if ( this->config.Load( "Assets/NutEditor.json" ) ) {
         this->LoadLibraries( editor );
         this->LoadModules( editor );
     }
@@ -152,18 +151,15 @@ void NutKernel::LoadLibraries( NutEditor* editor ) {
 }
 
 void NutKernel::LoadModules( NutEditor* editor ) {
-    NutLibrary loader;
+    typedef void( *Registra )( class NutEditor* );
 
     for ( auto path : this->config.Get<nJSON::StringArray>( "Modules" ) ) {
         if ( !path.empty( ) ) {
-            loader = NutLibrary( path );
-
-            if ( loader.GetState( ) ) {
-                auto module_registration = loader.Get<void( * )( NutEditor* )>( "RegisterModule" );
-
-                if ( module_registration )
-                    module_registration( editor );
-            }
+            NutPlatformLib module_lib( path );
+            Registra module_build = module_lib[ "RegisterModule" ];
+            
+            if ( module_build )
+                module_build( editor );
         }
     }
 }

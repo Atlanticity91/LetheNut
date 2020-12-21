@@ -106,7 +106,12 @@ void NutNodeParser::Initialize( ) {
 	this->CreateForeach( ENutPinTypes::EPT_FLOAT32, "Foreach (float32)" );
 	this->CreateForeach( ENutPinTypes::EPT_FLOAT64, "Foreach (float64)" );
 
-	this->CreateVar( ENutPinTypes::EPT_BOOL, false, "_TEST_0_" );
+	this->CreateSplit( "Split (vec2)", ENutPinTypes::EPT_VECT2, ENutPinTypes::EPT_FLOAT32, { "X", "Y" } );
+	this->CreateSplit( "Split (vec3)", ENutPinTypes::EPT_VECT3, ENutPinTypes::EPT_FLOAT32, { "X", "Y", "Z" } );
+	this->CreateSplit( "Split (vec4)", ENutPinTypes::EPT_VECT4, ENutPinTypes::EPT_FLOAT32, { "X", "Y", "Z", "W" } );
+	this->CreateSplit( "Split (mat2)", ENutPinTypes::EPT_MAT2, ENutPinTypes::EPT_VECT2, { "Row 0", "Row 1" } );
+	this->CreateSplit( "Split (mat3)", ENutPinTypes::EPT_MAT3, ENutPinTypes::EPT_VECT3, { "Row 0", "Row 1", "Row 2" } );
+	this->CreateSplit( "Split (mat4)", ENutPinTypes::EPT_MAT4, ENutPinTypes::EPT_VECT4, { "Row 0", "Row 1", "Row 2", "Row 3" } );
 }
 
 void NutNodeParser::CreateVar( ENutPinTypes type, bool is_array, nString name ) {
@@ -152,6 +157,14 @@ void NutNodeParser::CreateClamp( ENutPinTypes type, nString name ) {
 	clamp->AddIn( false, type, "Maximum", "" );
 	clamp->AddIn( false, type, "Value", "" );
 	clamp->AddOut( false, type, "Return", "" );
+}
+
+void NutNodeParser::CreateSplit( nString name, ENutPinTypes in, ENutPinTypes out, std::vector<nString> out_names ) {
+	auto* split = this->Create( ENutNodeTypes::ENT_OPERATION, name, "" );
+	split->AddIn( false, in, "", "" );
+
+	for ( auto name : out_names )
+		split->AddOut( false, out, name, "" );
 }
 
 void NutNodeParser::CreateLerp( ENutPinTypes type, nString name ) {

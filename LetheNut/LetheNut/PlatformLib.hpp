@@ -34,29 +34,66 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_PLATFORM_LIB_HPP_
+#define _IGS_PLATFORM_LIB_HPP_
 
-#ifndef _WIN64
+	#include "Core.hpp"
 
-#include <dlfcn.h>
-#include <LetheNut/NutLibrary.hpp>
+	class NUT_API NutProcedure final {
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutLibrary::NutLibrary( std::string path ) {
-	this->handle = dlopen( path.c_str( ), RTLD_LAZY );
+	private:
+#ifdef _WIN64
+		FARPROC handle;
+#else
+		void* handle;
+#endif
 
-	this->Initialize( );
-}
+	public:
+#ifdef _WIN64
+		NutProcedure( FARPROC handle );
+#else
+		NutProcedure( void* handle );
+#endif
 
-NutLibrary::~NutLibrary( ) { dlclose( this->handle ); }
+	public:
+		template <typename Functor, typename = std::enable_if_t<std::is_function_v<Functor>>>
+		operator Functor* ( ) const {
+			return reinterpret_cast<Functor*>( this->handle );
+		};
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PRIVATE GET
-///////////////////////////////////////////////////////////////////////////////////////////
-bool NutLibrary::GetState( ) const { return this->handle != nullptr; }
+	};
 
-void* NutLibrary::Get( nString name ) const { return dlsym( this->handle, name ); }
+	class NUT_API NutPlatformLib final {
+
+	private:
+#ifdef _WIN64
+		HMODULE handle;
+#else
+		void* handle;
+#endif
+
+	public:
+		NutPlatformLib( );
+
+		NutPlatformLib( nString path );
+
+		NutPlatformLib( const std::string& path );
+
+		~NutPlatformLib( );
+
+	public:
+		bool GetIsValid( ) const;
+
+		bool Has( nString query_name ) const;
+
+		NutProcedure Get( nString query_name ) const;
+
+	private:
+		bool IsValid( nString query_name ) const;
+
+	public:
+		NutProcedure operator[]( nString query_name ) const;
+
+	};
 
 #endif

@@ -43,23 +43,24 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PRIVATE
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutLibrary::Initialize( ) {
-	this->name = this->Get<NutLibImporter>( "GetName" );
-	this->description = this->Get<NutLibImporter>( "GetDescription" );
-	this->author = this->Get<NutLibImporter>( "GetAuthor" );
-	this->version = this->Get<NutLibImporter>( "GetVersion" );
-	this->license = this->Get<NutLibImporter>( "GetLicense" );
+NutLibrary::NutLibrary( nString path ) 
+	: handle( path )
+{ 
+	this->name = this->handle[ "GetName" ];
+	this->description = this->handle[ "GetDescription" ];
+	this->author = this->handle[ "GetAuthor" ];
+	this->version = this->handle[ "GetVersion" ];
+	this->license = this->handle[ "GetLicense" ];
 }
+
+NutLibrary::NutLibrary( const std::string& path )
+	: NutLibrary( path.c_str( ) )
+{ }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
-bool NutLibrary::GetIsValid( ) const {
-	if ( this->GetState( ) && this->name )
-		return strcmp( "", this->name( ) ) != 0;
-
-	return false;
-}
+bool NutLibrary::GetIsValid( ) const { return this->handle.GetIsValid( ) && this->name; }
 
 nString NutLibrary::GetName( ) const { NCALL( name ); }
 
@@ -70,3 +71,10 @@ nString NutLibrary::GetAuthor( ) const { NCALL( author ); }
 nString NutLibrary::GetVersion( ) const { NCALL( version ); }
 
 nString NutLibrary::GetLicense( ) const { NCALL( license ); }
+
+NutProcedure NutLibrary::Get( nString name ) const { return this->handle.Get( name ); }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//      OPERATOR 
+///////////////////////////////////////////////////////////////////////////////////////////
+NutProcedure NutLibrary::operator[]( nString name ) const { return this->Get( name ); }

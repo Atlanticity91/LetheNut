@@ -37,7 +37,7 @@
 #ifndef _IGS_NUT_LIBRARY_HPP_
 #define _IGS_NUT_LIBRARY_HPP_
 
-	#include "Core.hpp"
+	#include "PlatformLib.hpp"
 
 	/**
 	 * NutLibImporter definition
@@ -56,12 +56,7 @@
 		friend class NutKernel;
 
 	private:
-#ifdef _WIN64
-		HMODULE handle;
-#else
-		void* handle;
-#endif
-
+		NutPlatformLib handle;
 		NutLibImporter name;
 		NutLibImporter description;
 		NutLibImporter author;
@@ -80,21 +75,20 @@
 		 * @author : ALVES Quentin
 		 * @param path : Path to the query library.
 		 **/
-		NutLibrary( std::string path );
+		NutLibrary( nString path );
+
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param path : Path to the query library.
+		 **/
+		NutLibrary( const std::string& path );
 
 		/**
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutLibrary( );
-
-	private:
-		/**
-		 * Initialize method
-		 * @author : ALVES Quentin
-		 * @note : Initialize the current library.
-		 **/
-		void Initialize( );
+		~NutLibrary( ) = default;
 
 	public:
 		/**
@@ -108,8 +102,8 @@
 		 * @param args : Arguments for the function call.
 		 * @return : Return
 		 **/
-		template< typename Return, typename Type, typename... Args >
-		Return Call( nString name, Args... args );
+		template< typename Functor, typename... Args >
+		auto Call( nString name, Args... args );
 
 	public:
 		/**
@@ -160,35 +154,10 @@
 		 **/
 		nString GetLicense( ) const;
 
-	private:
-		/**
-		 * GetState inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get the library state.
-		 * @return : bool
-		 **/
-		inline bool GetState( ) const;
-
-		/**
-		 * Get const function
-		 * @author : ALVES Quentin
-		 * @note : Get a function of the library.
-		 * @param name : Name of the query function.
-		 * @return : void*
-		 **/
-		void* Get( nString name ) const;
+		NutProcedure Get( nString name ) const;
 
 	public:
-		/**
-		 * Get template const function
-		 * @author : ALVES Quentin
-		 * @note : Get a function of the library.
-		 * @temlate Type : Function type definition.
-		 * @param name : Name of the query function.
-		 * @return : Type
-		 **/
-		template< typename Type >
-		Type Get( nString name ) const;
+		NutProcedure operator[]( nString name ) const;
 
 	};
 

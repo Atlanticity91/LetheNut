@@ -119,6 +119,8 @@
 
 		virtual void CreateClamp( ENutPinTypes type, nString name );
 
+		virtual void CreateSplit( nString name, ENutPinTypes in, ENutPinTypes out, std::vector<nString> out_names );
+
 		virtual void CreateLerp( ENutPinTypes type, nString name );
 
 		virtual void CreateForeach( ENutPinTypes type, nString name );

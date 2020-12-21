@@ -49,10 +49,7 @@ NutPanel::NutPanel( nString name, bool is_active, const ImVec2& padding )
 { }
 
 NutPanel::NutPanel( nString name, bool is_active, const ImVec2&& padding )
-	: NutBasic( name ),
-	is_active( is_active ),
-	padding( padding ),
-	menus( ) 
+	: NutPanel( name, is_active, padding )
 { }
 
 class NutPanel* NutPanel::Enable( ) {

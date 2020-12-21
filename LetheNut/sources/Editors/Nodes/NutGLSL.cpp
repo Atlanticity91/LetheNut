@@ -51,6 +51,9 @@ NutGLSL::~NutGLSL( ) {
 void NutGLSL::Initialize( ) {
 	NutNodeParser::Initialize( );
 
+	auto* time = this->Create( ENutNodeTypes::ENT_FUNCTION, "Time (ms)", "Current elapsed Time in ms." );
+	time->AddIn( false, ENutPinTypes::EPT_FLOAT32, "Time", "" );
+
 	auto* material = this->Create( ENutNodeTypes::ENT_OPERATION, "Material", "" );
 	material->AddIn( false, EGLSLTypes::EGT_SAMPLER2D, "Diffuse", "Diffuse color of the material." );
 	material->AddIn( false, EGLSLTypes::EGT_SAMPLER2D, "Specular", "Specular map of the material." );

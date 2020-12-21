@@ -54,6 +54,7 @@
 	 * Import native C++ libraries.
 	 * @author : ALVES Quentin
 	 **/
+	#include <array>
 	#include <bitset>
 	#include <chrono>
 	#include <future>

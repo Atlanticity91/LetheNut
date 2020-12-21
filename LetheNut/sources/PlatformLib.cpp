@@ -36,28 +36,79 @@
 
 #include "__ui.hpp"
 
-#ifdef _WIN64
-
-#include <LetheNut/NutLibrary.hpp>
+#include <LetheNut/PlatformLib.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutLibrary::NutLibrary( std::string path ) {
-	this->handle = LoadLibraryA( path.c_str( ) );
+#ifdef _WIN64
+NutProcedure::NutProcedure( FARPROC handle )
+#else
+NutProcedure::NutProcedure( void* handle )
+#endif
+	: handle( handle ) 
+{ }
 
-	this->Initialize( );
+NutPlatformLib::NutPlatformLib( ) 
+	: handle( nullptr )
+{ }
+
+NutPlatformLib::NutPlatformLib( nString path ) 
+#ifdef _WIN64
+	: handle( LoadLibraryA( path ) )
+#else
+	: handle( dlopen( path, RTLD_LAZY ) )
+#endif
+{ }
+
+NutPlatformLib::NutPlatformLib( const std::string& path )
+	: NutPlatformLib( path.c_str( ) )
+{ }
+
+NutPlatformLib::~NutPlatformLib( ) { 
+#ifdef _WIN64
+	FreeLibrary( this->handle );
+#else
+	dlclose( this->handle );
+#endif
 }
 
-NutLibrary::~NutLibrary( ) { FreeLibrary( this->handle ); }
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC GET
+///////////////////////////////////////////////////////////////////////////////////////////
+bool NutPlatformLib::GetIsValid( ) const { return this->handle != nullptr; }
+
+bool NutPlatformLib::Has( nString query_name ) const { 
+	if ( this->IsValid( query_name ) )
+		return GetProcAddress( this->handle, query_name ) != nullptr;
+
+	return false;
+}
+
+NutProcedure NutPlatformLib::Get( nString query_name ) const {
+	if ( this->IsValid( query_name ) ) {
+#ifdef _WIN64
+		auto procedure = GetProcAddress( this->handle, query_name );
+#else
+		auto procedure = dlsym( this->handle, name );
+#endif
+
+		return NutProcedure( procedure );
+	}
+
+	return NutProcedure( nullptr );
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PRIVATE GET
 ///////////////////////////////////////////////////////////////////////////////////////////
-bool NutLibrary::GetState( ) const {  return this->handle != nullptr; }
-
-void* NutLibrary::Get( nString name ) const { 
-	return (void*)GetProcAddress( this->handle, name );
+bool NutPlatformLib::IsValid( nString query_name ) const {
+	return this->handle != nullptr && query_name && strlen( query_name ) > 0;
 }
 
-#endif
+///////////////////////////////////////////////////////////////////////////////////////////
+//      OPERATOR
+///////////////////////////////////////////////////////////////////////////////////////////
+NutProcedure NutPlatformLib::operator[]( nString query_name ) const { 
+	return this->Get( query_name );
+}
