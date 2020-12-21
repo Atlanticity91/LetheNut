@@ -55,12 +55,12 @@
 
 		virtual ~NutNodeStyle( ) = default;
 
-		virtual void Initialize( );
-
 	protected:
 		void RegisterNode( nUInt query, ImColor color );
 
 		void RegisterPin( nUInt query, ImColor color );
+
+		virtual void Validate( );
 
 	public:
 		const ImColor& GetNode( nUInt query ) const;

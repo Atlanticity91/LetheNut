@@ -42,77 +42,15 @@
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutNodeParser::NutNodeParser( )
-	: NutBasic( "Default" ),
-	models( ) 
+	: NutNodeParser( "Default" )
 { }
 
 NutNodeParser::NutNodeParser( nString name )
 	: NutBasic( name ),
-	models( )
-{ }
+	models( ) 
+{ this->Validate ( ); }
 
 NutNodeParser::~NutNodeParser( ) { }
-
-void NutNodeParser::Initialize( ) { 
-	auto* branch = this->Create( ENutNodeTypes::ENT_BRANCH, "Branch", "" );
-	branch->AddIn( false, ENutPinTypes::EPT_FLOW, "", "" );
-	branch->AddOut( false, ENutPinTypes::EPT_FLOW, "True", "" );
-	branch->AddOut( false, ENutPinTypes::EPT_FLOW, "False", "" );
-
-	this->CreateOperation( ENutPinTypes::EPT_INT8, "Add (int8)", "Add two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT16, "Add (int16)", "Add two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT32, "Add (int32)", "Add two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT64, "Add (int64)", "Add two value." );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Add (float32)", "Add two value." );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Add (float64)", "Add two value." );
-
-	this->CreateOperation( ENutPinTypes::EPT_INT8, "Subtract (int8)", "Subtract two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT16, "Subtract (int16)", "Subtract two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT32, "Subtract (int32)", "Subtract two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT64, "Subtract (int64)", "Subtract two value." );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Subtract (float32)", "Subtract two value." );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Subtract (float64)", "Subtract two value." );
-
-	this->CreateOperation( ENutPinTypes::EPT_INT8, "Multiply (int8)", "Multiply two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT16, "Multiply (int16)", "Multiply two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT32, "Multiply (int32)", "Multiply two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT64, "Multiply (int64)", "Multiply two value." );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Multiply (float32)", "Multiply two value." );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Multiply (float64)", "Multiply two value." );
-
-	this->CreateOperation( ENutPinTypes::EPT_INT8, "Divide (int8)", "Divide two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT16, "Divide (int16)", "Divide two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT32, "Divide (int32)", "Divide two value." );
-	this->CreateOperation( ENutPinTypes::EPT_INT64, "Divide (int64)", "Divide two value." );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Divide (float32)", "Divide two value." );
-	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Divide (float64)", "Divide two value." );
-
-	this->CreateClamp( ENutPinTypes::EPT_INT8, "Clamp (int8)" );
-	this->CreateClamp( ENutPinTypes::EPT_INT16, "Clamp (int16)" );
-	this->CreateClamp( ENutPinTypes::EPT_INT32, "Clamp (int32)" );
-	this->CreateClamp( ENutPinTypes::EPT_INT64, "Clamp (int64)" );
-	this->CreateClamp( ENutPinTypes::EPT_FLOAT32, "Clamp (float32)" );
-	this->CreateClamp( ENutPinTypes::EPT_FLOAT64, "Clamp (float64)" );
-
-	this->CreateLerp( ENutPinTypes::EPT_INT8, "Lerp (int8)" );
-	this->CreateLerp( ENutPinTypes::EPT_INT16, "Lerp (int16)" );
-	this->CreateLerp( ENutPinTypes::EPT_INT32, "Lerp (int32)" );
-	this->CreateLerp( ENutPinTypes::EPT_INT64, "Lerp (int64)" );
-
-	this->CreateForeach( ENutPinTypes::EPT_INT8, "Foreach (int8)" );
-	this->CreateForeach( ENutPinTypes::EPT_INT16, "Foreach (int16)" );
-	this->CreateForeach( ENutPinTypes::EPT_INT32, "Foreach (int32)" );
-	this->CreateForeach( ENutPinTypes::EPT_INT64, "Foreach (int64)" );
-	this->CreateForeach( ENutPinTypes::EPT_FLOAT32, "Foreach (float32)" );
-	this->CreateForeach( ENutPinTypes::EPT_FLOAT64, "Foreach (float64)" );
-
-	this->CreateSplit( "Split (vec2)", ENutPinTypes::EPT_VECT2, ENutPinTypes::EPT_FLOAT32, { "X", "Y" } );
-	this->CreateSplit( "Split (vec3)", ENutPinTypes::EPT_VECT3, ENutPinTypes::EPT_FLOAT32, { "X", "Y", "Z" } );
-	this->CreateSplit( "Split (vec4)", ENutPinTypes::EPT_VECT4, ENutPinTypes::EPT_FLOAT32, { "X", "Y", "Z", "W" } );
-	this->CreateSplit( "Split (mat2)", ENutPinTypes::EPT_MAT2, ENutPinTypes::EPT_VECT2, { "Row 0", "Row 1" } );
-	this->CreateSplit( "Split (mat3)", ENutPinTypes::EPT_MAT3, ENutPinTypes::EPT_VECT3, { "Row 0", "Row 1", "Row 2" } );
-	this->CreateSplit( "Split (mat4)", ENutPinTypes::EPT_MAT4, ENutPinTypes::EPT_VECT4, { "Row 0", "Row 1", "Row 2", "Row 3" } );
-}
 
 void NutNodeParser::CreateVar( ENutPinTypes type, bool is_array, nString name ) {
 	auto var = this->Create( ENutNodeTypes::ENT_VARIABLE, name, "" );
@@ -183,6 +121,67 @@ void NutNodeParser::CreateForeach( ENutPinTypes type, nString name ) {
 	foreach->AddOut( false, ENutPinTypes::EPT_FLOW, "Loop", "" );
 	foreach->AddOut( false, type, "Element", "" );
 	foreach->AddOut( false, ENutPinTypes::EPT_INT32, "Element ID", "" );
+}
+
+void NutNodeParser::Validate( ) {
+	auto* branch = this->Create( ENutNodeTypes::ENT_BRANCH, "Branch", "" );
+	branch->AddIn( false, ENutPinTypes::EPT_FLOW, "", "" );
+	branch->AddOut( false, ENutPinTypes::EPT_FLOW, "True", "" );
+	branch->AddOut( false, ENutPinTypes::EPT_FLOW, "False", "" );
+
+	this->CreateOperation( ENutPinTypes::EPT_INT8, "Add (int8)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT16, "Add (int16)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT32, "Add (int32)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT64, "Add (int64)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Add (float32)", "Add two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Add (float64)", "Add two value." );
+
+	this->CreateOperation( ENutPinTypes::EPT_INT8, "Subtract (int8)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT16, "Subtract (int16)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT32, "Subtract (int32)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT64, "Subtract (int64)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Subtract (float32)", "Subtract two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Subtract (float64)", "Subtract two value." );
+
+	this->CreateOperation( ENutPinTypes::EPT_INT8, "Multiply (int8)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT16, "Multiply (int16)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT32, "Multiply (int32)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT64, "Multiply (int64)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Multiply (float32)", "Multiply two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Multiply (float64)", "Multiply two value." );
+
+	this->CreateOperation( ENutPinTypes::EPT_INT8, "Divide (int8)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT16, "Divide (int16)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT32, "Divide (int32)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_INT64, "Divide (int64)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT32, "Divide (float32)", "Divide two value." );
+	this->CreateOperation( ENutPinTypes::EPT_FLOAT64, "Divide (float64)", "Divide two value." );
+
+	this->CreateClamp( ENutPinTypes::EPT_INT8, "Clamp (int8)" );
+	this->CreateClamp( ENutPinTypes::EPT_INT16, "Clamp (int16)" );
+	this->CreateClamp( ENutPinTypes::EPT_INT32, "Clamp (int32)" );
+	this->CreateClamp( ENutPinTypes::EPT_INT64, "Clamp (int64)" );
+	this->CreateClamp( ENutPinTypes::EPT_FLOAT32, "Clamp (float32)" );
+	this->CreateClamp( ENutPinTypes::EPT_FLOAT64, "Clamp (float64)" );
+
+	this->CreateLerp( ENutPinTypes::EPT_INT8, "Lerp (int8)" );
+	this->CreateLerp( ENutPinTypes::EPT_INT16, "Lerp (int16)" );
+	this->CreateLerp( ENutPinTypes::EPT_INT32, "Lerp (int32)" );
+	this->CreateLerp( ENutPinTypes::EPT_INT64, "Lerp (int64)" );
+
+	this->CreateForeach( ENutPinTypes::EPT_INT8, "Foreach (int8)" );
+	this->CreateForeach( ENutPinTypes::EPT_INT16, "Foreach (int16)" );
+	this->CreateForeach( ENutPinTypes::EPT_INT32, "Foreach (int32)" );
+	this->CreateForeach( ENutPinTypes::EPT_INT64, "Foreach (int64)" );
+	this->CreateForeach( ENutPinTypes::EPT_FLOAT32, "Foreach (float32)" );
+	this->CreateForeach( ENutPinTypes::EPT_FLOAT64, "Foreach (float64)" );
+
+	this->CreateSplit( "Split (vec2)", ENutPinTypes::EPT_VECT2, ENutPinTypes::EPT_FLOAT32, { "X", "Y" } );
+	this->CreateSplit( "Split (vec3)", ENutPinTypes::EPT_VECT3, ENutPinTypes::EPT_FLOAT32, { "X", "Y", "Z" } );
+	this->CreateSplit( "Split (vec4)", ENutPinTypes::EPT_VECT4, ENutPinTypes::EPT_FLOAT32, { "X", "Y", "Z", "W" } );
+	this->CreateSplit( "Split (mat2)", ENutPinTypes::EPT_MAT2, ENutPinTypes::EPT_VECT2, { "Row 0", "Row 1" } );
+	this->CreateSplit( "Split (mat3)", ENutPinTypes::EPT_MAT3, ENutPinTypes::EPT_VECT3, { "Row 0", "Row 1", "Row 2" } );
+	this->CreateSplit( "Split (mat4)", ENutPinTypes::EPT_MAT4, ENutPinTypes::EPT_VECT4, { "Row 0", "Row 1", "Row 2", "Row 3" } );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

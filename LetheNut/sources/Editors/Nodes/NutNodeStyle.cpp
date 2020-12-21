@@ -46,12 +46,12 @@ NutNodeStyle::NutNodeStyle( )
 { }
 
 NutNodeStyle::NutNodeStyle( nString name )
-	: NutBasic( name ),
-	node_colors( ),
-	pin_colors( )
-{ }
+    : NutBasic( name ),
+    node_colors( ),
+    pin_colors( ) 
+{ this->Validate( ); }
 
-void NutNodeStyle::Initialize( ) {
+void NutNodeStyle::Validate( ) {
     this->RegisterNode( ENT_BRANCH,     ImColor{ 220,  48,  48 } );
     this->RegisterNode( ENT_CONSTANT,   ImColor{  68, 201, 156 } );
     this->RegisterNode( ENT_EVENT,      ImColor{ 220,  48,  48 } );

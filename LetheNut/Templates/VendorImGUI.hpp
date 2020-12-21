@@ -41,42 +41,34 @@
 	//      INTERNAL 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template< typename Type >
-	void Internal_Vect( const std::string& axe, const ImVec4& normal, const ImVec4& hovered, Type& value, Type reset ) {
-		auto axe_str = axe.c_str( );
+	void Internal_Vect( const char axe, const ImVec4& normal, const ImVec4& hovered, Type& value, Type reset ) {
+		char axe_str[ 2 ] = { axe, '\0' };
+		auto lineHeight = ImGUI::GetLineHeight( );
+		auto buttonSize = ImVec2{ lineHeight + 3.0f, lineHeight };
 
-		if ( strlen( axe_str ) > 0 ) {
-			auto lineHeight = ImGUI::GetLineHeight( );
-			auto buttonSize = ImVec2{ lineHeight + 3.0f, lineHeight };
+		ImGui::PushStyleColor( ImGuiCol_Button, normal );
+		ImGui::PushStyleColor( ImGuiCol_ButtonHovered, hovered );
+		ImGui::PushStyleColor( ImGuiCol_ButtonActive, normal );
 
-			ImGui::PushStyleColor( ImGuiCol_Button, normal );
-			ImGui::PushStyleColor( ImGuiCol_ButtonHovered, hovered );
-			ImGui::PushStyleColor( ImGuiCol_ButtonActive, normal );
+		if ( ImGui::Button( axe_str, buttonSize ) )
+			value = reset;
 
-			if ( ImGui::Button( axe_str, buttonSize ) )
-				value = reset;
-
-			ImGui::PopStyleColor( 3 );
-		}
+		ImGui::PopStyleColor( 3 );
 
 		ImGui::SameLine( );
 
+		char drag_str[ 4 ] = { '#', '#', axe, '\0' };
 		if constexpr ( std::is_floating_point<Type>::value )
-			ImGui::DragFloat( ( "##" + axe ).c_str( ), &value, 0.1f, 0.0f, 0.0f, "%.2f" );
+			ImGui::DragFloat( drag_str, &value, 0.1f, 0.0f, 0.0f, "%.2f" );
 		else
-			ImGui::DragInt( ( "##" + axe ).c_str( ), &value, 0.1f, 0.0f, 0.0f, "%.2f" );
-	}
-
-	template< typename Type >
-	inline void Internal_Vect( const std::string& axe, const ImVec4&& normal, const ImVec4&& hovered, Type& value, Type reset ) {
-		Internal_Vect<Type>( axe, normal, hovered, value, reset );
+			ImGui::DragInt( drag_str, &value, 0.1f, 0.0f, 0.0f, "%.2f" );
 	}
 
 	template< typename Type >
 	void Internal_Slide( char axe, const ImVec4& normal, const ImVec4& hovered, Type& value, Type min, Type max ) {
-		auto axe_str = std::string( );
-		axe_str[ 0 ] = axe;
+		char axe_str[ 2 ] = { axe, '\0' };
 
-		nClamp( value, min, max );
+		nHelper::Clamp( value, min, max );
 
 		auto lineHeight = ImGUI::GetLineHeight( );
 		auto buttonSize = ImVec2{ lineHeight + 3.0f, lineHeight };
@@ -86,7 +78,7 @@
 		ImGui::PushStyleColor( ImGuiCol_ButtonHovered, hovered );
 		ImGui::PushStyleColor( ImGuiCol_ButtonActive, normal );
 
-		if ( ImGui::Button( axe_str.c_str( ), buttonSize ) )
+		if ( ImGui::Button( axe_str, buttonSize ) )
 			value = min;
 
 		ImGui::SameLine( );
@@ -101,7 +93,7 @@
 		
 		axe_str[ 0 ] = toupper( axe );
 
-		if ( ImGui::Button( axe_str.c_str( ), buttonSize ) )
+		if ( ImGui::Button( axe_str, buttonSize ) )
 			value = max;
 
 		ImGui::PopStyleColor( 3 );
@@ -188,7 +180,7 @@
 
 	template< typename... Args >
 	void ImGUI::Text( const ImColor&& color, nString format, Args... args ) {
-		ImGUI::Text< Args... >( format, color, args... );
+		ImGUI::Text< Args... >( color, format, args... );
 	}
 
 	template< typename OnFly >
@@ -277,10 +269,10 @@
 				ImGUI::Internal_StyleHeader( label, 4 );
 
 				if ( description && strlen( description ) > 0 )
-					ImGUI::ToolTip( [ & ]( const ImVec2& pos ) { ImGUI::Text( description, ImGUI::DEFAULT_COLOR ); } );
+					ImGUI::ToolTip( [ & ]( const ImVec2& pos ) { ImGUI::Text( ImGUI::DEFAULT_COLOR, description ); } );
 
 				Internal_Vect(
-					"X", ImGUI::AxeX_Normal, ImGUI::AxeX_Hovered,
+					'X', ImGUI::AxeX_Normal, ImGUI::AxeX_Hovered,
 					data[ 0 ], reset
 				);
 
@@ -288,7 +280,7 @@
 					ImGui::SameLine( );
 
 					Internal_Vect(
-						"Y", ImGUI::AxeY_Normal, ImGUI::AxeY_Hovered,
+						'Y', ImGUI::AxeY_Normal, ImGUI::AxeY_Hovered,
 						data[ 1 ], reset
 					);
 
@@ -296,7 +288,7 @@
 						ImGui::SameLine( );
 
 						Internal_Vect(
-							"Z", ImGUI::AxeZ_Normal, ImGUI::AxeZ_Hovered,
+							'Z', ImGUI::AxeZ_Normal, ImGUI::AxeZ_Hovered,
 							data[ 2 ], reset
 						);
 
@@ -304,7 +296,7 @@
 							ImGui::SameLine( );
 
 							Internal_Vect(
-								"W", ImGUI::AxeW_Normal, ImGUI::AxeW_Hovered,
+								'W', ImGUI::AxeW_Normal, ImGUI::AxeW_Hovered,
 								data[ 3 ], reset
 							);
 						}
@@ -390,8 +382,26 @@
 	}
 
 	template< typename Content >
+	void ImGUI::TreeNode( nString label, Content&& content ) {
+		if ( label && strlen( label ) > 0 ) {
+			ImGui::PushStyleVar( ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 } );
+			ImGui::Separator( );
+
+			auto open = ImGui::TreeNodeEx( label, ImGUI::TREE_FLAGS, label );
+
+			ImGui::PopStyleVar( );
+
+			if ( open ) {
+				content( );
+
+				ImGui::TreePop( );
+			}
+		}
+	}
+
+	template< typename Content >
 	void ImGUI::TreeNode( nString label, ImGuiTreeNodeFlags flags, Content&& content ) {
-		if ( strlen( label ) > 0 ) {
+		if ( label && strlen( label ) > 0 ) {
 			ImGui::PushStyleVar( ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 } );
 			ImGui::Separator( );
 

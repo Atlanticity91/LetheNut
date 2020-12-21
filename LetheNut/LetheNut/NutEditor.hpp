@@ -187,6 +187,9 @@
 		inline std::vector< NutModule* >& GetModules( ) const;
 
 	public:
+		template< typename Type = NutTool >
+		Type* GetTool( nString name ) const;
+
 		/**
 		 * GetModule template const function
 		 * @author : ALVES Quentin
@@ -195,7 +198,7 @@
 		 * @param name : Name of the query module.
 		 * @return : Type*
 		 **/
-		template< typename Type = class NutModule >
+		template< typename Type = NutModule >
 		Type* GetModule( nString name ) const;
 
 		/**
@@ -206,7 +209,7 @@
 		 * @param name : Name of the query window.
 		 * @return : Type*
 		 **/
-		template< typename Type = class NutWindow >
+		template< typename Type = NutWindow >
 		Type* GetWindow( nString name ) const;
 
 	};

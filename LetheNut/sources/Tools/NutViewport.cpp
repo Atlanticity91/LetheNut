@@ -37,6 +37,7 @@
 #include "__ui.hpp"
 
 #include <LetheNut/Tools/NutViewport.hpp>
+#include <LetheNut/Vendor/ImGUI.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
@@ -45,7 +46,7 @@ NutViewport::NutViewport( )
 	: NutTool( "Viewport" ),
 	projection( .3f, 3.f ),
 	projection_mat( )
-{  }
+{ }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
@@ -60,7 +61,6 @@ void NutViewport::OnEditorRender( NutEditor* editor ) {
 
 	this->projection.SetAspectRatio( position.y / position.x );
 	this->projection_mat.Ortho( this->projection );
-	//ImGui::ShowDemoWindow( );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

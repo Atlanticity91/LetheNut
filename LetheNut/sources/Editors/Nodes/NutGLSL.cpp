@@ -48,8 +48,11 @@ NutGLSL::NutGLSL( )
 NutGLSL::~NutGLSL( ) {
 }
 
-void NutGLSL::Initialize( ) {
-	NutNodeParser::Initialize( );
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PROTECTED
+///////////////////////////////////////////////////////////////////////////////////////////
+void NutGLSL::Validate( ) {
+	NutNodeParser::Validate( );
 
 	auto* time = this->Create( ENutNodeTypes::ENT_FUNCTION, "Time (ms)", "Current elapsed Time in ms." );
 	time->AddIn( false, ENutPinTypes::EPT_FLOAT32, "Time", "" );

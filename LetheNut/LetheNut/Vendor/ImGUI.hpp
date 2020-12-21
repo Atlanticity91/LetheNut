@@ -783,6 +783,17 @@
 		 * @note : Wrapper for TreeNode.
 		 * @template Content : Lambda capture.
 		 * @param label : Label of the tree node.
+		 * @param content : Current content lambda.
+		 **/
+		template< typename Content >
+		void TreeNode( nString label, Content&& content );
+
+		/**
+		 * TreeNode template method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for TreeNode.
+		 * @template Content : Lambda capture.
+		 * @param label : Label of the tree node.
 		 * @param flags : Flags for tree node creation.
 		 * @param size : Size of the tree node.
 		 * @param content : Current content lambda.

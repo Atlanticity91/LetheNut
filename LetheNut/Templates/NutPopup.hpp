@@ -42,27 +42,33 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template< typename Type, typename... Args >
 	Type* NutPopup::OpenPanel( NutEditor* editor, Args... args ) {
-		auto* panel = new Type( args... );
+		if constexpr ( std::is_base_of<NutPanel, Type>::value ) {
+			auto* panel = new Type( args... );
 
-		if ( panel ) {
-			if ( dynamic_cast<NutTool*>( panel ) )
-				static_cast<NutTool*>( panel )->Initialize( editor );
+			if ( panel ) {
+				if ( dynamic_cast<NutTool*>( panel ) )
+					static_cast<NutTool*>( panel )->Initialize( editor );
 
-			this->panels.emplace_back( panel );
+				this->panels.emplace_back( panel );
 
-			 reinterpret_cast<NutPanel*>( panel )->OnCreate( editor );
+				reinterpret_cast<NutPanel*>( panel )->OnCreate( editor );
+			}
+
+			return panel;
 		}
 
-		return panel;
+		return nullptr;
 	}
 
 	template< typename Type >
 	Type* NutPopup::GetPanel( nString name ) const {
-		for ( auto& panel : this->panels ) {
-			if ( std::strcmp( name, panel->GetName( ) ) != 0 )
-				continue;
-			else
-				return reinterpret_cast<Type*>( panel );
+		if constexpr ( std::is_base_of<NutPanel, Type>::value ) {
+			for ( auto& panel : this->panels ) {
+				if ( std::strcmp( name, panel->GetName( ) ) != 0 )
+					continue;
+				else
+					return reinterpret_cast<Type*>( panel );
+			}
 		}
 
 		return nullptr;

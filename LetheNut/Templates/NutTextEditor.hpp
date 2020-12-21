@@ -40,20 +40,24 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
-	template< typename Style >
+	template< typename Type >
 	void NutTextEditor::SetStyle( ) {
-		if ( this->style )
-			delete this->style;
-	
-		this->style = new Style( );
+		if constexpr ( std::is_base_of<NutTextStyle, Type>::value ) {
+			if ( this->style )
+				delete this->style;
+
+			this->style = new Type( );
+		}
 	}
 
-	template< typename Parser >
+	template< typename Type >
 	void NutTextEditor::SetParser( ) {
-		if ( this->parser )
-			delete this->parser;
+		if constexpr ( std::is_base_of<NutTextParser, Type>::value ) {
+			if ( this->parser )
+				delete this->parser;
 
-		this->parser = new Parser( );
+			this->parser = new Type( );
+		}
 	}
 
 #endif

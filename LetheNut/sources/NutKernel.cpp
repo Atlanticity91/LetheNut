@@ -130,6 +130,15 @@ void NutKernel::OnCreate(  NutEditor* editor ) {
 
     editor->OpenPanel<NutTextEditor>( editor );
     editor->OpenPanel<NutNodeEditor>( editor );
+
+    editor->GetTool<NutProperties>( "Properties" )->Register(
+        "I'm a fucking test !", "",
+        [ ]( ) {
+            static float a[ 4 ];
+
+            ImGUI::Vector<4>( "Damn", a, 0.f );
+        }
+    );
 }
 
 void NutKernel::Process(  NutEditor* editor ) { }

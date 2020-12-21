@@ -37,15 +37,35 @@
 #include "__ui.hpp"
 
 #include <LetheNut/Tools/NutProperties.hpp>
+#include <LetheNut/Vendor/ImGUI.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutProperties::NutProperties( )
-	: NutTool( "Properties", ImGUI::DEFAULT_PADDING )
+	: NutTool( "Properties", ImGUI::DEFAULT_PADDING ),
+	panes( )
 { }
+
+void NutProperties::Register( nString name, nString description, NutPropertyContent content ) {
+	if ( name && strlen( name ) > 0 && content ) {
+		for ( auto& pane : this->panes ) {
+			if ( strcmp( pane.name, name ) != 0 )
+				continue;
+
+			return;
+		}
+
+		auto pane = NutPropertyPane{ name ,description, content };
+
+		this->panes.emplace_back( pane );
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED 
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutProperties::OnEditorRender( class NutEditor* editor ) { }
+void NutProperties::OnEditorRender( NutEditor* editor ) { 
+	for ( auto& pane : this->panes )
+		ImGUI::TreeNode( pane.name, pane.content );
+}

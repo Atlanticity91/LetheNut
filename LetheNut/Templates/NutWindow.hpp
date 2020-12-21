@@ -42,34 +42,40 @@
     ///////////////////////////////////////////////////////////////////////////////////////////
     template< typename Type, typename... Args  >
     Type* NutWindow::OpenPopup( NutEditor* editor, Args... args ) {
-        auto* popup = new Type( args... );
+        if  constexpr ( std::is_base_of<NutPopup, Type>::value ) {
+            auto* popup = new Type( args... );
 
-        if ( popup ) {
-            this->popups.emplace_back( popup );
+            if ( popup ) {
+                this->popups.emplace_back( popup );
 
-            reinterpret_cast<NutPopup*>( popup )->OnCreate( editor );
+                reinterpret_cast<NutPopup*>( popup )->OnCreate( editor );
+            }
+
+            return popup;
         }
 
-        return popup;
+        return nullptr;
     }
 
     template< typename Type >
     void NutWindow::ClosePopup( ) {
-        auto idx = this->popups.size( );
+        if  constexpr ( std::is_base_of<NutPopup, Type>::value ) {
+            auto idx = this->popups.size( );
 
-        while ( idx > 0 ) {
-            idx -= 1;
+            while ( idx > 0 ) {
+                idx -= 1;
 
-            auto* popup = this->popups[ idx ];
+                auto* popup = this->popups[ idx ];
 
-            if ( !dynamic_cast<Type*>( popup ) )
-                continue;
-            else {
-                delete popup;
+                if ( !dynamic_cast<Type*>( popup ) )
+                    continue;
+                else {
+                    delete popup;
 
-                this->popups.erase( this->popups.begin( ) + idx );
+                    this->popups.erase( this->popups.begin( ) + idx );
 
-                return;
+                    return;
+                }
             }
         }
     }
@@ -79,11 +85,13 @@
     ///////////////////////////////////////////////////////////////////////////////////////////
     template< typename Type >
     Type* NutWindow::GetPopup( ) const {
-        for ( auto& popup : this->popups ) {
-            if ( !dynamic_cast<Type*>( popup ) )
-                continue;
-            else
-                return reinterpret_cast<Type*>( popup );
+        if  constexpr ( std::is_base_of<NutPopup, Type>::value ) {
+            for ( auto& popup : this->popups ) {
+                if ( !dynamic_cast<Type*>( popup ) )
+                    continue;
+                else
+                    return reinterpret_cast<Type*>( popup );
+            }
         }
 
         return nullptr;

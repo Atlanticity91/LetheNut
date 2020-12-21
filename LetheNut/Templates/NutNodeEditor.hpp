@@ -42,20 +42,22 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template< typename Type >
 	void NutNodeEditor::SetStyle( ) {
-		if ( this->style )
-			delete this->style;
+		if constexpr ( std::is_base_of<NutNodeStyle, Type>::value ) {
+			if ( this->style )
+				delete this->style;
 
-		this->style = new Type( );
-		this->style->Initialize( );
+			this->style = new Type( );
+		}
 	}
 
 	template< typename Type >
 	void NutNodeEditor::SetParser( ) {
-		if ( this->parser )
-			delete this->parser;
+		if constexpr ( std::is_base_of<NutNodeParser, Type>::value ) {
+			if ( this->parser )
+				delete this->parser;
 
-		this->parser = new Type( );
-		this->parser->Initialize( );
+			this->parser = new Type( );
+		}
 	}
 
 #endif

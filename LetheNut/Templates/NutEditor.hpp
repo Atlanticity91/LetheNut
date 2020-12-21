@@ -72,6 +72,14 @@
     //      PUBLIC GET 
     ///////////////////////////////////////////////////////////////////////////////////////////
     template< typename Type >
+    Type* NutEditor::GetTool( nString name ) const {
+        if constexpr ( std::is_base_of<NutTool, Type>::value )
+            return this->GetPanel<Type>( name );
+
+        return nullptr;
+    }
+
+    template< typename Type >
     Type* NutEditor::GetModule( nString name ) const {
         for ( auto& module : this->modules ) {
             if ( std::strcmp( name, module->GetName( ) ) != 0 || !dynamic_cast<Type*>( module ) )

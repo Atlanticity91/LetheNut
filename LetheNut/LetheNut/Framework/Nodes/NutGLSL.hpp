@@ -67,12 +67,13 @@
 		 **/
 		~NutGLSL( );
 
+	protected:
 		/**
-		 * Initialize override method
+		 * Validate override method
 		 * @author : ALVES Quentin
-		 * @note : Initialize the current GLSL node parser.
+		 * @note : Validate the current GLSL node parser.
 		 **/
-		virtual void Initialize( ) override;
+		virtual void Validate( ) override;
 
 	};
 

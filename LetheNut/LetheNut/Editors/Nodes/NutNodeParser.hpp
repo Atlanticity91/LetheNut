@@ -82,13 +82,6 @@
 		 **/
 		virtual ~NutNodeParser( );
 
-		/**
-		 * Initialize virtual method
-		 * @author : ALVES Quentin
-		 * @note : Initialize current node parser.
-		 **/
-		virtual void Initialize( );
-
 		virtual void CreateVar( ENutPinTypes type, bool is_array, nString name );
 
 		virtual void Parse( const NodeList& nodes );
@@ -124,6 +117,8 @@
 		virtual void CreateLerp( ENutPinTypes type, nString name );
 
 		virtual void CreateForeach( ENutPinTypes type, nString name );
+
+		virtual void Validate( );
 
 	public:
 		virtual const ETypeMatches TypeMatch( ENutPinTypes left, ENutPinTypes right ) const;

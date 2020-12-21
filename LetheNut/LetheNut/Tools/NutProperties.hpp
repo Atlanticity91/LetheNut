@@ -39,12 +39,25 @@
 
 	#include "NutTool.hpp"
 
+	typedef void( *NutPropertyContent )( );
+
+	struct NutPropertyPane {
+
+		nString name;
+		nString description;
+		NutPropertyContent content;
+
+	};
+
 	/**
 	 * NutProperties class [ NutTool ]
 	 * @author : ALVES Quentin
 	 * @note : Defined Nut Properties tool core class.
 	 **/
 	NUT_TOOL( NutProperties ) {
+
+	private:
+		std::vector<NutPropertyPane> panes;
 
 	public:
 		/**
@@ -59,6 +72,8 @@
 		 **/
 		~NutProperties( ) = default;
 
+		void Register( nString name, nString description, NutPropertyContent content );
+
 	protected:
 		/**
 		 * OnEditorRender override method
@@ -67,6 +82,12 @@
 		 * @param editor : Pointer to current editor.
 		 **/
 		virtual void OnEditorRender( NutEditor* editor ) override;
+
+	public:
+		template<typename Content>
+		void Register( nString name, nString description, Content&& content ) {
+			this->Register( name, description, (NutPropertyContent)content );
+		};
 
 	};
 

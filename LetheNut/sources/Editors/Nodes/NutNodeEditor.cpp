@@ -110,8 +110,7 @@ void NutNodeEditor::CreateLink( nUInt source_node, nUInt source_pin, nUInt desti
 //      PROTETED
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutNodeEditor::Initialize( NutEditor* editor ) {
-    if ( editor->GetKernel( )->LoadImage( "NodeBG", "Assets/Media/node_background.png" ) )
-        printf( "Rock !\n" );
+    editor->GetKernel( )->LoadImage( "NodeBG", "Assets/Media/node_background.png" );
 }
 
 void NutNodeEditor::OnEditorProcess( NutEditor* editor ) {
