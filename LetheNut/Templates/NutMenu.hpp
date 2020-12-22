@@ -42,34 +42,40 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template< typename Callback >
 	NutMenu* NutMenu::CreateButton( nString label, nString shortcut, Callback&& callback ) {
-		auto item = NutMenuItem( label, shortcut );
+		if ( nHelper::GetIsValid( label ) ) {
+			auto item = NutMenuItem( label, shortcut );
 
-		item.SetCallback( callback );
+			item.SetCallback( callback );
 
-		this->items.emplace_back( item );
+			this->items.emplace_back( item );
+		}
 
 		return this;
 	}
 
 	template< typename Mark >
 	NutMenu* NutMenu::CreateCheckbox( nString label, bool state, Mark&& mark ) {
-		auto item = NutMenuItem( label, state );
+		if ( nHelper::GetIsValid( label ) ) {
+			auto item = NutMenuItem( label, state );
 
-		item.SetMark( mark );
+			item.SetMark( mark );
 
-		this->items.emplace_back( item );
+			this->items.emplace_back( item );
+		}
 
 		return this;
 	}
 
 	template< typename Mark, typename UnMark >
 	NutMenu* NutMenu::CreateCheckbox( nString label, bool state, Mark&& mark, UnMark&& unmark ) {
-		auto item = NutMenuItem( label, state );
+		if ( nHelper::GetIsValid( label ) ) {
+			auto item = NutMenuItem( label, state );
 
-		item.SetMark( mark );
-		item.SetUnMark( unmark );
+			item.SetMark( mark );
+			item.SetUnMark( unmark );
 
-		this->items.emplace_back( item );
+			this->items.emplace_back( item );
+		}
 
 		return this;
 	}

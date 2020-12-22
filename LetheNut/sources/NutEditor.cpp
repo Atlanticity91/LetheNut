@@ -83,21 +83,23 @@ void NutEditor::DisableModule( nString name ) {
 }
 
 void NutEditor::Destroy( nString name ) {
-    auto idx = this->modules.size( );
+    if ( nHelper::GetIsValid( name ) ) {
+        auto idx = this->modules.size( );
 
-    while ( idx > 0 ) {
-        idx -= 1;
+        while ( idx > 0 ) {
+            idx -= 1;
 
-        auto* module = this->modules[ idx ];
+            auto* module = this->modules[ idx ];
 
-        if ( std::strcmp( name, module->GetName( ) ) != 0 )
-            continue;
-        else if ( !dynamic_cast<NutKernel*>( module ) ) {
-            delete module;
+            if ( std::strcmp( name, module->GetName( ) ) != 0 )
+                continue;
+            else if ( !dynamic_cast<NutKernel*>( module ) ) {
+                delete module;
 
-            this->modules.erase( this->modules.begin( ) + idx );
+                this->modules.erase( this->modules.begin( ) + idx );
 
-            return;
+                return;
+            }
         }
     }
 }

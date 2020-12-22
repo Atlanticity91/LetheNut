@@ -39,7 +39,7 @@
 
 	#include <LetheNut/Editors/Nodes/NutNodeParser.hpp>
 
-	enum EGLSLTypes : nUInt {
+	enum EMaterialTypes : nUInt {
 
 		EGT_COLOR	  = ENutPinTypes::EPT_VECT4,
 		EGT_SAMPLER2D = ENutPinTypes::EPT_CUSTOM,
@@ -52,20 +52,20 @@
 	 * @author : ALVES Quentin
 	 * @note : Defined Nut GLSL core class.
 	 **/
-	NUT_NODE_PARSER( NutGLSL ) {
+	NUT_NODE_PARSER( NutMaterial ) {
 
 	public:
 		/**
 		 * Constructor
 		 * @author : ALVES Quentin
 		 **/
-		NutGLSL( );
+		NutMaterial( );
 
 		/**
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutGLSL( );
+		~NutMaterial( );
 
 	protected:
 		/**

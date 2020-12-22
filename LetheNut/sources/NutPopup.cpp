@@ -86,21 +86,23 @@ class NutPopup* NutPopup::DisabePanel( nString name ) {
 }
 
 void NutPopup::ClosePanel( nString name ) {
-    auto idx = this->panels.size( );
+    if ( nHelper::GetIsValid( name ) ) {
+        auto idx = this->panels.size( );
 
-    while ( idx > 0 ) {
-        idx -= 1;
+        while ( idx > 0 ) {
+            idx -= 1;
 
-        auto* panel = this->panels[ idx ];
+            auto* panel = this->panels[ idx ];
 
-        if ( std::strcmp( name, panel->GetName( ) ) != 0 )
-            continue;
-        else {
-            delete panel;
+            if ( std::strcmp( name, panel->GetName( ) ) != 0 )
+                continue;
+            else {
+                delete panel;
 
-            this->panels.erase( this->panels.begin( ) + idx );
+                this->panels.erase( this->panels.begin( ) + idx );
 
-            return;
+                return;
+            }
         }
     }
 }
@@ -108,7 +110,7 @@ void NutPopup::ClosePanel( nString name ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutPopup::OnEditorRender( class NutEditor* editor ) {
+void NutPopup::OnEditorRender( NutEditor* editor ) {
     this->OnToolProcess( editor );
 
     ImGUI::BeginPopup( this->GetName( ), this->flags, this->size, 1.25f, &this->is_open );
@@ -118,7 +120,7 @@ void NutPopup::OnEditorRender( class NutEditor* editor ) {
     ImGUI::EndPopup( );
 }
 
-void NutPopup::OnToolProcess( class NutEditor* editor ) {
+void NutPopup::OnToolProcess( NutEditor* editor ) {
     for ( auto& panel : this->panels ) {
         if ( dynamic_cast<NutTool*>( panel ) ) {
             auto* tool = reinterpret_cast<NutTool*>( panel );
@@ -129,7 +131,7 @@ void NutPopup::OnToolProcess( class NutEditor* editor ) {
     }
 }
 
-void NutPopup::OnPanelRender( class NutEditor* editor ) {
+void NutPopup::OnPanelRender( NutEditor* editor ) {
     NutPanel::OnEditorRender( editor );
 
     for ( auto& panel : this->panels ) {

@@ -127,7 +127,8 @@
 
 	template< typename Content, typename... Args >
 	void ImGUI::CreateModal( nString label, ImVec2& size, float border_size, bool* is_open, Content&& content, Args... args ) {
-		ImGuiIO& io = ImGui::GetIO( );
+		auto& io = ImGui::GetIO( );
+
 		ImGui::SetNextWindowSizeConstraints( { 480, 260 }, { io.DisplaySize.x, io.DisplaySize.y } );
 		ImGui::SetNextWindowPos( { io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f }, ImGuiCond_Appearing, ImVec2( 0.5f, 0.5f ) );
 		ImGui::SetNextWindowSize( size, ImGuiCond_Appearing );
@@ -149,7 +150,7 @@
 
 	template< typename Content >
 	void ImGUI::MenurBar( nString label, Content&& content ) {
-		if ( strlen( label ) > 0 && ImGui::BeginMenuBar( ) ) {
+		if ( nHelper::GetIsValid( label ) && ImGui::BeginMenuBar( ) ) {
 			ImGui::PushStyleColor( ImGuiCol_Header, ImVec4{ .76f, .31f, .0f, 1.f } );
 
 			if ( ImGui::BeginMenu( label ) ) {
@@ -165,13 +166,13 @@
 
 	template< typename Callback >
 	void ImGUI::MenuButton( nString label, nString shortcut, bool is_active, Callback&& callback ) {
-		if ( strlen( label ) > 0 && ImGui::MenuItem( label, shortcut, nullptr, is_active ) )
+		if ( nHelper::GetIsValid( label ) && ImGui::MenuItem( label, shortcut, nullptr, is_active ) )
 			callback( );
 	}
 
 	template< typename... Args >
 	void ImGUI::Text( const ImColor& color, nString format, Args... args ) {
-		if ( std::strlen( format ) > 0 ) {
+		if ( nHelper::GetIsValid( format ) ) {
 			ImGui::PushStyleColor( ImGuiCol_Text, color.Value );
 			ImGui::Text( format, args... );
 			ImGui::PopStyleColor( );
@@ -180,15 +181,31 @@
 
 	template< typename... Args >
 	void ImGUI::Text( const ImColor&& color, nString format, Args... args ) {
-		ImGUI::Text< Args... >( color, format, args... );
+		ImGUI::Text( color, format, args... );
 	}
 
-	template< typename OnFly >
-	void ImGUI::ToolTip( OnFly&& on_fly ) {
+	template< typename... Args >
+	void ImGUI::ToolTip( nString format, Args... args ) {
+		ImGUI::ToolTip( ImGUI::DEFAULT_COLOR, format, args... );
+	}
+
+	template< typename... Args >
+	void ImGUI::ToolTip( const ImColor& color, nString format, Args... args ) {
+		if ( nHelper::GetIsValid( format ) && ImGui::IsMousePosValid( ) && ImGui::IsItemHovered( ) ) {
+			ImGui::BeginTooltip( );
+			ImGUI::Text( color, format, args... );
+			ImGui::EndTooltip( );
+		}
+	}
+
+	template< typename Content, typename... Args >
+	void ImGUI::ToolTip( Content&& content, Args... args ) {
 		if ( ImGui::IsMousePosValid( ) && ImGui::IsItemHovered( ) ) {
+			auto mouse_pos = ImGUI::GetMouseRelPos( );
+
 			ImGui::BeginTooltip( );
 
-			on_fly( ImGui::GetMousePos( ) );
+			content( mouse_pos, args... );
 
 			ImGui::EndTooltip( );
 		}
@@ -196,7 +213,7 @@
 
 	template< typename Callback >
 	void ImGUI::Button( nString label, const ImVec2& size, Callback&& callback ) {
-		if ( strlen( label ) > 0 && ImGui::Button( label, size ) )
+		if ( nHelper::GetIsValid( label ) && ImGui::Button( label, size ) )
 			callback( );
 	}
 
@@ -212,7 +229,7 @@
 
 	template< typename Mark >
 	void ImGUI::Checkbox( nString label, nString description, bool& state, Mark&& mark ) {
-		if ( strlen( label ) > 0 ) {
+		if ( nHelper::GetIsValid( label ) ) {
 			bool old = state;
 
 			ImGUI::Internal_StyleHeader( label, 1 );
@@ -236,7 +253,7 @@
 
 	template< typename Mark, typename UnMark >
 	void ImGUI::Checkbox( nString label, nString description, bool& state, Mark&& mark, UnMark&& unmark ) {
-		if ( strlen( label ) > 0 ) {
+		if ( nHelper::GetIsValid( label ) ) {
 			bool old = state;
 
 			ImGUI::Internal_StyleHeader( label, 1 );
@@ -265,7 +282,7 @@
 	template< size_t Length, typename Type >
 	void ImGUI::Vector( nString label, nString description, Type* data, Type reset ) {
 		if constexpr ( std::is_arithmetic<Type>::value && Length > 0 ) {
-			if ( strlen( label ) > 0 && data ) {
+			if ( nHelper::GetIsValid( label ) && data ) {
 				ImGUI::Internal_StyleHeader( label, 4 );
 
 				if ( description && strlen( description ) > 0 )
@@ -312,7 +329,7 @@
 	template< size_t Length, typename Type >
 	void ImGUI::Slider( nString label, Type* data, Type min, Type max ) {
 		if constexpr ( std::is_arithmetic<Type>::value && Length > 0 ) {
-			if ( strlen( label ) > 0 ) {
+			if ( nHelper::GetIsValid( label ) && data ) {
 				ImGUI::Internal_StyleHeader( label, 1 );
 
 				Internal_Slide( 
@@ -355,7 +372,7 @@
 
 	template< size_t Length, typename Type, typename OnChange >
 	void ImGUI::DropList( nString label, nString& previous, nString* list, Type& data, OnChange&& on_change ) {
-		if ( strlen( label ) > 0 ) {
+		if ( nHelper::GetIsValid( label ) ) {
 			ImGUI::Internal_StyleHeader( label, 1 );
 
 			if ( ImGui::BeginCombo( ImGUI::NO_STRING, previous ) ) {
@@ -381,69 +398,35 @@
 		}
 	}
 
-	template< typename Content >
-	void ImGUI::TreeNode( nString label, Content&& content ) {
-		if ( label && strlen( label ) > 0 ) {
-			ImGui::PushStyleVar( ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 } );
-			ImGui::Separator( );
-
-			auto open = ImGui::TreeNodeEx( label, ImGUI::TREE_FLAGS, label );
-
-			ImGui::PopStyleVar( );
-
-			if ( open ) {
-				content( );
-
-				ImGui::TreePop( );
-			}
-		}
+	template< typename Content, typename... Args >
+	void ImGUI::Tree( nString label, Content&& content, Args... args ) {
+		ImGUI::Tree( label, nullptr, ImGUI::TREE_FLAGS, content, args... );
 	}
 
-	template< typename Content >
-	void ImGUI::TreeNode( nString label, ImGuiTreeNodeFlags flags, Content&& content ) {
-		if ( label && strlen( label ) > 0 ) {
+	template< typename Content, typename... Args >
+	void ImGUI::Tree( nString label, ImGuiTreeNodeFlags flags, Content&& content, Args... args ) {
+		ImGUI::Tree( label, nullptr, ImGUI::TREE_FLAGS, content, args... );
+	}
+
+	template< typename Content, typename... Args >
+	void ImGUI::Tree( nString label, nString description, Content&& content, Args... args ) {
+		ImGUI::Tree( label, description, ImGUI::TREE_FLAGS, content, args... );
+	}
+
+	template< typename Content, typename... Args >
+	void ImGUI::Tree( nString label, nString description, ImGuiTreeNodeFlags flags, Content&& content, Args... args ) {
+		if ( nHelper::GetIsValid( label ) ) {
 			ImGui::PushStyleVar( ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 } );
 			ImGui::Separator( );
 
 			auto open = ImGui::TreeNodeEx( label, flags, label );
-			
+
 			ImGui::PopStyleVar( );
 
 			if ( open ) {
-				content( );
+				ImGUI::ToolTip( description );
 
-				ImGui::TreePop( );
-			}
-		}
-	}
-
-	template< typename Settings, typename Content >
-	void ImGUI::TreeNode( nString label, ImGuiTreeNodeFlags flags, Settings&& settings, Content&& content ) {
-		if ( strlen( label ) > 0 ) {
-			auto contentRegionAvailable = ImGui::GetContentRegionAvail( );
-			auto lineHeight = ImGUI::GetLineHeight( );
-
-			ImGui::PushStyleVar( ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 } );
-			ImGui::Separator( );
-
-			auto open = ImGui::TreeNodeEx( label, flags, label );
-			
-			ImGui::PopStyleVar( );
-			ImGui::SameLine( contentRegionAvailable.x - lineHeight * 0.5f );
-
-			ImGUI::Button(
-				"+", ImVec2{ lineHeight, lineHeight },
-				[ ]( ) { ImGui::OpenPopup( "Settings" ); }
-			);
-
-			if ( ImGui::BeginPopup( "Settings" ) ) {
-				settings( );
-
-				ImGui::EndPopup( );
-			}
-
-			if ( open ) {
-				content( );
+				content( args... );
 
 				ImGui::TreePop( );
 			}

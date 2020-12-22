@@ -261,6 +261,15 @@
 		static void Copy( nString source, char* destination, nUInt size );
 
 		/**
+		 * GetIsValid static function
+		 * @author : ALVES Quentin
+		 * @note : Check if a string is valid.
+		 * @param text : String to check.
+		 * @return : bool
+		 **/
+		static bool GetIsValid( nString text );
+
+		/**
 		 * nClamp static template method
 		 * @author : ALVES Quentin
 		 * @note : Internal definition for clamp method.

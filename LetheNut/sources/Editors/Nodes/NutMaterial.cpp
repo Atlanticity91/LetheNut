@@ -36,79 +36,29 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/PlatformLib.hpp>
+#include <LetheNut/Framework/Nodes/NutMaterial.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-#ifdef _WIN64
-NutProcedure::NutProcedure( FARPROC handle )
-#else
-NutProcedure::NutProcedure( void* handle )
-#endif
-	: handle( handle ) 
+NutMaterial::NutMaterial( )
+	: NutNodeParser( "Nut Material" )
 { }
 
-NutPlatformLib::NutPlatformLib( ) 
-	: handle( nullptr )
-{ }
-
-NutPlatformLib::NutPlatformLib( nString path ) 
-#ifdef _WIN64
-	: handle( LoadLibraryA( path ) )
-#else
-	: handle( dlopen( path, RTLD_LAZY ) )
-#endif
-{ }
-
-NutPlatformLib::NutPlatformLib( const std::string& path )
-	: NutPlatformLib( path.c_str( ) )
-{ }
-
-NutPlatformLib::~NutPlatformLib( ) { 
-#ifdef _WIN64
-	FreeLibrary( this->handle );
-#else
-	dlclose( this->handle );
-#endif
+NutMaterial::~NutMaterial( ) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC GET
+//      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-bool NutPlatformLib::GetIsValid( ) const { return this->handle != nullptr; }
+void NutMaterial::Validate( ) {
+	NutNodeParser::Validate( );
 
-bool NutPlatformLib::Has( nString query_name ) const { 
-	if ( this->IsValid( query_name ) )
-		return GetProcAddress( this->handle, query_name ) != nullptr;
+	auto* time = this->Create( ENutNodeTypes::ENT_FUNCTION, "Time (ms)", "Current elapsed Time in ms." );
+	time->AddIn( false, ENutPinTypes::EPT_FLOAT32, "Time", "" );
 
-	return false;
-}
-
-NutProcedure NutPlatformLib::Get( nString query_name ) const {
-	if ( this->IsValid( query_name ) ) {
-#ifdef _WIN64
-		auto procedure = GetProcAddress( this->handle, query_name );
-#else
-		auto procedure = dlsym( this->handle, name );
-#endif
-
-		return NutProcedure( procedure );
-	}
-
-	return NutProcedure( nullptr );
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PRIVATE GET
-///////////////////////////////////////////////////////////////////////////////////////////
-bool NutPlatformLib::IsValid( nString query_name ) const {
-	return this->handle != nullptr && query_name && strlen( query_name ) > 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      OPERATOR
-///////////////////////////////////////////////////////////////////////////////////////////
-NutProcedure NutPlatformLib::operator[]( nString query_name ) const { 
-	return this->Get( query_name );
+	auto* material = this->Create( ENutNodeTypes::ENT_OPERATION, "Material", "" );
+	material->AddIn( false, EMaterialTypes::EGT_SAMPLER2D, "Diffuse", "Diffuse color of the material." );
+	material->AddIn( false, EMaterialTypes::EGT_SAMPLER2D, "Specular", "Specular map of the material." );
+	material->AddIn( false, EMaterialTypes::EGT_SAMPLER2D, "Normal", "Normal map of the material." );
 }

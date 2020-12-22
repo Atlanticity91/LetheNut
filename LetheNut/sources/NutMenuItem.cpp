@@ -92,7 +92,7 @@ class NutMenuItem* NutMenuItem::SetUnMark( NutItemCallback callback ) {
     return this;
 }
 
-void NutMenuItem::Process( class NutEditor* editor, class NutPanel& parent ) {
+void NutMenuItem::Process( NutEditor* editor, NutPanel& parent ) {
     if ( this->type[ 1 ] == 1 ) {
         if ( this->callback )
             this->callback( *this, editor, parent );

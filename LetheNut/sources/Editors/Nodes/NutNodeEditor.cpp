@@ -39,7 +39,7 @@
 #include <LetheNut/NutEditor.hpp>
 #include <LetheNut/Editors/Nodes/NutNodeEditor.hpp>
 #include <LetheNut/Vendor/ImGUI.hpp>
-#include <LetheNut/Framework/Nodes/NutGLSL.hpp>
+#include <LetheNut/Framework/Nodes/NutMaterial.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
@@ -51,7 +51,7 @@ NutNodeEditor::NutNodeEditor( )
     links( )
 { 
     this->SetStyle<NutNodeStyle>( );
-    this->SetParser<NutGLSL>( );
+    this->SetParser<NutMaterial>( );
 }
 
 NutNodeEditor::~NutNodeEditor( ) { 

@@ -63,11 +63,13 @@
 	template< typename Type >
 	Type* NutPopup::GetPanel( nString name ) const {
 		if constexpr ( std::is_base_of<NutPanel, Type>::value ) {
-			for ( auto& panel : this->panels ) {
-				if ( std::strcmp( name, panel->GetName( ) ) != 0 )
-					continue;
-				else
-					return reinterpret_cast<Type*>( panel );
+			if ( nHelper::GetIsValid( name ) ) {
+				for ( auto& panel : this->panels ) {
+					if ( std::strcmp( name, panel->GetName( ) ) != 0 )
+						continue;
+					else
+						return reinterpret_cast<Type*>( panel );
+				}
 			}
 		}
 

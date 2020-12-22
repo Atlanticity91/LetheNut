@@ -36,6 +36,7 @@
 
 #include "__ui.hpp"
 
+#include <LetheNut/Framework/Context/NutPropertyContext.hpp>
 #include <LetheNut/Tools/NutProperties.hpp>
 #include <LetheNut/Vendor/ImGUI.hpp>
 
@@ -48,7 +49,11 @@ NutProperties::NutProperties( )
 { }
 
 void NutProperties::Register( nString name, nString description, NutPropertyContent content ) {
-	if ( name && strlen( name ) > 0 && content ) {
+	this->Register( name, description, nullptr, content );
+}
+
+void NutProperties::Register( nString name, nString description, NutPropertyHas condition, NutPropertyContent content ) {
+	if ( nHelper::GetIsValid( name ) && content ) {
 		for ( auto& pane : this->panes ) {
 			if ( strcmp( pane.name, name ) != 0 )
 				continue;
@@ -56,7 +61,7 @@ void NutProperties::Register( nString name, nString description, NutPropertyCont
 			return;
 		}
 
-		auto pane = NutPropertyPane{ name ,description, content };
+		auto pane = NutPropertyPane{ name ,description, condition, content };
 
 		this->panes.emplace_back( pane );
 	}
@@ -66,6 +71,8 @@ void NutProperties::Register( nString name, nString description, NutPropertyCont
 //      PROTECTED 
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutProperties::OnEditorRender( NutEditor* editor ) { 
-	for ( auto& pane : this->panes )
-		ImGUI::TreeNode( pane.name, pane.content );
+	for ( auto& pane : this->panes ) {
+		if ( !pane.condition || ( pane.condition && pane.condition( editor, this->context ) ) )
+			ImGUI::Tree( pane.name, pane.description, pane.content, editor, this->context );
+	}
 }

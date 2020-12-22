@@ -105,17 +105,9 @@ void internal_Node( const ImGUI::ImCanvas& canvas, const ImVec2& position, const
 	}
 
 	renderer->AddLine( pos + ImVec2{ 0, header_size.y }, pos + header_size, separator );
-
 	renderer->ChannelsMerge( );
-
-	if ( node.description && strlen( node.description ) > 0 ) {
-		ImGUI::ToolTip(
-			[ & ]( const ImVec2& pos ) {
-				ImGui::Text( node.description );
-			}
-		);
-	}
-
+	
+	ImGUI::ToolTip( node.description );
 	ImGui::PopID( );
 }
 
@@ -172,7 +164,10 @@ void ImGUI::Initialize( nPointer& window ) {
 	ImGui_ImplOpenGL3_Init( "#version 450" );
 }
 
-void ImGUI::LoadFont( nString path, float size ) { ImGui::GetIO( ).Fonts->AddFontFromFileTTF( path, size ); }
+void ImGUI::LoadFont( nString path, float size ) { 
+	if ( nHelper::GetIsValid( path ) )
+		ImGui::GetIO( ).Fonts->AddFontFromFileTTF( path, size ); 
+}
 
 void ImGUI::SetFont( nInt font_id ) {
 	auto& io = ImGui::GetIO( );
@@ -291,7 +286,10 @@ const float ImGUI::GetLineHeight( ) {
 }
 
 const ImVec2 ImGUI::GetTextSize( nString text ) {
-	return ImGui::GetFont( )->CalcTextSizeA( ImGui::GetFontSize( ), FLT_MAX, -1.f, text, nullptr, nullptr );
+	if ( nHelper::GetIsValid( text ) )
+		return ImGui::GetFont( )->CalcTextSizeA( ImGui::GetFontSize( ), FLT_MAX, -1.f, text, nullptr, nullptr );
+
+	return ImVec2{ 0.f, 0.f }; 
 }
 
 void ImGUI::Begin( ) {
@@ -302,29 +300,31 @@ void ImGUI::Begin( ) {
 }
 
 void ImGUI::BeginPopup( nString label, ImGuiWindowFlags flags, ImVec2& size, float border_size, bool* is_open ) {
-	auto* viewport = ImGui::GetMainViewport( );
+	if ( nHelper::GetIsValid( label ) ) {
+		auto* viewport = ImGui::GetMainViewport( );
 
-	if ( size.x == 0.f || size.y == 0.f ) {
-		ImGui::SetNextWindowPos( viewport->Pos );
-		ImGui::SetNextWindowSize( viewport->Size );
-	} else {
-		ImVec2 pos = viewport->Pos;
+		if ( size.x == 0.f || size.y == 0.f ) {
+			ImGui::SetNextWindowPos( viewport->Pos );
+			ImGui::SetNextWindowSize( viewport->Size );
+		} else {
+			ImVec2 pos = viewport->Pos;
 
-		pos.x += ( viewport->Size.x - size.x ) * .5f;
-		pos.y += ( viewport->Size.y - size.y ) * .5f;
+			pos.x += ( viewport->Size.x - size.x ) * .5f;
+			pos.y += ( viewport->Size.y - size.y ) * .5f;
 
-		ImGui::SetNextWindowPos( pos );
-		ImGui::SetNextWindowSize( size );
+			ImGui::SetNextWindowPos( pos );
+			ImGui::SetNextWindowSize( size );
+		}
+
+		ImGui::SetNextWindowViewport( viewport->ID );
+		ImGui::SetNextWindowBgAlpha( 1.f );
+		ImGui::PushStyleVar( ImGuiStyleVar_WindowBorderSize, border_size );
+
+		ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.f, 0.f ) );
+		ImGui::Begin( label, is_open, flags );
+		ImGui::PopStyleVar( );
+		ImGui::PopStyleVar( 1 );
 	}
-
-	ImGui::SetNextWindowViewport( viewport->ID );
-	ImGui::SetNextWindowBgAlpha( 1.f );
-	ImGui::PushStyleVar( ImGuiStyleVar_WindowBorderSize, border_size );
-
-	ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.f,0.f ) );
-	ImGui::Begin( label, is_open, flags );
-	ImGui::PopStyleVar( );
-	ImGui::PopStyleVar( 1 );
 }
 
 void ImGUI::BeginDockspace( ) {
@@ -635,7 +635,7 @@ void ImGUI::Text( const ImVec2&& position, nString text, const ImColor&& backgro
 }
 
 void ImGUI::Text( ImDrawList* renderer, const ImVec2& position, nString text, const ImColor& background, const ImColor& foreground ) {
-	if ( renderer ) {
+	if ( renderer && nHelper::GetIsValid( text ) ) {
 		auto size = ImGUI::GetTextSize( text );
 		auto end = ImVec2{ position.x + size.x, position.y + size.y };
 

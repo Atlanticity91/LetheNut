@@ -65,19 +65,23 @@ class NutPanel* NutPanel::Disable( ) {
 }
 
 class NutMenu* NutPanel::CreateMenu( nString name ) {
-	class NutMenu menu = NutMenu( name );
+	if ( nHelper::GetIsValid( name ) ) {
+		class NutMenu menu = NutMenu( name );
 
-	this->menus.emplace_back( menu );
+		this->menus.emplace_back( menu );
 
-	return &this->menus[ this->menus.size( ) - 1 ];
+		return &this->menus[ this->menus.size( ) - 1 ];
+	}
+
+	return nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutPanel::OnCreate( class NutEditor* editor ) { }
+void NutPanel::OnCreate( NutEditor* editor ) { }
 
-void NutPanel::OnEditorRender( class NutEditor* editor ) {
+void NutPanel::OnEditorRender( NutEditor* editor ) {
 	for ( auto& menu : this->menus )
 		menu.OnRender( editor, *this );
 }
@@ -90,11 +94,13 @@ bool NutPanel::GetIsActive( ) const { return this->is_active; }
 const ImVec2& NutPanel::GetPadding( ) const { return this->padding; }
 
 class NutMenu* NutPanel::GetMenu( nString name ) const {
-	for ( auto& menu : this->menus ) {
-		if ( std::strcmp( name, menu.GetName( ) ) != 0 )
-			continue;
-		else
-			return &menu;
+	if ( nHelper::GetIsValid( name ) ) {
+		for ( auto& menu : this->menus ) {
+			if ( std::strcmp( name, menu.GetName( ) ) != 0 )
+				continue;
+			else
+				return &menu;
+		}
 	}
 
 	return nullptr;

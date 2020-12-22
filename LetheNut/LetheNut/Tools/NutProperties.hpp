@@ -39,12 +39,21 @@
 
 	#include "NutTool.hpp"
 
-	typedef void( *NutPropertyContent )( );
+	class NutPropertyContext;
 
+	typedef bool( *NutPropertyHas )( NutEditor*, NutPropertyContext* );
+	typedef void( *NutPropertyContent )( NutEditor*, NutPropertyContext* );
+
+	/**
+	 * NutPropertyPane struct
+	 * @author : ALVES Quentin
+	 * @note : Defined prop
+	 **/
 	struct NutPropertyPane {
 
 		nString name;
 		nString description;
+		NutPropertyHas condition;
 		NutPropertyContent content;
 
 	};
@@ -57,6 +66,7 @@
 	NUT_TOOL( NutProperties ) {
 
 	private:
+		NutPropertyContext* context;
 		std::vector<NutPropertyPane> panes;
 
 	public:
@@ -72,7 +82,9 @@
 		 **/
 		~NutProperties( ) = default;
 
-		void Register( nString name, nString description, NutPropertyContent content );
+		inline void Register( nString name, nString description, NutPropertyContent content );
+
+		void Register( nString name, nString description, NutPropertyHas condition, NutPropertyContent content );
 
 	protected:
 		/**
@@ -84,11 +96,14 @@
 		virtual void OnEditorRender( NutEditor* editor ) override;
 
 	public:
-		template<typename Content>
-		void Register( nString name, nString description, Content&& content ) {
-			this->Register( name, description, (NutPropertyContent)content );
-		};
+		template<typename Condition, typename Content>
+		inline void Register( nString name, nString description, Content&& content );
+
+		template<typename Condition, typename Content>
+		inline void Register( nString name, nString description, Condition&& condition, Content&& content );
 
 	};
+
+	#include <Templates/NutProperties.hpp>
 
 #endif

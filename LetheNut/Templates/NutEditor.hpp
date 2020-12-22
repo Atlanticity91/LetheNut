@@ -81,11 +81,15 @@
 
     template< typename Type >
     Type* NutEditor::GetModule( nString name ) const {
-        for ( auto& module : this->modules ) {
-            if ( std::strcmp( name, module->GetName( ) ) != 0 || !dynamic_cast<Type*>( module ) )
-                continue;
-            else
-                return reinterpret_cast<Type*>( module );
+        if constexpr ( std::is_base_of<NutModule, Type>::value ) {
+            if ( nHelper::GetIsValid( name ) ) {
+                for ( auto& module : this->modules ) {
+                    if ( std::strcmp( name, module->GetName( ) ) != 0 || !dynamic_cast<Type*>( module ) )
+                        continue;
+                    else
+                        return reinterpret_cast<Type*>( module );
+                }
+            }
         }
 
         return nullptr;
@@ -94,11 +98,15 @@
 
     template< typename Type >
     Type* NutEditor::GetWindow( nString name ) const {
-        for ( auto& window : this->windows ) {
-            if ( std::strcmp( name, window->GetName( ) ) != 0 || !dynamic_cast<Type*>( window ) )
-                continue;
-            else
-                return reinterpret_cast<Type*>( window );
+        if constexpr ( std::is_base_of<NutWindow, Type>::value ) {
+            if ( nHelper::GetIsValid( name ) ) {
+                for ( auto& window : this->windows ) {
+                    if ( std::strcmp( name, window->GetName( ) ) != 0 || !dynamic_cast<Type*>( window ) )
+                        continue;
+                    else
+                        return reinterpret_cast<Type*>( window );
+                }
+            }
         }
 
         return nullptr;

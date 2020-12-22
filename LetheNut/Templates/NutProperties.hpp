@@ -34,58 +34,20 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#ifndef _IGS_NUT_PROPRETIES_IMP_HPP_
+#define _IGS_NUT_PROPRETIES_IMP_HPP_
 
-#include <LetheNut/UI/NutMenu.hpp>
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//      PUBLIC
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template<typename Condition, typename Content>
+	void NutProperties::Register( nString name, nString description, Content&& content ) {
+		this->Register( name, description, nullptr, (NutPropertyContent)content );
+	}
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC
-///////////////////////////////////////////////////////////////////////////////////////////
-NutMenu::NutMenu( nString name )
-    : NutBasic( name ),
-    items( ) 
-{ }
+	template<typename Condition, typename Content>
+	void NutProperties::Register( nString name, nString description, Condition&& condition, Content&& content ) {
+		this->Register( name, description, (NutPropertyHas)condition, (NutPropertyContent)content );
+	}
 
-class NutMenu* NutMenu::CreateSeparator( ) {
-    this->items.emplace_back( NutMenuItem( ) );
-
-    return this;
-}
-
-void NutMenu::OnRender( NutEditor* editor, NutPanel& parent ) {
-    ImGUI::MenurBar( 
-        this->GetName( ),
-        [ & ]( ) {
-            for ( auto& item : items ) {
-                if ( item.IsButton( ) ) {
-                    ImGUI::MenuButton(
-                        item.GetName( ), item.GetShortcut( ), true,
-                        [ & ]( ) { item.Process( editor, parent ); }
-                    );
-                } else if ( item.IsCheckbox( ) ) {
-                    ImGUI::Checkbox(
-                        item.GetName( ), item.GetState( ),
-                        [ & ]( ) { item.Process( editor, parent ); }
-                    );
-                } else
-                    ImGui::Separator( );
-            }
-        }
-    );
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PUBLIC GET
-///////////////////////////////////////////////////////////////////////////////////////////
-class NutMenuItem* NutMenu::GetItem( nString label ) const {
-    if ( nHelper::GetIsValid( label ) ) {
-        for ( auto& item : this->items ) {
-            if ( item.GetName( ) && std::strcmp( label, item.GetName( ) ) != 0 )
-                continue;
-            else if ( !item.IsSeparator( ) )
-                return &item;
-        }
-    }
-
-    return nullptr;
-}
+#endif

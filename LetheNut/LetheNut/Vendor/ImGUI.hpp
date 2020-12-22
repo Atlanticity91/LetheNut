@@ -71,7 +71,7 @@
 		REG_VAR( ImGuiTreeNodeFlags, TREE_FLAGS, ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding );
 		REG_VEC2( NO_PADDING, 0.f, 0.f );
 		REG_VEC2( DEFAULT_PADDING, 1.f, 1.f );
-		REG_VEC4( DEFAULT_COLOR, .8f, .8f, .8f, 1.f );
+		REG_COLOR( DEFAULT_COLOR, .8f, .8f, .8f, 1.f );
 		REG_VEC2( UV_MIN, 0.f, 0.f );
 		REG_VEC2( UV_MAX, 1.f, 1.f );
 		REG_COLOR( WHITE, 255, 255, 255, 255 );
@@ -134,6 +134,11 @@
 
 		};
 
+		/**
+		 * ImNodeStyle struct
+		 * @author : ALVES Quentin
+		 * @note : Defined node node style struct.
+		 **/
 		struct ImNodeStyle {
 
 			ImColor background;
@@ -567,15 +572,14 @@
 		template< typename OnClick >
 		void MenuButton( nString label, nString shortcut, bool is_active, OnClick&& callback );
 
-		/**
-		 * ToolTip template method
-		 * @author : ALVES Quentin
-		 * @note : Wrapper for Tooltip.
-		 * @template OnFly : Lambda capture.
-		 * @param on_fly : Current on fly lambda.
-		 **/
-		template< typename OnFly >
-		void ToolTip( OnFly&& on_fly );
+		template< typename... Args >
+		void ToolTip( nString format, Args... args );
+
+		template< typename... Args >
+		void ToolTip( const ImColor& color, nString format, Args... args );
+
+		template< typename Content, typename... Args >
+		void ToolTip( Content&& content, Args... args );
 
 		/**
 		 * Text method
@@ -781,30 +785,6 @@
 		 * TreeNode template method
 		 * @author : ALVES Quentin
 		 * @note : Wrapper for TreeNode.
-		 * @template Content : Lambda capture.
-		 * @param label : Label of the tree node.
-		 * @param content : Current content lambda.
-		 **/
-		template< typename Content >
-		void TreeNode( nString label, Content&& content );
-
-		/**
-		 * TreeNode template method
-		 * @author : ALVES Quentin
-		 * @note : Wrapper for TreeNode.
-		 * @template Content : Lambda capture.
-		 * @param label : Label of the tree node.
-		 * @param flags : Flags for tree node creation.
-		 * @param size : Size of the tree node.
-		 * @param content : Current content lambda.
-		 **/
-		template< typename Content >
-		void TreeNode( nString label, ImGuiTreeNodeFlags flags, Content&& content );
-
-		/**
-		 * TreeNode template method
-		 * @author : ALVES Quentin
-		 * @note : Wrapper for TreeNode.
 		 * @template Settings : Lambda capture.
 		 * @template Content : Lambda capture.
 		 * @param label : Label of the tree node.
@@ -813,8 +793,18 @@
 		 * @param settings : Current settings lambda.
 		 * @param content : Current content lambda.
 		 **/
-		template< typename Settings, typename Content >
-		void TreeNode( nString label, ImGuiTreeNodeFlags flags, Settings&& settings, Content&& content );
+
+		template< typename Content, typename... Args >
+		void Tree( nString label, Content&& content, Args... args );
+
+		template< typename Content, typename... Args >
+		void Tree( nString label, ImGuiTreeNodeFlags flags, Content&& content, Args... args );
+
+		template< typename Content, typename... Args >
+		void Tree( nString label, nString description, Content&& content, Args... args );
+
+		template< typename Content, typename... Args >
+		void Tree( nString label, nString description, ImGuiTreeNodeFlags flags, Content&& content, Args... args );
 
 		/**
 		 * Image method

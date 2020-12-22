@@ -37,7 +37,7 @@
 #ifndef _IGS_NUT_LIBRARY_HPP_
 #define _IGS_NUT_LIBRARY_HPP_
 
-	#include "PlatformLib.hpp"
+	#include "NutPlatformLib.hpp"
 
 	/**
 	 * NutLibImporter definition

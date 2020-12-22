@@ -75,6 +75,8 @@
 		strcpy( destination, source );
 #endif
 	}
+
+	bool nHelper::GetIsValid( nString text ) {  return text && strlen( text ) > 0; }
 	
 	void nHelper::ToDeg( float& radians ) { radians *= nHelper::RAD2DEG; }
 
@@ -98,12 +100,12 @@
 	}
 
 	template< typename Function, typename... Args >
-	static void nHelper::Async( Function&& function, Args... args ) {
+	void nHelper::Async( Function&& function, Args... args ) {
 		auto r = std::async( std::launch::async, function, args... );
 	}
 
 	template< typename Return, typename Function, typename... Args >
-	static std::future<Return> nHelper::Async( Function&& function, Args... args ) {
+	std::future<Return> nHelper::Async( Function&& function, Args... args ) {
 		return std::async( std::launch::async, function, args... );
 	}
 

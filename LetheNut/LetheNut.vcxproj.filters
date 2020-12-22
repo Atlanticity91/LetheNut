@@ -117,9 +117,6 @@
     <ClCompile Include="sources\Tools\NutViewport.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Editors\Nodes\NutGLSL.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="sources\Editors\Nodes\NutNode.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -147,7 +144,10 @@
     <ClCompile Include="sources\Editors\Text\NutTextStyle.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="sources\PlatformLib.cpp">
+    <ClCompile Include="sources\NutPlatformLib.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Editors\Nodes\NutMaterial.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -287,9 +287,6 @@
     <ClInclude Include="Templates\NutNodeEditor.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="LetheNut\Framework\Nodes\NutGLSL.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="LetheNut\Vendor\STB.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -302,7 +299,16 @@
     <ClInclude Include="LetheNut\Editors\Nodes\NutNodeStyle.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="LetheNut\PlatformLib.hpp">
+    <ClInclude Include="Templates\NutProperties.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LetheNut\Framework\Context\NutPropertyContext.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LetheNut\NutPlatformLib.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LetheNut\Framework\Nodes\NutMaterial.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

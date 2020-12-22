@@ -132,8 +132,8 @@ void NutKernel::OnCreate(  NutEditor* editor ) {
     editor->OpenPanel<NutNodeEditor>( editor );
 
     editor->GetTool<NutProperties>( "Properties" )->Register(
-        "I'm a fucking test !", "",
-        [ ]( ) {
+        "I'm a fucking test !", "ddd",
+        [ ]( NutEditor*, NutPropertyContext* ) {
             static float a[ 4 ];
 
             ImGUI::Vector<4>( "Damn", a, 0.f );
@@ -222,19 +222,23 @@ const std::string NutKernel::GetLicense( ) const {
 }
 
 NutLibrary* NutKernel::GetLibrary( nString name ) const {
-    for ( auto lib : this->libraries ) {
-        if ( strcmp( name, lib->GetName( ) ) == 0 )
-            return lib;
+    if ( nHelper::GetIsValid( name ) ) {
+        for ( auto lib : this->libraries ) {
+            if ( strcmp( name, lib->GetName( ) ) == 0 )
+                return lib;
+        }
     }
 
     return nullptr;
 }
 
 const ImTextureID NutKernel::GetImage( nString name ) const {
-    auto iterator = this->images.find( name );
+    if ( nHelper::GetIsValid( name ) ) {
+        auto iterator = this->images.find( name );
 
-    if ( iterator != this->images.end( ) )
-        return reinterpret_cast<ImTextureID>( ( *iterator ).second.ID );
+        if ( iterator != this->images.end( ) )
+            return reinterpret_cast<ImTextureID>( ( *iterator ).second.ID );
+    }
 
     return 0;
 }

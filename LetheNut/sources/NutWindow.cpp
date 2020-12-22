@@ -59,12 +59,12 @@ NutWindow::~NutWindow( ) { GLFW::Destroy( this->handle ); }
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutWindow::OnCreate( class NutEditor* editor ) {
+void NutWindow::OnCreate( NutEditor* editor ) {
     ImGUI::Initialize( this->GetHandle( ) );
     ImGUI::ApplyStyle( this->style );
 }
 
-void NutWindow::OnEditorRender( class NutEditor* editor ) {
+void NutWindow::OnEditorRender( NutEditor* editor ) {
     NutPopup::OnToolProcess( editor );
 
     ImGUI::Begin( );
@@ -79,7 +79,7 @@ void NutWindow::OnEditorRender( class NutEditor* editor ) {
     ImGUI::End( );
 }
 
-void NutWindow::OnPopupRender( class NutEditor* editor ) {
+void NutWindow::OnPopupRender( NutEditor* editor ) {
     auto idx = this->popups.size( );
 
     while ( idx > 0 ) {
