@@ -43,8 +43,18 @@
 	#include <Thirdparty/STB/ImageWrite.hpp>
 	#include <Thirdparty/STB/Perlin.hpp>
 
+	/**
+	 * STB namspace
+	 * @author : ALVES Quentin
+	 * @note : Contain STB code wrapper.
+	 **/
 	namespace STB {
 
+		/**
+		 * Image struct
+		 * @author : ALVES Quentin
+		 * @note : Defined Image core code.
+		 **/
 		struct Image {
 
 			nInt width;
@@ -52,13 +62,31 @@
 			nInt channels;
 			nUByte* data;
 
+			/**
+			 * Constructor
+			 * @author : ALVES Quentin
+			 **/
 			Image( );
 
 		};
 
+		/**
+		 * Load function
+		 * @author : ALVES Quentin
+		 * @note : Load an image from file.
+		 * @param image : Image storage.
+		 * @param path : Path to the query image file.
+		 * @return : bool
+		 **/
 		bool Load( Image& image, nString path );
 
-		void Close( Image& image );
+		/**
+		 * Destroy method
+		 * @author : ALVES Quentin
+		 * @note : Destroy an image.
+		 * @param image : Image storage.
+		 **/
+		void Destroy( Image& image );
 
 	};
 

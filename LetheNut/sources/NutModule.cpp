@@ -42,7 +42,8 @@
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutModule::NutModule( nString name )
-	: NutBasic( name )
+	: NutBasic( name ),
+	is_active( true )
 { }
 
 void NutModule::Enable( ) { this->is_active = true; }

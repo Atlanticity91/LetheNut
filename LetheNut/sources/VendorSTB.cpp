@@ -57,7 +57,7 @@ bool STB::Load( Image& image, nString path ) {
 	return image.data;
 }
 
-void STB::Close( Image& image ) {
+void STB::Destroy( Image& image ) {
 	if ( image.data ) {
 		stbi_image_free( image.data );
 		image.data = nullptr;

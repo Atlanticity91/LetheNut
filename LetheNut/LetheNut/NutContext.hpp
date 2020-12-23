@@ -34,17 +34,30 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_PROPRETY_CONTEXT_HPP_
-#define _IGS_NUT_PROPRETY_CONTEXT_HPP_
+#ifndef _IGS_NUT_CONTEXT_HPP_
+#define _IGS_NUT_CONTEXT_HPP_
 
 	#include <LetheNut/Core.hpp>
 
-	class NUT_API NutPropertyContext {
+	/**
+	 * NutContext class
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Context core class.
+	 **/
+	class NUT_API NutContext {
 
 	public:
-		NutPropertyContext( ) = default;
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 **/
+		NutContext( ) = default;
 
-		virtual ~NutPropertyContext( ) = default;
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
+		virtual ~NutContext( ) = default;
 
 	};
 

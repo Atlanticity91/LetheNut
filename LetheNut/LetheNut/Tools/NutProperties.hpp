@@ -39,10 +39,10 @@
 
 	#include "NutTool.hpp"
 
-	class NutPropertyContext;
+	class NutContext;
 
-	typedef bool( *NutPropertyHas )( NutEditor*, NutPropertyContext* );
-	typedef void( *NutPropertyContent )( NutEditor*, NutPropertyContext* );
+	typedef bool( *NutPropertyHas )( NutEditor*, NutContext* );
+	typedef void( *NutPropertyContent )( NutEditor*, NutContext* );
 
 	/**
 	 * NutPropertyPane struct
@@ -51,6 +51,7 @@
 	 **/
 	struct NutPropertyPane {
 
+		bool need_context;
 		nString name;
 		nString description;
 		NutPropertyHas condition;
@@ -66,7 +67,7 @@
 	NUT_TOOL( NutProperties ) {
 
 	private:
-		NutPropertyContext* context;
+		NutContext* context;
 		std::vector<NutPropertyPane> panes;
 
 	public:
@@ -82,9 +83,11 @@
 		 **/
 		~NutProperties( ) = default;
 
-		inline void Register( nString name, nString description, NutPropertyContent content );
+		inline void Register( bool need_context, nString name, nString description, NutPropertyContent content );
 
-		void Register( nString name, nString description, NutPropertyHas condition, NutPropertyContent content );
+		void Register( bool need_context, nString name, nString description, NutPropertyHas condition, NutPropertyContent content );
+
+		void SetContext( NutContext* context );
 
 	protected:
 		/**
@@ -97,10 +100,10 @@
 
 	public:
 		template<typename Condition, typename Content>
-		inline void Register( nString name, nString description, Content&& content );
+		inline void Register( bool need_context, nString name, nString description, Content&& content );
 
 		template<typename Condition, typename Content>
-		inline void Register( nString name, nString description, Condition&& condition, Content&& content );
+		inline void Register( bool need_context, nString name, nString description, Condition&& condition, Content&& content );
 
 	};
 

@@ -37,17 +37,13 @@
 #ifndef _IGS_NUT_VENDOR_IMGUI_HPP_
 #define _IGS_NUT_VENDOR_IMGUI_HPP_
 
-	// TODO : Remove Vec4 color to use ImColor.
-	// TODO : Description ToolTip
-	// TODO : TimeLine
-	// TODO : Patch Tooltip Rounding
-
 	#ifndef IMGUI_DEFINE_MATH_OPERATORS
 		#define IMGUI_DEFINE_MATH_OPERATORS
 	#endif
 
 	#include "OpenGL.hpp"
-	#include <Thirdparty/ImGUI/imgui_internal.h>
+	#include <ImGui/imgui.h>
+	#include <ImGui/imgui_internal.h>
 
 	#define REG_VAR( TYPE, NAME, ... ) const TYPE NAME = __VA_ARGS__
 	#define REG_VEC( QUERY, NAME, ... ) REG_VAR( QUERY, NAME, QUERY{ __VA_ARGS__ } )
@@ -162,7 +158,7 @@
 		 * @param path : Path to query font TTF file.
 		 * @param size : Default font size.
 		 **/
-		void LoadFont( nString path, float size );
+		NUT_API void LoadFont( nString path, float size );
 
 		/**
 		 * SetFont method
@@ -170,7 +166,7 @@
 		 * @note : Set current ImGui font.
 		 * @param font_id : Index of the query font.
 		 **/
-		void SetFont( nInt font_id );
+		NUT_API void SetFont( nInt font_id );
 
 		/**
 		 * ApplyStyle method
@@ -178,7 +174,7 @@
 		 * @note : Apply a style to ImGui.
 		 * @param style : Reference to query style to apply.
 		 **/
-		void ApplyStyle( NutStyle& style );
+		NUT_API void ApplyStyle( NutStyle& style );
 
 		/**
 		 * Internal_StyleHeader method
@@ -187,14 +183,14 @@
 		 * @param label : Label of the widget.
 		 * @param components : Count of element inside the widget.
 		 **/
-		void Internal_StyleHeader( nString label, int components );
+		NUT_API void Internal_StyleHeader( nString label, int components );
 
 		/**
 		 * Internal_StyleFooter method
 		 * @author : ALVES Quentin
 		 * @note : Internal ImGui custom widget footer.
 		 **/
-		void Internal_StyleFooter( );
+		NUT_API void Internal_StyleFooter( );
 
 		/**
 		 * DequeueCharacters template method
@@ -215,7 +211,7 @@
 		 * @param query_key : Query key as ImGuiKey_.
 		 * @return : const bool
 		 **/
-		const bool IsKeyPressed( ImGuiKey_ query_key );
+		NUT_API const bool IsKeyPressed( ImGuiKey_ query_key );
 
 		/**
 		 * GetIsShiftDown function
@@ -223,7 +219,7 @@
 		 * @note : Get if shift key is pressed.
 		 * @return : const bool
 		 **/
-		const bool GetIsShiftDown( );
+		NUT_API const bool GetIsShiftDown( );
 
 		/**
 		 * GetIsCtrltDown function
@@ -231,7 +227,7 @@
 		 * @note : Get if control key is pressed.
 		 * @return : const bool
 		 **/
-		const bool GetIsCtrltDown( );
+		NUT_API const bool GetIsCtrltDown( );
 
 		/**
 		 * GetIsAltDown function
@@ -239,7 +235,7 @@
 		 * @note : Get if alt key is pressed.
 		 * @return : const bool
 		 **/
-		const bool GetIsAltDown( );
+		NUT_API const bool GetIsAltDown( );
 
 		/**
 		 * GetMouseRelPos function
@@ -247,7 +243,7 @@
 		 * @note : Get the real mouse position on window.
 		 * @return : const ImVec2
 		 **/
-		const ImVec2 GetMouseRelPos( );
+		NUT_API const ImVec2 GetMouseRelPos( );
 
 		/**
 		 * GetMouseDelta function
@@ -255,7 +251,7 @@
 		 * @note : Get current mouse delta value.
 		 * @return : const ImVec2
 		 **/
-		const ImVec2 GetMouseDelta( );
+		NUT_API const ImVec2 GetMouseDelta( );
 
 		/**
 		 * GetScrollWheel function
@@ -263,7 +259,7 @@
 		 * @note : Get current mouse horizontal scroll wheel value.
 		 * @return : const float
 		 **/
-		const float GetScrollWheelH( );
+		NUT_API const float GetScrollWheelH( );
 
 		/**
 		 * GetScrollWheel function
@@ -271,7 +267,7 @@
 		 * @note : Get current mouse scroll wheel value.
 		 * @return : const float
 		 **/
-		const float GetScrollWheel( );
+		NUT_API const float GetScrollWheel( );
 
 		/**
 		 * GetPenPressure function
@@ -279,7 +275,7 @@
 		 * @note : Get current pen pressure value.
 		 * @return : const float
 		 **/
-		const float GetPenPressure( );
+		NUT_API const float GetPenPressure( );
 
 		/**
 		 * GetLineHeight const function
@@ -287,7 +283,7 @@
 		 * @note : Get current ImGui line height.
 		 * @return : const float
 		 **/
-		const float GetLineHeight( );
+		NUT_API const float GetLineHeight( );
 
 		/**
 		 * GetTextSize const function
@@ -296,14 +292,14 @@
 		 * @param text : The text you wan't size.
 		 * @return : const ImVec2
 		 **/
-		const ImVec2 GetTextSize( nString text );
+		NUT_API const ImVec2 GetTextSize( nString text );
 
 		/**
 		 * Begin method
 		 * @author : ALVES Quentin
 		 * @note : Begin ImGui context.
 		 **/
-		void Begin( );
+		NUT_API void Begin( );
 
 		/**
 		 * BeginPopup method
@@ -315,7 +311,7 @@
 		 * @param border_size : Size of the popup frame border
 		 * @param is_open : Pointer to boolean that hold the popup state.
 		 **/
-		void BeginPopup( nString label, ImGuiWindowFlags flags, ImVec2& size, float border_size, bool* is_open );
+		NUT_API void BeginPopup( nString label, ImGuiWindowFlags flags, ImVec2& size, float border_size, bool* is_open );
 
 		/**
 		 * CreateModal template method
@@ -354,7 +350,7 @@
 		 * @author : ALVES Quentin
 		 * @note : Begin a dockspace context.
 		 **/
-		void BeginDockspace( );
+		NUT_API void BeginDockspace( );
 
 		/**
 		 * BeginPanel method
@@ -363,7 +359,7 @@
 		 * @param label : Label of the menu button.
 		 * @param padding : Padding of content on axes.
 		 **/
-		void BeginPanel( nString label, const ImVec2& padding );
+		NUT_API void BeginPanel( nString label, const ImVec2& padding );
 
 		/**
 		 * BeginPanel method
@@ -372,7 +368,7 @@
 		 * @param label : Label of the menu button.
 		 * @param padding : Padding of content on axes.
 		 **/
-		void BeginPanel( nString label, const ImVec2&& padding );
+		NUT_API void BeginPanel( nString label, const ImVec2&& padding );
 
 		/**
 		 * BeginCanvas method
@@ -380,7 +376,7 @@
 		 * @note : Begin a canvas.
 		 * @param canvas : Query canvas context.
 		 **/
-		void BeginCanvas( ImCanvas& canvas );
+		NUT_API void BeginCanvas( ImCanvas& canvas );
 
 		/**
 		 * BeginCanvas method
@@ -390,7 +386,7 @@
 		 * @param position : Position of the canvas on the current window.
 		 * @param size : Size of the canvas.
 		 **/
-		void BeginCanvas( ImCanvas& canvas, const ImVec2& position, const ImVec2& size );
+		NUT_API void BeginCanvas( ImCanvas& canvas, const ImVec2& position, const ImVec2& size );
 
 		/**
 		 * BeginCanvas method
@@ -400,7 +396,7 @@
 		 * @param position : Position of the canvas on the current window.
 		 * @param size : Size of the canvas.
 		 **/
-		void BeginCanvas( ImCanvas& canvas, const ImVec2&& position, const ImVec2&& size );
+		NUT_API void BeginCanvas( ImCanvas& canvas, const ImVec2&& position, const ImVec2&& size );
 
 		/**
 		 * BeginNode method
@@ -409,7 +405,7 @@
 		 * @param canvas : Current context canvas where draw the node.
 		 * @param node : Current node context.
 		 **/
-		void BeginNode( const ImCanvas& canvas, const ImNodeContext& node );
+		NUT_API void BeginNode( const ImCanvas& canvas, const ImNodeContext& node );
 
 		/**
 		 * MenurBar template method
@@ -428,7 +424,7 @@
 		 * @note : Wrapper for Spacer.
 		 * @param spacing : Value for x and y spacing.
 		 **/
-		void Spacer( const ImVec2& spacing );
+		NUT_API void Spacer( const ImVec2& spacing );
 
 		/**
 		 * Spacer method
@@ -436,7 +432,7 @@
 		 * @note : Wrapper for Spacer.
 		 * @param spacing : Value for x and y spacing.
 		 **/
-		void Spacer( const ImVec2&& spacing );
+		NUT_API void Spacer( const ImVec2&& spacing );
 
 		/**
 		 * Spacer method
@@ -445,7 +441,7 @@
 		 * @param x : Spacing x value.
 		 * @param y : Spacing y value.
 		 **/
-		void Spacer( const float x, const float y );
+		NUT_API void Spacer( const float x, const float y );
 
 		/**
 		 * Link method
@@ -456,7 +452,7 @@
 		 * @param destination : Destination point of the link.
 		 * @param color : Color of the link.
 		 **/
-		void NodeLink( const ImCanvas& canvas, const ImVec2& source, const ImVec2& destination, const ImColor& color );
+		NUT_API void NodeLink( const ImCanvas& canvas, const ImVec2& source, const ImVec2& destination, const ImColor& color );
 
 		/**
 		 * Link method
@@ -467,7 +463,7 @@
 		 * @param destination : Destination point of the link.
 		 * @param color : Color of the link.
 		 **/
-		void NodeLink( const ImCanvas& canvas, const ImVec2&& source, const ImVec2&& destination, const ImColor&& color );
+		NUT_API void NodeLink( const ImCanvas& canvas, const ImVec2&& source, const ImVec2&& destination, const ImColor&& color );
 
 		/**
 		 * NodeCirclePin method
@@ -476,7 +472,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeCirclePin( const bool is_connected, const ImColor& color );
+		NUT_API void NodeCirclePin( const bool is_connected, const ImColor& color );
 
 		/**
 		 * NodeCirclePin method
@@ -485,7 +481,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeCirclePin( const bool is_connected, const ImColor&& color );
+		NUT_API void NodeCirclePin( const bool is_connected, const ImColor&& color );
 
 		/**
 		 * NodeSquarePin method
@@ -494,7 +490,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeSquarePin( const bool is_connected, const ImColor& color );
+		NUT_API void NodeSquarePin( const bool is_connected, const ImColor& color );
 
 		/**
 		 * NodeSquarePin method
@@ -503,7 +499,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeSquarePin( const bool is_connected, const ImColor&& color );
+		NUT_API void NodeSquarePin( const bool is_connected, const ImColor&& color );
 
 		/**
 		 * NodeDiamondPin method
@@ -512,7 +508,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeDiamondPin( const bool is_connected, const ImColor& color );
+		NUT_API void NodeDiamondPin( const bool is_connected, const ImColor& color );
 
 		/**
 		 * NodeDiamondPin method
@@ -521,7 +517,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeDiamondPin( const bool is_connected, const ImColor&& color );
+		NUT_API void NodeDiamondPin( const bool is_connected, const ImColor&& color );
 
 		/**
 		 * NodeArrayPin method
@@ -530,7 +526,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeArrayPin( const bool is_connected, const ImColor& color );
+		NUT_API void NodeArrayPin( const bool is_connected, const ImColor& color );
 
 		/**
 		 * NodeArrayPin method
@@ -539,7 +535,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeArrayPin( const bool is_connected, const ImColor&& color );
+		NUT_API void NodeArrayPin( const bool is_connected, const ImColor&& color );
 
 		/**
 		 * NodeTrianglePin method
@@ -548,7 +544,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeTrianglePin( const bool is_connected, const ImColor& color );
+		NUT_API void NodeTrianglePin( const bool is_connected, const ImColor& color );
 
 		/**
 		 * NodeTrianglePin method
@@ -557,7 +553,7 @@
 		 * @param is_connected : State of the pin.
 		 * @param color : Color of the pin.
 		 **/
-		void NodeTrianglePin( const bool is_connected, const ImColor&& color );
+		NUT_API void NodeTrianglePin( const bool is_connected, const ImColor&& color );
 
 		/**
 		 * MenuButton template method
@@ -572,12 +568,50 @@
 		template< typename OnClick >
 		void MenuButton( nString label, nString shortcut, bool is_active, OnClick&& callback );
 
+		/**
+		 * ToolTip template method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Text ToolTip from ImGui.
+		 * @template Args : Type caprture for arguments of formated text.
+		 * @param format : Formated text of the tool type.
+		 * @param args : Formated text arguments values.
+		 **/
 		template< typename... Args >
 		void ToolTip( nString format, Args... args );
 
+		/**
+		 * ToolTip template method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Text ToolTip from ImGui.
+		 * @template Args : Type caprture for arguments of formated text.
+		 * @param color : Color of the formated text.
+		 * @param format : Formated text of the tool type.
+		 * @param args : Formated text arguments values.
+		 **/
 		template< typename... Args >
 		void ToolTip( const ImColor& color, nString format, Args... args );
 
+		/**
+		 * ToolTip template method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Text ToolTip from ImGui.
+		 * @template Args : Type caprture for arguments of formated text.
+		 * @param color : Color of the formated text.
+		 * @param format : Formated text of the tool type.
+		 * @param args : Formated text arguments values.
+		 **/
+		template< typename... Args >
+		void ToolTip( const ImColor&& color, nString format, Args... args );
+
+		/**
+		 * ToolTip template method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for ToolTip from ImGui.
+		 * @template Content : Lambda capture.
+		 * @template Args : Type caprture for Lambda.
+		 * @param content : Lambda defined the ToolTip content.
+		 * @param args : Lambda arguments values.
+		 **/
 		template< typename Content, typename... Args >
 		void ToolTip( Content&& content, Args... args );
 
@@ -590,7 +624,7 @@
 		 * @param background : Text background color.
 		 * @param foreground : Text foreground color.
 		 **/
-		void Text( const ImVec2& position, nString text, const ImColor& background, const ImColor& foreground );
+		NUT_API void Text( const ImVec2& position, nString text, const ImColor& background, const ImColor& foreground );
 
 		/**
 		 * Text method
@@ -601,19 +635,7 @@
 		 * @param background : Text background color.
 		 * @param foreground : Text foreground color.
 		 **/
-		void Text( const ImVec2&& position, nString text, const ImColor&& background, const ImColor&& foreground );
-
-		/**
-		 * Text method
-		 * @author : ALVES Quentin
-		 * @note : Wrapper for Tooltip.
-		 * @param renderer : Pointer to current ImGui draw list.
-		 * @param position : Position where draw the text.
-		 * @param text : Query text to display.
-		 * @param background : Text background color.
-		 * @param foreground : Text foreground color.
-		 **/
-		void Text( ImDrawList* renderer, const ImVec2& position, nString text, const ImColor& background, const ImColor& foreground );
+		NUT_API void Text( const ImVec2&& position, nString text, const ImColor&& background, const ImColor&& foreground );
 
 		/**
 		 * Text method
@@ -625,7 +647,19 @@
 		 * @param background : Text background color.
 		 * @param foreground : Text foreground color.
 		 **/
-		void Text( ImDrawList* renderer, const ImVec2&& position, nString text, const ImColor&& background, const ImColor&& foreground );
+		NUT_API void Text( ImDrawList* renderer, const ImVec2& position, nString text, const ImColor& background, const ImColor& foreground );
+
+		/**
+		 * Text method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Tooltip.
+		 * @param renderer : Pointer to current ImGui draw list.
+		 * @param position : Position where draw the text.
+		 * @param text : Query text to display.
+		 * @param background : Text background color.
+		 * @param foreground : Text foreground color.
+		 **/
+		NUT_API void Text( ImDrawList* renderer, const ImVec2&& position, nString text, const ImColor&& background, const ImColor&& foreground );
 
 		/**
 		 * TextUnformatted method
@@ -782,27 +816,58 @@
 		void DropList( nString label, nString& previous, nString* list, Type& data, OnChange&& on_change );
 
 		/**
-		 * TreeNode template method
+		 * Tree template method
 		 * @author : ALVES Quentin
-		 * @note : Wrapper for TreeNode.
-		 * @template Settings : Lambda capture.
-		 * @template Content : Lambda capture.
-		 * @param label : Label of the tree node.
-		 * @param flags : Flags for tree node creation.
-		 * @param size : Size of the tree node.
-		 * @param settings : Current settings lambda.
-		 * @param content : Current content lambda.
+		 * @note : Wrapper for Tree from ImGui.
+		 * @template Content : Lambda capture for Tree content.
+		 * @template Args : Type captyre for content lambda arguments.
+		 * @param label : Query tree label.
+		 * @param content : Lambda that defined tree content.
+		 * @param args : Arguments for content lambda.
 		 **/
-
 		template< typename Content, typename... Args >
 		void Tree( nString label, Content&& content, Args... args );
 
+		/**
+		 * Tree template method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Tree from ImGui.
+		 * @template Content : Lambda capture for Tree content.
+		 * @template Args : Type captyre for content lambda arguments.
+		 * @param label : Query tree label.
+		 * @param flags : Flags for tree creation.
+		 * @param content : Lambda that defined tree content.
+		 * @param args : Arguments for content lambda.
+		 **/
 		template< typename Content, typename... Args >
 		void Tree( nString label, ImGuiTreeNodeFlags flags, Content&& content, Args... args );
 
+		/**
+		 * Tree template method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Tree from ImGui.
+		 * @template Content : Lambda capture for Tree content.
+		 * @template Args : Type captyre for content lambda arguments.
+		 * @param label : Query tree label.
+		 * @param description : Query tree description.
+		 * @param content : Lambda that defined tree content.
+		 * @param args : Arguments for content lambda.
+		 **/
 		template< typename Content, typename... Args >
 		void Tree( nString label, nString description, Content&& content, Args... args );
 
+		/**
+		 * Tree template method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for Tree from ImGui.
+		 * @template Content : Lambda capture for Tree content.
+		 * @template Args : Type captyre for content lambda arguments.
+		 * @param label : Query tree label.
+		 * @param description : Query tree description.
+		 * @param flags : Flags for tree creation.
+		 * @param content : Lambda that defined tree content.
+		 * @param args : Arguments for content lambda.
+		 **/
 		template< typename Content, typename... Args >
 		void Tree( nString label, nString description, ImGuiTreeNodeFlags flags, Content&& content, Args... args );
 
@@ -812,7 +877,7 @@
 		 * @note : Wrapper for displaying OpenGL texture as image.
 		 * @param texture : Reference to query OpenGL texture.
 		 **/
-		void Image( const OpenGL::Texture& texture );
+		NUT_API void Image( const OpenGL::Texture& texture );
 
 		/**
 		 * Image method
@@ -822,7 +887,7 @@
 		 * @param position : Offset from current element to display the image.
 		 * @param size : Size of the area to render the image.
 		 **/
-		void Image( const OpenGL::Texture& texture, const ImVec2& position, const ImVec2& size );
+		NUT_API void Image( const OpenGL::Texture& texture, const ImVec2& position, const ImVec2& size );
 
 		/**
 		 * Image method
@@ -832,7 +897,7 @@
 		 * @param position : Offset from current element to display the image.
 		 * @param size : Size of the area to render the image.
 		 **/
-		void Image( const OpenGL::Texture& texture, const ImVec2&& position, const ImVec2&& size );
+		NUT_API void Image( const OpenGL::Texture& texture, const ImVec2&& position, const ImVec2&& size );
 
 		/**
 		 * Image method
@@ -840,17 +905,7 @@
 		 * @note : Wrapper for displaying OpenGL frame buffer as image.
 		 * @param frame : Reference to query OpenGL frame buffer.
 		 **/
-		void Image( const OpenGL::Frame& frame );
-
-		/**
-		 * Image method
-		 * @author : ALVES Quentin
-		 * @note : Wrapper for displaying OpenGL frame buffer as image.
-		 * @param frame : Reference to query OpenGL frame buffer.
-		 * @param position : Offset from current element to display the image.
-		 * @param size : Size of the area to render the image.
-		 **/
-		void Image( const OpenGL::Frame& frame, const ImVec2& position, const ImVec2& size );
+		NUT_API void Image( const OpenGL::Frame& frame );
 
 		/**
 		 * Image method
@@ -860,17 +915,28 @@
 		 * @param position : Offset from current element to display the image.
 		 * @param size : Size of the area to render the image.
 		 **/
-		void Image( const OpenGL::Frame& frame, const ImVec2&& position, const ImVec2&& size );
+		NUT_API void Image( const OpenGL::Frame& frame, const ImVec2& position, const ImVec2& size );
+
+		/**
+		 * Image method
+		 * @author : ALVES Quentin
+		 * @note : Wrapper for displaying OpenGL frame buffer as image.
+		 * @param frame : Reference to query OpenGL frame buffer.
+		 * @param position : Offset from current element to display the image.
+		 * @param size : Size of the area to render the image.
+		 **/
+		NUT_API void Image( const OpenGL::Frame& frame, const ImVec2&& position, const ImVec2&& size );
 
 		/**
 		 * RightClickPanel template method
 		 * @author : ALVES Quentin
 		 * @note : Right click popup management.
 		 * @template Content : Lambda capture.
+		 * @param over_items : True to display over other items.
 		 * @param content : Current content lambda.
 		 **/
 		template< typename Content >
-		void RightClickPanel( Content&& content );
+		void RightClickPanel( bool over_items, Content&& content );
 
 		/**
 		 * EndNode method
@@ -882,7 +948,7 @@
 		 * @param color : Color of the node.
 		 * @param is_selected : Defined if the node is selected.
 		 **/
-		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color );
+		NUT_API void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color );
 
 		/**
 		 * EndNode method
@@ -892,7 +958,7 @@
 		 * @param node : Query node context.
 		 * @param color : Color of the node.
 		 **/
-		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color );
+		NUT_API void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color );
 
 		/**
 		 * EndNode method
@@ -902,7 +968,7 @@
 		 * @param node : Query node context.
 		 * @param style : Current node style.
 		 **/
-		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle& style );
+		NUT_API void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle& style );
 
 		/**
 		 * EndNode method
@@ -912,7 +978,7 @@
 		 * @param node : Query node context.
 		 * @param style : Current node style.
 		 **/
-		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle&& style );
+		NUT_API void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle&& style );
 
 		/**
 		 * EndNode method
@@ -923,7 +989,7 @@
 		 * @param color : Color of the node.
 		 * @param position : Position offset of the node.
 		 **/
-		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color, const ImVec2& position );
+		NUT_API void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color, const ImVec2& position );
 
 		/**
 		 * EndNode method
@@ -934,35 +1000,35 @@
 		 * @param color : Color of the node.
 		 * @param position : Position offset of the node.
 		 **/
-		void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color, const ImVec2&& position );
+		NUT_API void EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color, const ImVec2&& position );
 
 		/**
 		 * EndCanvas method
 		 * @author : ALVES Quentin
 		 * @note : End current canvas.
 		 **/
-		void EndCanvas( );
+		NUT_API void EndCanvas( );
 
 		/**
 		 * EndPanel method
 		 * @author : ALVES Quentin
 		 * @note : End current panel.
 		 **/
-		void EndPanel( );
+		NUT_API void EndPanel( );
 
 		/**
 		 * EndDockSpace method
 		 * @author : ALVES Quentin
 		 * @note : End dockspace context.
 		 **/
-		void EndPopup( );
+		NUT_API void EndPopup( );
 
 		/**
 		 * End method
 		 * @author : ALVES Quentin
 		 * @note : End ImGui context.
 		 **/
-		void End( );
+		NUT_API void End( );
 
 		/**
 		 * Destroy method

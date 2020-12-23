@@ -39,6 +39,11 @@
 
 	#include "Core.hpp"
 
+	 /**
+	  * NutLibrary final class
+	  * @author : ALVES Quentin
+	  * @note : Defined Nut Procedure core class.
+	  **/
 	class NUT_API NutProcedure final {
 
 	private:
@@ -49,6 +54,11 @@
 #endif
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param handle : Default handle value.
+		 **/
 #ifdef _WIN64
 		NutProcedure( FARPROC handle );
 #else
@@ -56,6 +66,12 @@
 #endif
 
 	public:
+		/**
+		 * operator () const
+		 * @author : ALVES Quentin
+		 * @note : Get the procedure casted to query function.
+		 * @return : Functor*
+		 **/
 		template <typename Functor, typename = std::enable_if_t<std::is_function_v<Functor>>>
 		operator Functor* ( ) const {
 			return reinterpret_cast<Functor*>( this->handle );
@@ -63,6 +79,11 @@
 
 	};
 
+	/**
+	 * NutPlatformLib final class
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Platform Library core class.
+	 **/
 	class NUT_API NutPlatformLib final {
 
 	private:
@@ -73,27 +94,84 @@
 #endif
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 **/
 		NutPlatformLib( );
 
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param path : Path to the query library file.
+		 **/
 		NutPlatformLib( nString path );
 
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param path : Path to the query library file.
+		 **/
 		NutPlatformLib( const std::string& path );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		~NutPlatformLib( ) = default;
 
+		/**
+		 * Close method
+		 * @author : ALVES Quentin
+		 * @note : Close the current library.
+		 **/
 		void Close( );
 
 	public:
+		/**
+		 * GetIsValid const function
+		 * @author : ALVES Quentin
+		 * @note : Get if the library is valid.
+		 * @return : bool
+		 **/
 		bool GetIsValid( ) const;
 
+		/**
+		 * Has const function
+		 * @author : ALVES Quentin
+		 * @note : Get if the library has a procedure.
+		 * @param query_name : Name of the query procedure.
+		 * @return : bool
+		 **/
 		bool Has( nString query_name ) const;
 
+		/**
+		 * Get const function
+		 * @author : ALVES Quentin
+		 * @note : Get a procedure of library.
+		 * @param query_name : Name of the query procedure.
+		 * @return : NutProcedure
+		 **/
 		NutProcedure Get( nString query_name ) const;
 
 	private:
+		/**
+		 * IsValid const function
+		 * @author : ALVES Quentin
+		 * @note : Get if the library is valid.
+		 * @param query_name : Name of the query procedure.
+		 * @return : bool
+		 **/
 		bool IsValid( nString query_name ) const;
 
 	public:
+		/**
+		 * operator[] const
+		 * @author : ALVES Quentin
+		 * @note : Get a procedure of library.
+		 * @param query_name : Name of the query procedure.
+		 * @return : NutProcedure
+		 **/
 		NutProcedure operator[]( nString query_name ) const;
 
 	};

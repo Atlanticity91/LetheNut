@@ -40,6 +40,11 @@
     #include <LetheNut/Core.hpp>
     #include <Thirdparty/JSON/NLohmann.hpp>
 
+    /**
+     * nJSON final class.
+     * @author : ALVES Quentin
+     * @node : Defined JSON core code.
+     **/
     class NUT_API nJSON final {
 
     public:
@@ -53,37 +58,127 @@
         nlohmann::json data;
 
     public:
+        /**
+         * Constructor
+         * @author : ALVES Quentin
+         **/
         nJSON( );
 
+        /**
+         * Destructor
+         * @author : ALVES Quentin
+         **/
         ~nJSON( );
 
+        /**
+         * Load function
+         * @author : ALVES Quentin
+         * @note : Load a json file.
+         * @param path : Path to the query json file.
+         * @return : bool
+         **/
         bool Load( nString path );
 
+        /**
+         * Load function
+         * @author : ALVES Quentin
+         * @note : Load a json file.
+         * @param path : Path to the query json file.
+         * @return : bool
+         **/
         bool Load( std::string path );
 
+        /**
+         * Write function
+         * @author : ALVES Quentin
+         * @note : Write a json file.
+         * @param path : Path to the query json file.
+         * @return : bool
+         **/
         bool Write( nString path );
 
+        /**
+         * Write function
+         * @author : ALVES Quentin
+         * @note : Write a json file.
+         * @param path : Path to the query json file.
+         * @return : bool
+         **/
         bool Write( std::string path );
 
     public:
+        /**
+         * Append template method
+         * @author : ALVES Quentin
+         * @note : Append parameter to current JSON object.
+         * @template Type : Type of the parameter to add.
+         * @param parameter : Name of the query parameter.
+         * @param data : Parameter value.
+         **/
         template< typename Type >
         void Append( nString parameter, const Type& data );
 
+        /**
+         * Append template method
+         * @author : ALVES Quentin
+         * @note : Append parameter to current JSON object.
+         * @template Type : Type of the parameter to add.
+         * @param parameter : Name of the query parameter.
+         * @param data : Parameter value.
+         **/
         template< typename Type >
         inline void Append( nString parameter, const Type&& data );
 
+        /**
+         * Foreach template method
+         * @author : ALVES Quentin
+         * @note : Foreach element of parameter.
+         * @template Type : Type of the query parameter.
+         * @template Action : Lambda capture.
+         * @template Args : Types capture for lambda arguements.
+         * @param parameter : Name of the query parameter.
+         * @param action : Query lambda.
+         * @param args : Arguments values for lambda.
+         **/
         template< typename Type, typename Action, typename... Args >
         void Foreach( nString parameter, Action&& action, Args... args );
 
     private:
+        /**
+         * InternalForeach template method
+         * @author : ALVES Quentin
+         * @note : Foreach element of parameter.
+         * @template Type : Type of the query parameter.
+         * @template Action : Lambda capture.
+         * @template Args : Types capture for lambda arguements.
+         * @param parameter : Name of the query parameter.
+         * @param action : Query lambda.
+         * @param args : Arguments values for lambda.
+         **/
         template< typename Type, typename Action, typename... Args >
         void InternalForeach( nString parameter, Action&& action, Args... args );
 
     public:
+        /**
+         * Get template const function
+         * @author : ALVES Quentin
+         * @note : Get a parameter of the current JSON object.
+         * @template Type : Type of the query parameter.
+         * @param parameter : Name of the query parameter.
+         * @return : const Type
+         **/
         template< typename Type >
         const Type Get( nString parameter ) const;
 
     private:
+        /**
+         * InternalGetArray template const function
+         * @author : ALVES Quentin
+         * @note : Get an array parameter of the current JSON object.
+         * @template Type : Type of the query array parameter.
+         * @param parameter : Name of the query array parameter.
+         * @return : const Type
+         **/
         template< typename Array >
         const Array InternalGetArray( nString parameter ) const;
 

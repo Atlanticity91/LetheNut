@@ -140,7 +140,7 @@
 			ImGui::EndPopup( );
 		}
 
-		ImGui::PopStyleVar( 1 );
+		ImGui::PopStyleVar( );
 	}
 
 	template< typename Content, typename... Args >
@@ -159,7 +159,7 @@
 				ImGui::EndMenu( );
 			}
 
-			ImGui::PopStyleColor( 1 );
+			ImGui::PopStyleColor( );
 			ImGui::EndMenuBar( );
 		}
 	}
@@ -192,10 +192,17 @@
 	template< typename... Args >
 	void ImGUI::ToolTip( const ImColor& color, nString format, Args... args ) {
 		if ( nHelper::GetIsValid( format ) && ImGui::IsMousePosValid( ) && ImGui::IsItemHovered( ) ) {
+			ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2{ 8.f, 2.f } );
 			ImGui::BeginTooltip( );
-			ImGUI::Text( color, format, args... );
+				ImGUI::Text( color, format, args... );
 			ImGui::EndTooltip( );
+			ImGui::PopStyleVar( );
 		}
+	}
+
+	template< typename... Args >
+	void ImGUI::ToolTip( const ImColor&& color, nString format, Args... args ) { 
+		ImGUI::ToolTip( color, format, args... );
 	}
 
 	template< typename Content, typename... Args >
@@ -203,11 +210,13 @@
 		if ( ImGui::IsMousePosValid( ) && ImGui::IsItemHovered( ) ) {
 			auto mouse_pos = ImGUI::GetMouseRelPos( );
 
+			ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2{ 8.f, 2.f } );
 			ImGui::BeginTooltip( );
 
-			content( mouse_pos, args... );
+				content( mouse_pos, args... );
 
 			ImGui::EndTooltip( );
+			ImGui::PopStyleVar( );
 		}
 	}
 
@@ -426,7 +435,7 @@
 			if ( open ) {
 				ImGUI::ToolTip( description );
 
-				content( args... );
+					content( args... );
 
 				ImGui::TreePop( );
 			}
@@ -434,8 +443,8 @@
 	}
 
 	template< typename Content >
-	void ImGUI::RightClickPanel( Content&& content ) {
-		if ( ImGui::BeginPopupContextWindow( 0, 1, false ) ) {
+	void ImGUI::RightClickPanel( bool over_items, Content&& content ) {
+		if ( ImGui::BeginPopupContextWindow( 0, 1 | ( over_items ? 0 : ImGuiPopupFlags_NoOpenOverItems ) ) ) {
 			content( );
 
 			ImGui::EndPopup( );

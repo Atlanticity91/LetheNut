@@ -75,7 +75,7 @@ bool NutKernel::LoadImage( nString alias, nString path ) {
             STB::Load( this->image_loader, path ) && 
             OpenGL::Create( pair.second, this->image_loader.width, this->image_loader.height, this->image_loader.data )
         ) {
-            STB::Close( this->image_loader );
+            STB::Destroy( this->image_loader );
 
             this->images.emplace( pair );
 
@@ -135,9 +135,11 @@ void NutKernel::OnCreate(  NutEditor* editor ) {
     editor->OpenPanel<NutTextEditor>( editor );
     editor->OpenPanel<NutNodeEditor>( editor );
 
-    editor->GetTool<NutProperties>( "Properties" )->Register(
-        "I'm a fucking test !", "ddd",
-        [ ]( NutEditor*, NutPropertyContext* ) {
+    auto* properties = editor->GetTool<NutProperties>( "Properties" );
+    
+    properties->Register(
+        false, "I'm a fucking test !", "ddd",
+        [ ]( NutEditor*, NutContext* ) {
             static float a[ 4 ];
 
             ImGUI::Vector<4>( "Damn", a, 0.f );

@@ -18,27 +18,6 @@
     <ClCompile Include="sources\__main.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Thirdparty\ImGUI\imgui.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Thirdparty\ImGUI\imgui_demo.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Thirdparty\ImGUI\imgui_draw.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Thirdparty\ImGUI\imgui_impl_glfw.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Thirdparty\ImGUI\imgui_impl_opengl3.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Thirdparty\ImGUI\imgui_impl_win32.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Thirdparty\ImGUI\imgui_widgets.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="sources\NutBasic.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -88,9 +67,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="sources\__ui.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Thirdparty\ImGUI\imgui_tables.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="sources\VendorSTB.cpp">
@@ -302,13 +278,13 @@
     <ClInclude Include="Templates\NutProperties.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="LetheNut\Framework\Context\NutPropertyContext.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="LetheNut\NutPlatformLib.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="LetheNut\Framework\Nodes\NutMaterial.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LetheNut\NutContext.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

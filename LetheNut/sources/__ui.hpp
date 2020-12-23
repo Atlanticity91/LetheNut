@@ -42,9 +42,7 @@
 	#include <LetheNut/Vendor/ImGUI.hpp>
 
 	#include <Thirdparty/GLFW/glfw3.h>
-	#include <Thirdparty/ImGUI/imgui.h>
-	#include <Thirdparty/ImGUI/imgui_internal.h>
-	#include <Thirdparty/ImGUI/imgui_impl_opengl3.h>
-	#include <Thirdparty/ImGUI/imgui_impl_glfw.h>
+	#include <ImGUI/imgui_impl_opengl3.h>
+	#include <ImGUI/imgui_impl_glfw.h>
 
 #endif

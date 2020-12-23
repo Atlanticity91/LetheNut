@@ -36,7 +36,7 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/Framework/Context/NutPropertyContext.hpp>
+#include <LetheNut/NutContext.hpp>
 #include <LetheNut/Tools/NutProperties.hpp>
 #include <LetheNut/Vendor/ImGUI.hpp>
 
@@ -45,14 +45,15 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutProperties::NutProperties( )
 	: NutTool( "Properties", ImGUI::DEFAULT_PADDING ),
+	context( nullptr ),
 	panes( )
 { }
 
-void NutProperties::Register( nString name, nString description, NutPropertyContent content ) {
-	this->Register( name, description, nullptr, content );
+void NutProperties::Register( bool need_context, nString name, nString description, NutPropertyContent content ) {
+	this->Register( need_context, name, description, nullptr, content );
 }
 
-void NutProperties::Register( nString name, nString description, NutPropertyHas condition, NutPropertyContent content ) {
+void NutProperties::Register( bool need_context, nString name, nString description, NutPropertyHas condition, NutPropertyContent content ) {
 	if ( nHelper::GetIsValid( name ) && content ) {
 		for ( auto& pane : this->panes ) {
 			if ( strcmp( pane.name, name ) != 0 )
@@ -61,18 +62,20 @@ void NutProperties::Register( nString name, nString description, NutPropertyHas 
 			return;
 		}
 
-		auto pane = NutPropertyPane{ name ,description, condition, content };
+		auto pane = NutPropertyPane{ need_context, name ,description, condition, content };
 
 		this->panes.emplace_back( pane );
 	}
 }
+
+void NutProperties::SetContext( NutContext* context ) { this->context = context; }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED 
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutProperties::OnEditorRender( NutEditor* editor ) { 
 	for ( auto& pane : this->panes ) {
-		if ( !pane.condition || ( pane.condition && pane.condition( editor, this->context ) ) )
+		if ( ( !pane.condition && !pane.need_context ) || ( pane.condition && pane.condition( editor, this->context ) ) )
 			ImGUI::Tree( pane.name, pane.description, pane.content, editor, this->context );
 	}
 }

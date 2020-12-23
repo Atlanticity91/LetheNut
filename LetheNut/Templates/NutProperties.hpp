@@ -41,13 +41,13 @@
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template<typename Condition, typename Content>
-	void NutProperties::Register( nString name, nString description, Content&& content ) {
-		this->Register( name, description, nullptr, content );
+	void NutProperties::Register( bool need_context, nString name, nString description, Content&& content ) {
+		this->Register( need_context, name, description, nullptr, content );
 	}
 
 	template<typename Condition, typename Content>
-	void NutProperties::Register( nString name, nString description, Condition&& condition, Content&& content ) {
-		// TODO : 
+	void NutProperties::Register( bool need_context, nString name, nString description, Condition&& condition, Content&& content ) {
+		this->Register( need_context, name, description, (NutPropertyHas)condition, (NutPropertyContent)content );
 	}
 
 #endif

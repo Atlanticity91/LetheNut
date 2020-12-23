@@ -130,7 +130,7 @@
 	 *		-> The module ExampleModule is exported and ready to use inside NutEditor.
 	 **/
 	#define NMODULE_CREATE( MODULE ) NEXPORT(\
-		NFUNC( void, NutLoadModuleLib, return editor->Register< MODULE >( );, NutEditor* editor );\
+		NFUNC( void, NutLoadModuleLib, editor->Register< MODULE >( );, NutEditor* editor );\
 	)
 
 	/**

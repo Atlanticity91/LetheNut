@@ -38,7 +38,7 @@
 #define _IGS_NUT_VENDOR_OPENGL_HPP_
 
 	#include <LetheNut/Core.hpp>
-	#include <Thirdparty/ImGUI/imgui.h>
+	#include <ImGui/imgui.h>
 
 	/**
 	 * Graphics namspace

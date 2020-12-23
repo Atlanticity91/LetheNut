@@ -154,9 +154,23 @@
 		 **/
 		nString GetLicense( ) const;
 
+		/**
+		 * Get const function
+		 * @author : ALVES Quentin
+		 * @note : Get a procedure of the library.
+		 * @param name : Name of the query procedure.
+		 * @return : NutProcedure
+		 **/
 		NutProcedure Get( nString name ) const;
 
 	public:
+		/**
+		 * operator[] const
+		 * @author : ALVES Quentin
+		 * @note : Get a procedure of the library.
+		 * @param name : Name of the query procedure.
+		 * @return : NutProcedure
+		 **/
 		NutProcedure operator[]( nString name ) const;
 
 	};

@@ -42,30 +42,38 @@
     ///////////////////////////////////////////////////////////////////////////////////////////
     template< typename Type, typename... Args >
     Type* NutEditor::Register( Args... args ) {
-        auto* module = new Type( args... );
+        if constexpr ( std::is_base_of<NutModule, Type>::value ) {
+            auto* module = new Type( args... );
 
-        if ( module ) {
-            this->modules.emplace_back( module );
+            if ( module ) {
+                this->modules.emplace_back( module );
 
-            auto md = reinterpret_cast<NutModule*>( module );
-            md->Initialize( this );
-            md->OnCreate( this );
+                auto md = reinterpret_cast<NutModule*>( module );
+                md->OnCreate( this );
+                md->Initialize( this );
+            }
+
+            return module;
         }
 
-        return module;
+        return nullptr;
     }
     
     template< typename Type, typename... Args >
     Type* NutEditor::Create( Args... args ) {
-        auto* window = new Type( args... );
+        if constexpr ( std::is_base_of<NutWindow, Type>::value ) {
+            auto* window = new Type( args... );
 
-        if ( window ) {
-            this->windows.emplace_back( window );
+            if ( window ) {
+                this->windows.emplace_back( window );
 
-            reinterpret_cast<NutWindow*>( window )->OnCreate( this );
+                reinterpret_cast<NutWindow*>( window )->OnCreate( this );
+            }
+
+            return window;
         }
 
-        return window;
+        return nullptr;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +102,6 @@
 
         return nullptr;
     }
-
 
     template< typename Type >
     Type* NutEditor::GetWindow( nString name ) const {
