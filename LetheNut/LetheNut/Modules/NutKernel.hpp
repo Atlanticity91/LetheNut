@@ -57,6 +57,7 @@
 		nJSON config;
 		STB::Image image_loader;
 		std::vector<NutLibrary*> libraries;
+		std::vector<NutPlatformLib> modules_libs;
 		std::map<nString, OpenGL::Texture> images;
 
 	public:
@@ -115,6 +116,8 @@
 		 * @param editor : Pointer to current editor.
 		 **/
 		void LoadModules( NutEditor* editor );
+
+		void LoadModule( nString path, NutEditor * editor );
 
 	private:
 		/**

@@ -79,7 +79,9 @@
 
 		NutPlatformLib( const std::string& path );
 
-		~NutPlatformLib( );
+		~NutPlatformLib( ) = default;
+
+		void Close( );
 
 	public:
 		bool GetIsValid( ) const;

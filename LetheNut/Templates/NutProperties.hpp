@@ -42,12 +42,12 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template<typename Condition, typename Content>
 	void NutProperties::Register( nString name, nString description, Content&& content ) {
-		this->Register( name, description, nullptr, (NutPropertyContent)content );
+		this->Register( name, description, nullptr, content );
 	}
 
 	template<typename Condition, typename Content>
 	void NutProperties::Register( nString name, nString description, Condition&& condition, Content&& content ) {
-		this->Register( name, description, (NutPropertyHas)condition, (NutPropertyContent)content );
+		// TODO : 
 	}
 
 #endif

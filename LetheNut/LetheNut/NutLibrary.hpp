@@ -88,7 +88,7 @@
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutLibrary( ) = default;
+		~NutLibrary( );
 
 	public:
 		/**

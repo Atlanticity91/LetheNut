@@ -50,8 +50,10 @@ NutEditor::NutEditor( )
 { }
 
 NutEditor::~NutEditor( ) {
-    for ( auto& module : this->modules )
-        delete module;
+    auto idx = this->modules.size( );
+
+    while ( idx-- > 0 )
+        delete this->modules[ idx ];
 
     for ( auto& popup : this->popups )
         delete popup;

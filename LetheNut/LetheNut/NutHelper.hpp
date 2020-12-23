@@ -73,7 +73,7 @@
 	 *
 	 *		-> Create method Hi declaration ready for export.
 	 **/
-	#define NFUNC_DCL( RETURN, NAME, ... ) RETURN NAPI NAME( __VA_ARGS__ )
+	#define NFUNC_DCL( RETURN, NAME, ... ) NAPI RETURN NAME( __VA_ARGS__ )
 
 	/**
 	 * NFUNC macro
@@ -130,7 +130,7 @@
 	 *		-> The module ExampleModule is exported and ready to use inside NutEditor.
 	 **/
 	#define NMODULE_CREATE( MODULE ) NEXPORT(\
-		NFUNC( void, RegisterModule, editor->Register< MODULE >( );, class NutEditor* editor );\
+		NFUNC( void, NutLoadModuleLib, return editor->Register< MODULE >( );, NutEditor* editor );\
 	)
 
 	/**

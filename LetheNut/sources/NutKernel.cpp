@@ -49,17 +49,21 @@
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutKernel::NutKernel( )
-	: NutModule( "Kernel" ),
+    : NutModule( "Kernel" ),
     config( ),
     libraries( ),
+    modules_libs( ),
     images( )
 { }
 
 NutKernel::~NutKernel( ) { 
-    for ( auto lib : this->libraries )
+    for ( auto& module_lib : this->modules_libs )
+        module_lib.Close( );
+
+    for ( auto& lib : this->libraries )
         delete lib;
 
-    for ( auto image : this->images )
+    for ( auto& image : this->images )
         OpenGL::Destroy( image.second );
 }
 
@@ -160,16 +164,26 @@ void NutKernel::LoadLibraries( NutEditor* editor ) {
 }
 
 void NutKernel::LoadModules( NutEditor* editor ) {
-    typedef void( *Registra )( class NutEditor* );
-
     for ( auto path : this->config.Get<nJSON::StringArray>( "Modules" ) ) {
-        if ( !path.empty( ) ) {
-            NutPlatformLib module_lib( path );
-            Registra module_build = module_lib[ "RegisterModule" ];
-            
-            if ( module_build )
-                module_build( editor );
-        }
+        if ( !path.empty( ) ) 
+            this->LoadModule( path.c_str( ), editor );
+    }
+}
+
+void NutKernel::LoadModule( nString path, NutEditor* editor ) {
+    typedef void ( *NutLoadModule )( NutEditor* );
+
+    auto module_lib = NutPlatformLib( path );
+
+    if ( module_lib.GetIsValid( ) ) {
+        NutLoadModule module_load = module_lib[ "NutLoadModuleLib" ];
+
+        if ( module_load ) {
+            module_load( editor );
+
+            this->modules_libs.emplace_back( module_lib );
+        } else
+            module_lib.Close( );
     }
 }
 
@@ -236,8 +250,11 @@ const ImTextureID NutKernel::GetImage( nString name ) const {
     if ( nHelper::GetIsValid( name ) ) {
         auto iterator = this->images.find( name );
 
-        if ( iterator != this->images.end( ) )
-            return reinterpret_cast<ImTextureID>( ( *iterator ).second.ID );
+        if ( iterator != this->images.end( ) ) {
+            nULong image_id = ( *iterator ).second.ID;
+
+            return reinterpret_cast<ImTextureID>( image_id );
+        }
     }
 
     return 0;

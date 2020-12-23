@@ -1,6 +1,6 @@
 {
-  "Version": "a10.09.1",
+  "Version": "a1.10.2",
   "License" :  "MIT (c) 2020",
-  "Libraries": [ "lib.dll" ],
+  "Libraries": [ ],
   "Modules": [ ]
 }
