@@ -42,7 +42,7 @@
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutMenuItem::NutMenuItem( )
-    : NutBasic( nullptr ) 
+    : NutBasic( "" ) 
 {
     this->type.reset( );
     this->type[ 0 ] = 1;

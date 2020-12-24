@@ -60,12 +60,24 @@
 		return nullptr;
 	}
 
+	template< typename Type, typename... Args >
+	Type* NutPopup::OpenTool( NutEditor* editor, Args... args ) {
+		return this->OpenPanel<Type>( editor, args... );
+	}
+
+	template< typename Type, typename... Args >
+	Type* NutPopup::OpenEditor( NutEditor* editor, Args... args ) {
+		return this->OpenPanel<Type>( editor, args... );
+	}
+
 	template< typename Type >
 	Type* NutPopup::GetPanel( nString name ) const {
 		if constexpr ( std::is_base_of<NutPanel, Type>::value ) {
+			auto hash = nHelper::Hash_MD5( name );
+
 			if ( nHelper::GetIsValid( name ) ) {
 				for ( auto& panel : this->panels ) {
-					if ( std::strcmp( name, panel->GetName( ) ) != 0 )
+					if ( hash != panel->GetHash( ) )
 						continue;
 					else
 						return reinterpret_cast<Type*>( panel );
@@ -74,6 +86,16 @@
 		}
 
 		return nullptr;
+	}
+
+	template< typename Type >
+	Type* NutPopup::GetTool( nString name ) const {
+		return this->GetPanel<Type>( name );
+	}
+
+	template< typename Type >
+	Type* NutPopup::GetEditor( nString name ) const {
+		return this->GetPanel<Type>( name );
 	}
 
 #endif

@@ -92,6 +92,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="sources\Core.cpp" />
     <ClCompile Include="sources\Maths\Matrix.cpp" />
     <ClCompile Include="sources\NutBasic.cpp" />
     <ClCompile Include="sources\Editors\Nodes\NutNodeStyle.cpp" />
@@ -122,11 +123,11 @@
     <ClCompile Include="sources\NutTool.cpp" />
     <ClCompile Include="sources\Tools\NutViewport.cpp" />
     <ClCompile Include="sources\NutWindow.cpp" />
-    <ClCompile Include="sources\VendorGLFW.cpp" />
-    <ClCompile Include="sources\VendorImGUI.cpp" />
-    <ClCompile Include="sources\VendorJSON.cpp" />
-    <ClCompile Include="sources\VendorOpenGL.cpp" />
-    <ClCompile Include="sources\VendorSTB.cpp" />
+    <ClCompile Include="sources\Vendor\GLFW.cpp" />
+    <ClCompile Include="sources\Vendor\ImGUI.cpp" />
+    <ClCompile Include="sources\Vendor\JSON.cpp" />
+    <ClCompile Include="sources\Vendor\OpenGL.cpp" />
+    <ClCompile Include="sources\Vendor\STB.cpp" />
     <ClCompile Include="sources\__main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -156,6 +157,7 @@
     <ClInclude Include="LetheNut\Modules\NutModule.hpp" />
     <ClInclude Include="LetheNut\NutBasic.hpp" />
     <ClInclude Include="LetheNut\NutEditor.hpp" />
+    <ClInclude Include="LetheNut\NutFramework.hpp" />
     <ClInclude Include="LetheNut\NutHelper.hpp" />
     <ClInclude Include="LetheNut\NutLibrary.hpp" />
     <ClInclude Include="LetheNut\NutPlatformLib.hpp" />

@@ -1,12 +1,12 @@
 /************************************************************************************
  *
- *	 _          _   _          _   _       _
- *	| |        | | | |        | \ | |     | |
- *	| |     ___| |_| |__   ___|  \| |_   _| |_
+ *	 _          _   _          _   _       _   
+ *	| |        | | | |        | \ | |     | |  
+ *	| |     ___| |_| |__   ___|  \| |_   _| |_ 
  *	| |    / _ \ __| '_ \ / _ \ . ` | | | | __|
- *	| |___|  __/ |_| | | |  __/ |\  | |_| | |_
+ *	| |___|  __/ |_| | | |  __/ |\  | |_| | |_ 
  *	|______\___|\__|_| |_|\___|_| \_|\__,_|\__|
- *
+ * 
  * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
  * SPDX-License-Identifier: MIT
  *
@@ -34,57 +34,16 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_BASIC_HPP_
-#define _IGS_NUT_BASIC_HPP_
+#ifndef _IGS_NUT_FRAMEWORK_HPP_
+#define _IGS_NUT_FRAMEWORK_HPP_
 
-	#include "Core.hpp"
+	#include "Editors/Nodes/NutNodeEditor.hpp"
+	#include "Editors/Text/NutTextEditor.hpp"
 
-	#define NUT_ELEMENT( NAME, ... ) NUT_CLASS( NAME, NutBasic, __VA_ARGS__ )
-
-	class NutEditor;
-
-	/**
-	 * NutBasic class
-	 * @author : ALVES Quentin
-	 * @note : Defined Nut Basic core class.
-	 **/
-	class NUT_API NutBasic {
-
-	private:
-		nHash hash;
-		nString name;
-
-	public:
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 * @param name : Name of the current element.
-		 **/
-		NutBasic( nString name );
-
-		/**
-		 * Destructor
-		 * @author : ALVES Quentin
-		 **/
-		virtual ~NutBasic( ) = default;
-
-	public:
-		/**
-		 * GetHash inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get hash of the current element.
-		 * @return : nHash
-		 **/
-		inline nHash GetHash( ) const;
-
-		/**
-		 * GetName inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get the name of the current element.
-		 * @return : nString
-		 **/
-		inline nString GetName( ) const;
-
-	};
+	#include "Tools/NutBrowser.hpp"
+	#include "Tools/NutProfiler.hpp"
+	#include "Tools/NutProperties.hpp"
+	#include "Tools/NutScene.hpp"
+	#include "Tools/NutViewport.hpp"
 
 #endif

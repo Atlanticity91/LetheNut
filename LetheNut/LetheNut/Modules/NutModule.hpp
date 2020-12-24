@@ -84,20 +84,20 @@
 
 	protected:
 		/**
-		 * Initialize pure-virtual method
-		 * @author : ALVES Quentin
-		 * @note : Initialize the current kernel module.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void Initialize( NutEditor* editor ) = 0;
-
-		/**
 		 * OnCreate virtual method
 		 * @author : ALVES Quentin
 		 * @note : On create the current module
 		 * @param editor : Pointer to current editor.
 		 **/
 		virtual void OnCreate( NutEditor* editor ) = 0;
+
+		/**
+		 * Initialize pure-virtual method
+		 * @author : ALVES Quentin
+		 * @note : Initialize the current kernel module.
+		 * @param editor : Pointer to current editor.
+		 **/
+		virtual void Initialize( NutEditor * editor ) = 0;
 
 		/**
 		 * Process virtual method

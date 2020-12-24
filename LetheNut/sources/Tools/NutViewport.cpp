@@ -44,23 +44,44 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutViewport::NutViewport( )
 	: NutTool( "Viewport" ),
+	zoom( 1.f ),
 	projection( .3f, 3.f ),
-	projection_mat( )
-{ }
+	projection_mat( ),
+	renderer( )
+{ 
+	OpenGL::Create( this->renderer, 240, 160 );
+	OpenGL::Refresh( this->renderer, ImGUI::DEFAULT_COLOR );
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutViewport::OnEditorProcess( NutEditor* editor ) {
+	if ( ImGUI::GetIsCtrltDown( ) ) {
+		if ( ImGUI::GetScrollWheel( ) != 0.f ) {
+			auto zoom_level = this->projection.GetZoom( );
 
+			this->zoom = zoom_level + ImGUI::GetScrollWheel( ) * zoom_level / 16.f;
+		}
+	}
 }
 
 void NutViewport::OnEditorRender( NutEditor* editor ) { 
-	auto position = ImGui::GetWindowContentRegionMin( );
-	auto size = ImGui::GetWindowContentRegionMax( );
+	auto size = ImGui::GetContentRegionAvail( );
 
-	this->projection.SetAspectRatio( position.y / position.x );
-	this->projection_mat.Ortho( this->projection );
+	if ( this->view_size.x != size.x || this->view_size.y != size.y || this->zoom != this->projection.GetZoom( ) ) {
+		this->view_size = size;
+
+		this->projection.SetAspectRatio( size.x / size.y );
+		this->projection.SetZoom( this->zoom );
+		this->projection_mat.Ortho( this->projection );
+		
+		OpenGL::Resize( this->renderer, this->view_size );
+	}
+
+	OpenGL::Clear( this->renderer );
+
+	ImGUI::Image( this->renderer );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -68,4 +89,6 @@ void NutViewport::OnEditorRender( NutEditor* editor ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutProjection& NutViewport::GetProjection( ) const { return this->projection; }
 
-const NutMatrix& NutViewport::GetProjectionMatrix( ) const { return this->projection_mat; }
+NutMatrix& NutViewport::GetProjectionMatrix( ) const { return this->projection_mat; }
+
+OpenGL::Frame& NutViewport::GetRenderer( ) const { return this->renderer; }

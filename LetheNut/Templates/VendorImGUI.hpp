@@ -46,6 +46,8 @@
 		auto lineHeight = ImGUI::GetLineHeight( );
 		auto buttonSize = ImVec2{ lineHeight + 3.0f, lineHeight };
 
+		//ImGui::SetCurrentContext( ImGui::GetCurrentContext( ) );
+
 		ImGui::PushStyleColor( ImGuiCol_Button, normal );
 		ImGui::PushStyleColor( ImGuiCol_ButtonHovered, hovered );
 		ImGui::PushStyleColor( ImGuiCol_ButtonActive, normal );

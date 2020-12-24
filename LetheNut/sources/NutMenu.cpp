@@ -79,8 +79,10 @@ void NutMenu::OnRender( NutEditor* editor, NutPanel& parent ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 class NutMenuItem* NutMenu::GetItem( nString label ) const {
     if ( nHelper::GetIsValid( label ) ) {
+        auto hash = nHelper::Hash_MD5( label );
+
         for ( auto& item : this->items ) {
-            if ( item.GetName( ) && std::strcmp( label, item.GetName( ) ) != 0 )
+            if ( item.GetName( ) && hash != item.GetHash( ) )
                 continue;
             else if ( !item.IsSeparator( ) )
                 return &item;

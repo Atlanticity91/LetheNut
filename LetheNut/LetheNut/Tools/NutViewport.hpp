@@ -50,8 +50,11 @@
 	NUT_TOOL( NutViewport ) {
 
 	protected:
+		float zoom;
+		ImVec2 view_size;
 		mutable NutProjection projection;
-		NutMatrix projection_mat;
+		mutable NutMatrix projection_mat;
+		mutable OpenGL::Frame renderer;
 
 	public:
 		/**
@@ -98,7 +101,9 @@
 		 * @note : Get current viewport projection matrix.
 		 * @return : const NutMatrix&
 		 **/
-		const NutMatrix& GetProjectionMatrix( ) const;
+		NutMatrix& GetProjectionMatrix( ) const;
+
+		OpenGL::Frame& GetRenderer( ) const;
 
 	};
 

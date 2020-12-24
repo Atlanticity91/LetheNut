@@ -36,14 +36,9 @@
 
 #include "__ui.hpp"
 
-#include <fstream>
 #include <LetheNut/NutEditor.hpp>
+#include <LetheNut/NutFramework.hpp>
 #include <LetheNut/Modules/NutKernel.hpp>
-#include <LetheNut/Tools/NutBrowser.hpp>
-#include <LetheNut/Tools/NutProfiler.hpp>
-#include <LetheNut/Tools/NutProperties.hpp>
-#include <LetheNut/Tools/NutScene.hpp>
-#include <LetheNut/Tools/NutViewport.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
@@ -89,15 +84,6 @@ bool NutKernel::LoadImage( nString alias, nString path ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutKernel::Initialize( NutEditor* editor ) {
-    if ( this->config.Load( "Assets/NutEditor.json" ) ) {
-        this->LoadLibraries( editor );
-        this->LoadModules( editor );
-    }
-}
-
-#include <LetheNut/Editors/Nodes/NutNodeEditor.hpp>
-#include <LetheNut/Editors/Text/NutTextEditor.hpp>
 void NutKernel::OnCreate(  NutEditor* editor ) {
     auto file_menu = editor->CreateMenu( "File" );
 
@@ -126,25 +112,21 @@ void NutKernel::OnCreate(  NutEditor* editor ) {
     prefs_menu->CreateSeparator( );
     prefs_menu->CreateButton( "About", NO_SHORTCUT, NutKernel::OnAbout );
 
-    editor->OpenPanel<NutBrowser>( editor );
-    editor->OpenPanel<NutProfiler>( editor );
-    editor->OpenPanel<NutProperties > ( editor );
-    editor->OpenPanel<NutScene>( editor );
-    editor->OpenPanel<NutViewport>( editor );
+    editor->OpenTool<NutBrowser>( editor );
+    editor->OpenTool<NutProfiler>( editor );
+    editor->OpenTool<NutProperties > ( editor );
+    editor->OpenTool<NutScene>( editor );
+    editor->OpenTool<NutViewport>( editor );
 
-    editor->OpenPanel<NutTextEditor>( editor );
-    editor->OpenPanel<NutNodeEditor>( editor );
+    editor->OpenEditor<NutTextEditor>( editor );
+    editor->OpenEditor<NutNodeEditor>( editor );
+}
 
-    auto* properties = editor->GetTool<NutProperties>( "Properties" );
-    
-    properties->Register(
-        false, "I'm a fucking test !", "ddd",
-        [ ]( NutEditor*, NutContext* ) {
-            static float a[ 4 ];
-
-            ImGUI::Vector<4>( "Damn", a, 0.f );
-        }
-    );
+void NutKernel::Initialize( NutEditor* editor ) {
+    if ( this->config.Load( "Assets/NutEditor.json" ) ) {
+        this->LoadLibraries( editor );
+        this->LoadModules( editor );
+    }
 }
 
 void NutKernel::Process(  NutEditor* editor ) { }
@@ -173,7 +155,7 @@ void NutKernel::LoadModules( NutEditor* editor ) {
 }
 
 void NutKernel::LoadModule( nString path, NutEditor* editor ) {
-    typedef void ( *NutLoadModule )( NutEditor* );
+    typedef void ( *NutLoadModule )( NutEditor*, ImGuiContext* );
 
     auto module_lib = NutPlatformLib( path );
 
@@ -181,7 +163,7 @@ void NutKernel::LoadModule( nString path, NutEditor* editor ) {
         NutLoadModule module_load = module_lib[ "NutLoadModuleLib" ];
 
         if ( module_load ) {
-            module_load( editor );
+            module_load( editor, ImGui::GetCurrentContext( ) );
 
             this->modules_libs.emplace_back( module_lib );
         } else

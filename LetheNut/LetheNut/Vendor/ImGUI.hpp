@@ -192,6 +192,8 @@
 		 **/
 		NUT_API void Internal_StyleFooter( );
 
+		NUT_API const bool GetIsSkiped( );
+
 		/**
 		 * DequeueCharacters template method
 		 * @author : ALVES Quentin

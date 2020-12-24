@@ -47,6 +47,7 @@
 		#include <stdlib.h>
 		#include <stdio.h>
 		#include <stdint.h>
+		#include <math.h>
 
 	};
 
@@ -58,6 +59,7 @@
 	#include <bitset>
 	#include <chrono>
 	#include <future>
+	#include <fstream>
 	#include <map>
 	#include <memory>
 	#include <new>
@@ -204,6 +206,7 @@
 	typedef uint8_t* nPointer;
 	typedef const char* nString;
 	typedef long long nTimePoint;
+	typedef nUInt nHash;
 
 	/**
 	 * nHelper namespace
@@ -225,7 +228,7 @@
 		 * @return : Type*
 		 **/
 		template< typename Type >
-		static Type* Alloc( size_t count );
+		Type* Alloc( size_t count );
 
 		/**
 		 * Copy static template
@@ -236,7 +239,7 @@
 		 * @param destination : Where store the data.
 		 **/
 		template< typename Type >
-		static void Copy( const Type& source, Type& destination );
+		void Copy( const Type& source, Type& destination );
 
 		/**
 		 * Copy static template
@@ -248,7 +251,7 @@
 		 * @param count : How many are copied.
 		 **/
 		template< typename Type >
-		static void Copy( const Type& source, Type& destination, nULong count );
+		void Copy( const Type& source, Type& destination, nULong count );
 
 		/**
 		 * Copy static method
@@ -258,7 +261,7 @@
 		 * @param destination : Where store the string.
 		 * @param count : How many are characters to copy.
 		 **/
-		static void Copy( nString source, char* destination, nUInt size );
+		NUT_API void Copy( nString source, char* destination, nUInt size );
 
 		/**
 		 * GetIsValid static function
@@ -267,7 +270,16 @@
 		 * @param text : String to check.
 		 * @return : bool
 		 **/
-		static bool GetIsValid( nString text );
+		NUT_API bool GetIsValid( nString text );
+
+		/**
+		 * Hash_MD5 function
+		 * @author : ALVES Quentin
+		 * @note : Geenrate an MD5 hash for text.
+		 * @param text : String to hash.
+		 * @return : nHash
+		 **/
+		NUT_API nHash Hash_MD5( nString text );
 
 		/**
 		 * nClamp static template method
@@ -279,7 +291,7 @@
 		 * @param max : Maximum value.
 		 **/
 		template< typename Type >
-		static void Clamp( Type& value, Type min, Type max );
+		void Clamp( Type& value, Type min, Type max );
 
 		/**
 		 * ToDeg static method
@@ -287,7 +299,7 @@
 		 * @note : Conert radians angle to degrees.
 		 * @param radians : Reference to radians angle.
 		 **/
-		static void ToDeg( float& radians );
+		NUT_API void ToDeg( float& radians );
 
 		/**
 		 * ToRad static method
@@ -295,7 +307,7 @@
 		 * @note : Conert degrees angle to radians.
 		 * @param degree : Reference to degree angle.
 		 **/
-		static void ToRad( float& degree );
+		NUT_API void ToRad( float& degree );
 
 		/**
 		 * GetTime static function
@@ -303,7 +315,7 @@
 		 * @note : Get current elapsed time.
 		 * @return : nTimePoint
 		 **/
-		static nTimePoint GetTime( );
+		NUT_API nTimePoint GetTime( );
 
 		/**
 		 * Blink static template method
@@ -317,7 +329,7 @@
 		 * @param args : Arguments values for the lambda call.
 		 **/
 		template< typename Callback, typename... Args >
-		static void Blink( nTimePoint& time, nTimePoint duration, Callback&& callback, Args... args );
+		void Blink( nTimePoint& time, nTimePoint duration, Callback&& callback, Args... args );
 
 		/**
 		 * Async static template method
@@ -329,7 +341,7 @@
 		 * @param args : Arguements of the lambda.
 		 **/
 		template< typename Function, typename... Args >
-		static void Async( Function&& function, Args... args );
+		void Async( Function&& function, Args... args );
 
 		/**
 		 * Async static template function
@@ -343,7 +355,7 @@
 		 * @return : std::future<Return>
 		 **/
 		template< typename Return, typename Function, typename... Args >
-		static std::future<Return> Async( Function&& function, Args... args );
+		std::future<Return> Async( Function&& function, Args... args );
 
 	}
 

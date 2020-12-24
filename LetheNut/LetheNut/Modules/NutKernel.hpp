@@ -77,20 +77,20 @@
 
 	protected:
 		/**
-		 * Initialize method
-		 * @author : ALVES Quentin
-		 * @note : Initialize the current kernel module.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void Initialize( NutEditor* editor ) override;
-
-		/**
 		 * OnCreate override method
 		 * @author : ALVES Quentin
 		 * @note : On create the kernel module
 		 * @param editor : Pointer to current editor.
 		 **/
 		virtual void OnCreate( NutEditor* editor ) override;
+
+		/**
+		 * Initialize method
+		 * @author : ALVES Quentin
+		 * @note : Initialize the current kernel module.
+		 * @param editor : Pointer to current editor.
+		 **/
+		virtual void Initialize( NutEditor * editor ) override;
 
 		/**
 		 * Process override method

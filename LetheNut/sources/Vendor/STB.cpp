@@ -36,60 +36,30 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/Vendor/GLFW.hpp>
-#include <Thirdparty/GLFW/glfw3.h>
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STB_PERLIN_IMPLEMENTATION
 
-bool GLFW::Initialize( nPointer& window ) {
-	if ( !window ) {
-		if ( glfwInit( ) ) {
-			glfwWindowHint( GLFW_RESIZABLE, GLFW_TRUE );
-			glfwWindowHint( GLFW_STEREO, GLFW_FALSE );
-			glfwWindowHint( GLFW_DOUBLEBUFFER, GLFW_TRUE );
-			glfwWindowHint( GLFW_CLIENT_API, GLFW_OPENGL_API );
-			glfwWindowHint( GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API );
-			glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-			glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
-			glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE );
-			glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-			glfwSwapInterval( GLFW_TRUE );
+#include <LetheNut/Vendor/STB.hpp>
 
-			auto* handle = glfwCreateWindow( 1280, 720, "Lethe Engine", nullptr, nullptr );
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC
+///////////////////////////////////////////////////////////////////////////////////////////
+STB::Image::Image( )
+	: data( nullptr )
+{ }
 
-			glfwMakeContextCurrent( handle );
+bool STB::Load( Image& image, nString path ) {
+	if ( !image.data && strcmp( path, "" ) != 0 )
+		image.data = stbi_load( path, &image.width, &image.height, 0, 4 );
 
-			window = (nPointer)handle;
-
-			return handle;
-		}
-	}
-
-	return false;
+	return image.data;
 }
 
-bool GLFW::ShouldRun( const nPointer window ) {
-	if ( window ) {
-		auto* handle = (struct GLFWwindow*)window;
-
-		if ( !glfwWindowShouldClose( handle ) ) {
-			glfwMakeContextCurrent( handle );
-			glfwSwapBuffers( handle );
-			glfwPollEvents( );
-
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void GLFW::Destroy( nPointer& window ) {
-	if ( window ) {
-		auto* handle = (struct GLFWwindow*)window;
-
-		glfwDestroyWindow( handle );
-
-		window = nullptr;
+void STB::Destroy( Image& image ) {
+	if ( image.data ) {
+		stbi_image_free( image.data );
+		image.data = nullptr;
 	}
 }
-
-void GLFW::Cleanup( ) { glfwTerminate( ); }

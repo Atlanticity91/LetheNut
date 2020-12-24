@@ -37,7 +37,9 @@
 #ifndef _IGS_NUT_HELPER_HPP_
 #define _IGS_NUT_HELPER_HPP_
 
+	#include "NutContext.hpp"
 	#include "NutEditor.hpp"
+	#include "NutFramework.hpp"
 
 	/**
 	 * NEXPORT macro
@@ -130,8 +132,24 @@
 	 *		-> The module ExampleModule is exported and ready to use inside NutEditor.
 	 **/
 	#define NMODULE_CREATE( MODULE ) NEXPORT(\
-		NFUNC( void, NutLoadModuleLib, editor->Register< MODULE >( );, NutEditor* editor );\
+		NFUNC( void, NutLoadModuleLib, ImGui::SetCurrentContext( context ); editor->Register< MODULE >( );, NutEditor* editor, ImGuiContext* context );\
 	)
+
+	/**
+	 * NCLASS macro
+	 * @note : Helper for class declaration.
+	 * @note : Helper for class creation.
+	 * @usage : NCLASS( NAME );
+	 * @example :
+	 *		NCLASS( ExempleClass );
+	 *
+	 *		-> Create the class ExempleClass with no parent.
+	 * 
+	 *		NCLASS( ExempleClass ) : BaseClass;
+	 *
+	 *		-> Create the class ExempleClass with BaseClass as parent.
+	 **/
+	#define NCLASS( NAME ) class NAPI NAME
 
 	/**
 	 * NMODULE macro

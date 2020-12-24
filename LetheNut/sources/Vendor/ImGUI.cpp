@@ -41,25 +41,43 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      INTERNAL
 ///////////////////////////////////////////////////////////////////////////////////////////
+
+// TODO : Image inside region.
+
+ImVec2 internal_ImagePos( const ImVec2& source, const ImVec2& min ) {
+	auto size = ImVec2{ fabs( source.x ), fabs( source.y ) };
+
+	if ( size.x == 0.f || size.x < min.x )
+		size.x = min.x;
+
+	if ( size.y == 0.f || size.y < min.y )
+		size.y = min.y;
+
+	return size;
+}
+
+ImVec2 internal_ImageSize( const ImVec2& source, const ImVec2& max ) {
+	auto size = ImVec2{ fabs( source.x ), fabs( source.y ) };
+
+	if ( size.x == 0.f || size.x > max.x )
+		size.x = max.x;
+
+	if ( size.y == 0.f || size.y > max.y )
+		size.y = max.y;
+
+	return size;
+}
+
 void internal_Image( const nULong texture, const ImVec2& position, const ImVec2& size ) {
-	const auto region = ImGui::GetContentRegionAvail( );
+	if ( !ImGUI::GetIsSkiped( ) ) {
+		const auto win_pos = ImGui::GetCursorScreenPos( );
+		const auto win_size = ImGui::GetContentRegionAvail( );
 
-	if ( position.x < region.x && position.y < region.y) {
 		auto* renderer = ImGui::GetWindowDrawList( );
-		const auto cursor = ImGui::GetCursorPos( );
+		auto img_pos = internal_ImagePos( position, win_pos );
+		auto img_size = internal_ImageSize( size, win_size );
 
-		ImGui::SetCursorScreenPos( position );
-
-		if ( size.x > 0.f && size.y > 0.f )
-			renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), position, size );
-		else if ( size.x <= 0.f && size.y > 0.f )
-			renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), position, ImVec2{ region.x, size.y } );
-		else if ( size.x > 0.f && size.y <= 0.f )
-			renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), position, ImVec2{ size.x, region.y } );
-		else if ( size.x <= 0.f && size.y <= 0.f )
-			renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), position, region );
-
-		ImGui::SetCursorScreenPos( cursor );
+		renderer->AddImage( reinterpret_cast<ImTextureID>( texture ), img_pos, img_pos + img_size );
 	}
 }
 
@@ -229,6 +247,15 @@ void ImGUI::Internal_StyleFooter( ) {
 	ImGui::Columns( 1 );
 	ImGui::PopID( );
 	ImGUI::Spacer( ImVec2{ .0f, .75f } );
+}
+
+const bool ImGUI::GetIsSkiped( ) {
+	auto* window = ImGui::GetCurrentWindow( );
+
+	if ( window )
+		return window->SkipItems;
+
+	return false;
 }
 
 const bool ImGUI::IsKeyPressed( ImGuiKey_ query_key ) {

@@ -95,8 +95,10 @@ const ImVec2& NutPanel::GetPadding( ) const { return this->padding; }
 
 class NutMenu* NutPanel::GetMenu( nString name ) const {
 	if ( nHelper::GetIsValid( name ) ) {
+		auto hash = nHelper::Hash_MD5( name );
+
 		for ( auto& menu : this->menus ) {
-			if ( std::strcmp( name, menu.GetName( ) ) != 0 )
+			if ( hash != menu.GetHash( ) )
 				continue;
 			else
 				return &menu;

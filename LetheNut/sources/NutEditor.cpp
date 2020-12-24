@@ -86,6 +86,7 @@ void NutEditor::DisableModule( nString name ) {
 
 void NutEditor::Destroy( nString name ) {
     if ( nHelper::GetIsValid( name ) ) {
+        auto hash = nHelper::Hash_MD5( name );
         auto idx = this->modules.size( );
 
         while ( idx > 0 ) {
@@ -93,7 +94,7 @@ void NutEditor::Destroy( nString name ) {
 
             auto* module = this->modules[ idx ];
 
-            if ( std::strcmp( name, module->GetName( ) ) != 0 )
+            if ( hash != module->GetHash( ) )
                 continue;
             else if ( !dynamic_cast<NutKernel*>( module ) ) {
                 delete module;

@@ -68,24 +68,6 @@
 			value = max;
 	}
 
-	void nHelper::Copy( nString source, char* destination, nUInt size ) {
-#ifdef _WIN64
-		strcpy_s( destination, size, source );
-#else
-		strcpy( destination, source );
-#endif
-	}
-
-	bool nHelper::GetIsValid( nString text ) {  return text && strlen( text ) > 0; }
-	
-	void nHelper::ToDeg( float& radians ) { radians *= nHelper::RAD2DEG; }
-
-	void nHelper::ToRad( float& degree ) { degree *= nHelper::DEG2RAD; }
-
-	nTimePoint nHelper::GetTime( ) {
-		return std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now( ).time_since_epoch( ) ).count( );
-	}
-
 	template< typename Callback, typename... Args >
 	void nHelper::Blink( nTimePoint& time, nTimePoint duration, Callback&& callback, Args... args ) {
 		auto timeEnd = nHelper::GetTime( );
@@ -100,8 +82,8 @@
 	}
 
 	template< typename Function, typename... Args >
-	void nHelper::Async( Function&& function, Args... args ) {
-		auto r = std::async( std::launch::async, function, args... );
+	void nHelper::Async( Function&& function, Args... args ) { 
+		std::async( std::launch::async, function, args... );
 	}
 
 	template< typename Return, typename Function, typename... Args >

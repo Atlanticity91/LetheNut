@@ -59,7 +59,6 @@
 
 			nInt width;
 			nInt height;
-			nInt channels;
 			nUByte* data;
 
 			/**

@@ -174,6 +174,12 @@
 		template< typename Type = class NutPanel, typename... Args >
 		Type* OpenPanel( class NutEditor* editor, Args... args );
 
+		template< typename Type = class NutTool, typename... Args >
+		inline Type* OpenTool( NutEditor* editor, Args... args );
+
+		template< typename Type = class NutTool, typename... Args >
+		inline Type* OpenEditor( NutEditor* editor, Args... args );
+
 	public:
 		/**
 		 * GetIsOpen inline const function
@@ -201,6 +207,12 @@
 		 **/
 		template< typename Type = class NutPanel >
 		Type* GetPanel( nString name ) const;
+
+		template< typename Type = class NutTool >
+		inline Type* GetTool( nString name ) const;
+
+		template< typename Type = class NutTool >
+		inline Type* GetEditor( nString name ) const;
 
 	};
 

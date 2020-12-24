@@ -87,6 +87,7 @@ class NutPopup* NutPopup::DisabePanel( nString name ) {
 
 void NutPopup::ClosePanel( nString name ) {
     if ( nHelper::GetIsValid( name ) ) {
+        auto hash = nHelper::Hash_MD5( name );
         auto idx = this->panels.size( );
 
         while ( idx > 0 ) {
@@ -94,7 +95,7 @@ void NutPopup::ClosePanel( nString name ) {
 
             auto* panel = this->panels[ idx ];
 
-            if ( std::strcmp( name, panel->GetName( ) ) != 0 )
+            if ( hash != panel->GetHash( ) )
                 continue;
             else {
                 delete panel;
