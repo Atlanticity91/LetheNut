@@ -57,15 +57,15 @@ NutEditor::~NutEditor( ) {
     for ( auto& image : this->images )
         OpenGL::Destroy( image.GetTexture( ) );
 
-    for ( auto& module_lib : this->modules_libs )
-        module_lib.Close( );
-
     for ( auto& library : this->libraries )
         delete library;
 
     auto idx = this->modules.size( );
     while ( idx-- > 0 )
         delete this->modules[ idx ];
+
+    for ( auto& module_lib : this->modules_libs )
+        module_lib.Close( );
 
     for ( auto& popup : this->popups )
         delete popup;
