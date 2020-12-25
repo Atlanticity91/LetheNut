@@ -38,6 +38,8 @@
 #define _IGS_NUT_TOOL_HPP_
 
 	#include <LetheNut/UI/NutPanel.hpp>
+	
+	class NutContext;
 
 	#define NUT_TOOL( NAME, ... ) NUT_CLASS( NAME, NutTool, __VA_ARGS__ )
 

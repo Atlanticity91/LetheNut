@@ -34,96 +34,56 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_MODULE_HPP_
-#define _IGS_NUT_MODULE_HPP_
+#ifndef _IGS_NUT_BASIC_HPP_
+#define _IGS_NUT_BASIC_HPP_
 
-	#include <LetheNut/Utils/NutBasic.hpp>
+	#include <LetheNut/Core.hpp>
 
-	#define NUT_MODULE( NAME, ... ) NUT_CLASS( NAME, NutModule, __VA_ARGS__ )
+	#define NUT_ELEMENT( NAME, ... ) NUT_CLASS( NAME, NutBasic, __VA_ARGS__ )
+
+	class NutEditor;
 
 	/**
-	 * NutModule class [ NutBasic ]
+	 * NutBasic class
 	 * @author : ALVES Quentin
-	 * @note : Defined Nut Module module core class.
+	 * @note : Defined Nut Basic core class.
 	 **/
-	NUT_ELEMENT( NutModule ) {
+	class NUT_API NutBasic {
 
-		friend class NutEditor;
-		friend class NutKernel;
-
-	protected:
-		bool is_active;
+	private:
+		NutHash hash;
+		nString name;
 
 	public:
 		/**
 		 * Constructor
 		 * @author : ALVES Quentin
-		 * @param name : Name of the current module.
+		 * @param name : Name of the current element.
 		 **/
-		NutModule( nString name );
+		NutBasic( nString name );
 
 		/**
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		virtual ~NutModule( ) = default;
-
-		/**
-		 * Enable virtual method
-		 * @author : ALVES Quentin
-		 * @note : Enable the current panel.
-		 **/
-		virtual void Enable( );
-
-		/**
-		 * Disable virtual method
-		 * @author : ALVES Quentin
-		 * @note : Disable the current panel.
-		 **/
-		virtual void Disable( );
-
-	protected:
-		/**
-		 * OnCreate virtual method
-		 * @author : ALVES Quentin
-		 * @note : On create the current module
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnCreate( NutEditor* editor ) = 0;
-
-		/**
-		 * Initialize pure-virtual method
-		 * @author : ALVES Quentin
-		 * @note : Initialize the current kernel module.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void Initialize( NutEditor * editor ) = 0;
-
-		/**
-		 * Process virtual method
-		 * @author : ALVES Quentin
-		 * @note : Process the current module
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void Process( NutEditor* editor ) = 0;
+		virtual ~NutBasic( ) = default;
 
 	public:
 		/**
-		 * GetIsActive inline const function
+		 * GetHash inline const function
 		 * @author : ALVES Quentin
-		 * @note : Get if the current module is active.
-		 * @return : bool
+		 * @note : Get hash of the current element.
+		 * @return : NutHash
 		 **/
-		inline bool GetIsActive( ) const;
+		inline NutHash GetHash( ) const;
 
-	private:
 		/**
-		 * GetActive inline const function
+		 * GetName inline const function
 		 * @author : ALVES Quentin
-		 * @note : Get reference to module is active.
-		 * @return : const bool&
+		 * @note : Get the name of the current element.
+		 * @return : nString
 		 **/
-		inline const bool& GetActive( ) const;
+		inline nString GetName( ) const;
 
 	};
 

@@ -91,7 +91,7 @@ void nHelper::Copy( nString source, char* destination, nUInt size ) {
 
 bool nHelper::GetIsValid( nString text ) { return text && strlen( text ) > 0; }
 
-nHash nHelper::Hash_MD5( nString text ) {
+NutHash nHelper::Hash_MD5( nString text ) {
     static nDigest h0 = { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476 };
     static DgstFctn ff[] = { &f0, &f1, &f2, &f3 };
     static short M[] = { 1, 5, 3, 7 };

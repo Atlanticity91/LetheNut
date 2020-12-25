@@ -138,7 +138,7 @@ void NutPopup::OnPanelRender( NutEditor* editor ) {
     for ( auto& panel : this->panels ) {
         if ( panel->GetIsActive( ) ) {
             ImGUI::BeginPanel( panel->GetName( ), panel->GetPadding( ) );
-                if ( !ImGui::IsWindowCollapsed( ) ) {
+                if ( !ImGui::IsWindowCollapsed( ) && !ImGUI::GetIsSkiped( ) ) {
                     if ( ImGui::IsWindowFocused( ) && dynamic_cast<NutTool*>( panel ) ) {
                         auto* tool = reinterpret_cast<NutTool*>( panel );
 

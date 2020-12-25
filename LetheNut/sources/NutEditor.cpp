@@ -38,6 +38,7 @@
 
 #include <LetheNut/NutEditor.hpp>
 #include <LetheNut/Tools/NutTool.hpp>
+#include <LetheNut/Vendor/STB.hpp>
 #include <LetheNut/Vendor/GLFW.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -45,29 +46,135 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutEditor::NutEditor( )
     : NutWindow( "Editor", 0, 0 ),
+    images( ),
+    libraries( ),
     modules( ),
-    windows( )
+    windows( ),
+    modules_libs( )
 { }
 
 NutEditor::~NutEditor( ) {
-    auto idx = this->modules.size( );
+    for ( auto& image : this->images )
+        OpenGL::Destroy( image.GetTexture( ) );
 
+    for ( auto& module_lib : this->modules_libs )
+        module_lib.Close( );
+
+    for ( auto& library : this->libraries )
+        delete library;
+
+    auto idx = this->modules.size( );
     while ( idx-- > 0 )
         delete this->modules[ idx ];
 
     for ( auto& popup : this->popups )
         delete popup;
 
-    for ( auto& window : this->windows ) {
-        GLFW::Destroy( window->GetHandle( ) );
-
+    for ( auto& window : this->windows ) 
         delete window;
-    }
 
     NutPopup::~NutPopup( );
     NutWindow::~NutWindow( );
     ImGUI::Destroy( );
     GLFW::Cleanup( );
+}
+
+bool NutEditor::LoadLibrary( nString path ) {
+    if ( nHelper::GetIsValid( path ) ) {
+        auto* library = new NutLibrary( path );
+
+        if ( library->GetIsValid( ) ) {
+            this->libraries.emplace_back( library );
+
+            return true;
+        } else
+            delete library;
+    }
+
+    return false;
+}
+
+bool NutEditor::LoadLibrary( const std::string& path ) {
+    return this->LoadLibrary( path.c_str( ) );
+}
+
+bool NutEditor::LoadModule( nString path ) {
+    if ( nHelper::GetIsValid( path ) ) {
+        typedef void ( *NutLoadModule )( NutEditor*, ImGuiContext* );
+
+        auto module_lib = NutPlatformLib( path );
+
+        if ( module_lib.GetIsValid( ) ) {
+            NutLoadModule module_load = module_lib[ "NutLoadModuleLib" ];
+
+            if ( module_load ) {
+                module_load( this, ImGui::GetCurrentContext( ) );
+
+                this->modules_libs.emplace_back( module_lib );
+
+                return true;
+            } else
+                module_lib.Close( );
+        }
+    }
+
+    return false;
+}
+
+bool NutEditor::LoadModule( const std::string& path ) {
+    return this->LoadModule( path.c_str( ) );
+}
+
+bool NutEditor::LoadImageAs( nString alias, nString path ) {
+    return this->LoadImageAs( alias, path, 1, 1 );
+}
+
+bool NutEditor::LoadImageAs( const std::string& alias, const std::string& path ) {
+    return this->LoadImageAs( alias.c_str( ), path.c_str( ), 1, 1 );
+}
+
+bool NutEditor::LoadImageAs( nString alias, nString path, nUShort columns, nUShort rows ) {
+   if ( nHelper::GetIsValid( alias ) && nHelper::GetIsValid( path ) && !this->GetImage( alias ) ) {
+       auto hash = nHelper::Hash_MD5( alias );
+       auto texture = OpenGL::Texture( );
+       auto file = STB::Image( );
+
+       if ( STB::Load( file, path ) && OpenGL::Create( texture, file.width, file.height, file.data ) ) {
+           STB::Destroy( file );
+
+           this->images.emplace_back( NutImage( hash, texture, columns, rows ) );
+
+           return true;
+       }
+   }
+
+   return false;
+}
+
+bool NutEditor::LoadImageAs( const std::string& alias, const std::string& path, nUShort columns, nUShort rows ) {
+    return this->LoadImageAs( alias.c_str( ), path.c_str( ), columns, rows );
+}
+
+bool NutEditor::LoadImageAs( OpenGL::Texture& texture, nString alias, nString path ) {
+    return this->LoadImageAs( texture, alias, path, 1, 1 );
+}
+
+bool NutEditor::LoadImageAs( OpenGL::Texture& texture, const std::string& alias, const std::string& path ) {
+    return this->LoadImageAs( texture, alias.c_str( ), path.c_str( ), 1, 1 );
+}
+
+bool NutEditor::LoadImageAs( OpenGL::Texture& texture, nString alias, nString path, nUShort columns, nUShort rows ) {
+    if ( this->LoadImageAs( alias, path, columns, rows ) ) {
+        texture = this->GetImage( alias )->GetTexture( );
+
+        return true;
+    }
+
+    return false;
+}
+
+bool NutEditor::LoadImageAs( OpenGL::Texture& texture, const std::string& alias, const std::string& path, nUShort columns, nUShort rows ) {
+    return this->LoadImageAs( texture, alias.c_str( ), path.c_str( ), columns, rows );
 }
 
 void NutEditor::EnableModule( nString name ) {
@@ -151,10 +258,38 @@ void NutEditor::Run( ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
+NutImage* NutEditor::GetImage( nString alias ) const {
+    if ( nHelper::GetIsValid( alias ) ) {
+        auto hash = nHelper::Hash_MD5( alias );
+
+        auto size = this->images.size( );
+
+        while ( size-- > 0 ) {
+            if ( this->images[ size ].GetHash( ) != hash )
+                continue;
+            else
+                return &this->images[ size ];
+        }
+    }
+
+    return nullptr;
+}
+
 NutKernel* NutEditor::GetKernel( ) const { return (NutKernel*)this->modules[ 0 ]; }
 
 NutLibrary* NutEditor::GetLibrary( nString name ) const {
-    return this->GetKernel( )->GetLibrary( name );
+    if ( nHelper::GetIsValid( name ) ) {
+        auto hash = nHelper::Hash_MD5( name );
+
+        for ( auto& library : this->libraries ) {
+            if ( library->GetHash( ) != hash )
+                continue;
+            else
+                return library;
+        }
+    }
+
+    return nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////

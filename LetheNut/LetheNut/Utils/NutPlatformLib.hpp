@@ -37,7 +37,7 @@
 #ifndef _IGS_PLATFORM_LIB_HPP_
 #define _IGS_PLATFORM_LIB_HPP_
 
-	#include "Core.hpp"
+	#include <LetheNut/Core.hpp>
 
 	 /**
 	  * NutLibrary final class

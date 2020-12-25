@@ -81,7 +81,7 @@ void internal_Image( const nULong texture, const ImVec2& position, const ImVec2&
 	}
 }
 
-void internal_Node( const ImGUI::ImCanvas& canvas, const ImVec2& position, const ImGUI::ImNodeContext& node, const ImColor& color, const ImColor& separator, ImTextureID texture ) {
+void internal_Node( const ImGUI::ImCanvas& canvas, const ImVec2& position, const ImGUI::ImNodeContext& node, const ImGUI::ImNodeStyle& node_style ) {
 	auto& style = ImGui::GetStyle( );
 	auto* renderer = ImGui::GetWindowDrawList( );
 	auto color_bg = ImColor( style.Colors[ ImGuiCol_Border ] );
@@ -99,9 +99,9 @@ void internal_Node( const ImGUI::ImCanvas& canvas, const ImVec2& position, const
 		ImGUI::GetTextSize( node.name ).y + 3.f
 	};
 
-	const auto uv = ImVec2{
-			( node_rect.Max.x - node_rect.Min.x ) * ImGUI::NODE_TILING,
-			( node_rect.Max.y - node_rect.Min.y ) * ImGUI::NODE_TILING
+	const auto uv_max = ImVec2{
+		( node_rect.Max.x - node_rect.Min.x ) * ImGUI::NODE_TILING,
+		( node_rect.Max.y - node_rect.Min.y ) * ImGUI::NODE_TILING
 	};
 
 	if ( node.is_centered ) {
@@ -111,8 +111,8 @@ void internal_Node( const ImGUI::ImCanvas& canvas, const ImVec2& position, const
 	}
 
 	renderer->ChannelsSetCurrent( 0 );
-	renderer->AddRectFilled( node_rect.Min, node_rect.Max, color, ImGUI::NODE_ROUNDING );
-	renderer->AddImageRounded( texture, node_rect.Min, node_rect.Max, ImGUI::UV_MIN, uv, ImGUI::NODE_HEADER_COLOR, ImGUI::NODE_ROUNDING );
+	renderer->AddRectFilled( node_rect.Min, node_rect.Max, node_style.background, ImGUI::NODE_ROUNDING );
+	renderer->AddImageRounded( node_style.texture, node_rect.Min, node_rect.Max, ImGUI::UV_MIN, uv_max, ImGUI::NODE_HEADER_COLOR, ImGUI::NODE_ROUNDING );
 	renderer->AddRect( node_rect.Min, node_rect.Max, color_bg, ImGUI::NODE_ROUNDING );
 
 	if ( node.is_selected ) {
@@ -122,9 +122,9 @@ void internal_Node( const ImGUI::ImCanvas& canvas, const ImVec2& position, const
 		renderer->AddRect( rect_min, rect_max, ImGUI::NODE_SELECTION_COLOR, ImGUI::NODE_ROUNDING );
 	}
 
-	renderer->AddLine( pos + ImVec2{ 0, header_size.y }, pos + header_size, separator );
+	renderer->AddLine( pos + ImVec2{ 0, header_size.y }, pos + header_size, node_style.separator );
 	renderer->ChannelsMerge( );
-	
+
 	ImGUI::ToolTip( node.description );
 	ImGui::PopID( );
 }
@@ -713,8 +713,9 @@ void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&
 
 void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor& color, const ImVec2& position ) {
 	auto separator = ImColor( ImGui::GetStyle( ).Colors[ ImGuiCol_Separator ] );
+	auto style = ImNodeStyle{ color, separator, nullptr };
 
-	internal_Node( canvas, position, node, color, separator, 0 );
+	internal_Node( canvas, position, node, style );
 }
 
 void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&& color, const ImVec2&& position ) {
@@ -724,7 +725,7 @@ void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImColor&
 void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle& style ) {
 	auto position = ImGui::GetWindowPos( );
 
-	internal_Node( canvas, position, node, style.background, style.separator, style.texture );
+	internal_Node( canvas, position, node, style );
 }
 
 void ImGUI::EndNode( const ImCanvas& canvas, ImNodeContext& node, const ImNodeStyle&& style ) {

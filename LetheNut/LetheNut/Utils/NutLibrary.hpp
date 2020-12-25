@@ -56,6 +56,7 @@
 		friend class NutKernel;
 
 	private:
+		NutHash hash;
 		NutPlatformLib handle;
 		NutLibImporter name;
 		NutLibImporter description;
@@ -113,6 +114,14 @@
 		 * @return : bool
 		 **/
 		bool GetIsValid( ) const;
+
+		/**
+		 * GetHash const function
+		 * @author : ALVES Quentin
+		 * @note : Get library hash.
+		 * @return : NutHash
+		 **/
+		NutHash GetHash( ) const;
 
 		/**
 		 * GetName const function

@@ -110,7 +110,7 @@ void NutNodeEditor::CreateLink( nUInt source_node, nUInt source_pin, nUInt desti
 //      PROTETED
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutNodeEditor::Initialize( NutEditor* editor ) {
-    editor->GetKernel( )->LoadImage( "NodeBG", "Assets/Media/node_background.png" );
+   editor->LoadImageAs( "NodeBG", "Assets/Media/node_background.png" );
 }
 
 void NutNodeEditor::OnEditorProcess( NutEditor* editor ) {
@@ -155,10 +155,10 @@ void NutNodeEditor::OnEditorRender( NutEditor* editor ) {
     ImGUI::BeginCanvas( this->canvas );
 
     if ( this->parser ) {
-        auto node_bg = editor->GetKernel( )->GetImage( "NodeBG" );
+        auto* node_bg = editor->GetImage( "NodeBG" );
 
         for ( auto& node : this->nodes )
-            this->InternalDraw( node, node_bg );
+            this->InternalDraw( node, ( node_bg ) ? *node_bg : nullptr );
 
         for ( auto& link : this->links )
             this->InternalDraw( link );

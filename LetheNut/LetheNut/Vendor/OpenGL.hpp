@@ -114,6 +114,8 @@
 
 			Texture( );
 
+			Texture( const Texture& texture );
+
 		};
 
 		struct Material {
@@ -149,99 +151,99 @@
 
 		};
 
-		bool Initialize( const nPointer& window );
+		NUT_API bool Initialize( const nPointer& window );
 
-		void Create( Context& context, const Frame& frame );
+		NUT_API void Create( Context& context, const Frame& frame );
 
-		bool Create( Frame& frame, const ImVec2& size );
+		NUT_API bool Create( Frame& frame, const ImVec2& size );
 
-		bool Create( Frame& frame, const ImVec2&& size );
+		NUT_API bool Create( Frame& frame, const ImVec2&& size );
 
-		bool Create( Frame& frame, nUInt width, nUInt height );
+		NUT_API bool Create( Frame& frame, nUInt width, nUInt height );
 
-		bool Create( Texture& texture, const ImVec2& size );
+		NUT_API bool Create( Texture& texture, const ImVec2& size );
 		
-		bool Create( Texture& texture, const ImVec2&& size );
+		NUT_API bool Create( Texture& texture, const ImVec2&& size );
 
-		bool Create( Texture& texture, nUInt width, nUInt height );
+		NUT_API bool Create( Texture& texture, nUInt width, nUInt height );
 
-		bool Create( Texture& texture, nUInt width, nUInt height, nUByte* pixels );
+		NUT_API bool Create( Texture& texture, nUInt width, nUInt height, nUByte* pixels );
 		
-		bool Create( Material& material, nString vertex, nString fragment );
+		NUT_API bool Create( Material& material, nString vertex, nString fragment );
 
-		bool Create( Material& material, nString vertex, nString fragment, nUInt size, nString* parameters );
+		NUT_API bool Create( Material& material, nString vertex, nString fragment, nUInt size, nString* parameters );
 
-		bool Create( Material& material, nString vertex, nString fragment, nString geometry );
+		NUT_API bool Create( Material& material, nString vertex, nString fragment, nString geometry );
 
-		bool Create( Material& material, nString vertex, nString fragment, nString geometry, nUInt size, nString* parameters );
+		NUT_API bool Create( Material& material, nString vertex, nString fragment, nString geometry, nUInt size, nString* parameters );
 
-		bool Create( Buffer& vertex, EBufferTypes type, nUInt size );
+		NUT_API bool Create( Buffer& vertex, EBufferTypes type, nUInt size );
 
-		bool Create( Mesh& mesh, nUInt stride );
+		NUT_API bool Create( Mesh& mesh, nUInt stride );
 
-		bool IsValid( const Frame& frame );
+		NUT_API bool IsValid( const Frame& frame );
 
-		bool IsValid( const Texture& texture );
+		NUT_API bool IsValid( const Texture& texture );
 
-		bool IsValid( const Material& material );
+		NUT_API bool IsValid( const Material& material );
 
-		bool IsValid( const Buffer& vertex );
+		NUT_API bool IsValid( const Buffer& vertex );
 
-		bool IsValid( const Mesh& mesh );
+		NUT_API bool IsValid( const Mesh& mesh );
 
-		void Resize( Frame& frame, const ImVec2& size );
+		NUT_API void Resize( Frame& frame, const ImVec2& size );
 
-		void Resize( Frame& frame, const ImVec2&& size );
+		NUT_API void Resize( Frame& frame, const ImVec2&& size );
 
-		void Resize( Frame& frame, nUInt width, nUInt height );
+		NUT_API void Resize( Frame& frame, nUInt width, nUInt height );
 
-		void Refresh( const ImVec4& color );
+		NUT_API void Refresh( const ImVec4& color );
 
-		void Refresh( const ImVec4&& color );
+		NUT_API void Refresh( const ImVec4&& color );
 
-		void Refresh( const Frame& frame, const ImVec4& color );
+		NUT_API void Refresh( const Frame& frame, const ImVec4& color );
 
-		void Refresh( const Frame& frame, const ImVec4&& color );
+		NUT_API void Refresh( const Frame& frame, const ImVec4&& color );
 
-		void Fill( const Texture& texture, const void* pixels );
+		NUT_API void Fill( const Texture& texture, const void* pixels );
 
-		void Fill( const Texture& texture, nUInt level, nUInt offset_x, nUInt offset_y, nUInt width, nUInt height, const void* pixels );
+		NUT_API void Fill( const Texture& texture, nUInt level, nUInt offset_x, nUInt offset_y, nUInt width, nUInt height, const void* pixels );
 
-		void Fill( const Buffer& vertex, const nUInt size, const void* data );
+		NUT_API void Fill( const Buffer& vertex, const nUInt size, const void* data );
 
-		void Fill( const Buffer& vertex, const nUInt offset, const nUInt size, const void* data );
+		NUT_API void Fill( const Buffer& vertex, const nUInt offset, const nUInt size, const void* data );
 
-		void Attribute( const Mesh& mesh, const nUInt index, const nUInt size, EAttributeTypes type, const nULong offset );
+		NUT_API void Attribute( const Mesh& mesh, const nUInt index, const nUInt size, EAttributeTypes type, const nULong offset );
 
-		void Upload( const Material& material, nString parameter, EParameterTypes type, const void* data );
+		NUT_API void Upload( const Material& material, nString parameter, EParameterTypes type, const void* data );
 
-		void Bind( const Texture& texture, nUInt slot );
+		NUT_API void Bind( const Texture& texture, nUInt slot );
 
-		void Bind( const Material& material );
+		NUT_API void Bind( const Material& material );
 
-		void Clear( );
+		NUT_API void Clear( );
 
-		void Clear( const Frame& frame );
+		NUT_API void Clear( const Frame& frame );
 
-		void Display( const Material& material, const Mesh& mesh );
+		NUT_API void Display( const Material& material, const Mesh& mesh );
 
-		void Display( const Material& material, const Mesh& mesh, nUInt size, const Texture* textures );
+		NUT_API void Display( const Material& material, const Mesh& mesh, nUInt size, const Texture* textures );
 
-		void Display( const Frame& frame, const Material& material, const Mesh& mesh );
+		NUT_API void Display( const Frame& frame, const Material& material, const Mesh& mesh );
 
-		void Display( const Frame& frame, const Material& material, const Mesh& mesh, nUInt size, const Texture* textures );
+		NUT_API void Display( const Frame& frame, const Material& material, const Mesh& mesh, nUInt size, const Texture* textures );
 
-		void Destroy( Mesh& mesh );
+		NUT_API void Destroy( Mesh& mesh );
 
-		void Destroy( Buffer& vertex );
+		NUT_API void Destroy( Buffer& vertex );
 
-		void Destroy( Material& material );
+		NUT_API void Destroy( Material& material );
 
-		void Destroy( Texture& texture );
+		NUT_API void Destroy( Texture& texture );
 
-		void Destroy( Frame& frame );
+		NUT_API void Destroy( Frame& frame );
 
-		void Restore( const Context& context );
+		NUT_API void Restore( const Context& context );
 
 	};
 

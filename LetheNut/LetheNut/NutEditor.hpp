@@ -39,6 +39,9 @@
 
 	#include "Modules/NutKernel.hpp"
 	#include "UI/NutWindow.hpp"
+	#include "Utils/NutImage.hpp"
+	#include "Utils/NutLibrary.hpp"
+	#include "Utils/NutPlatformLib.hpp"
 	#include "Vendor/OpenGL.hpp"
 
 	// TODO : NutTextEditor
@@ -47,7 +50,6 @@
 	// TODO : NutFrameEditor
 	// TODO : NutMaterialEditor
 	// TODO : NutParticleEditor
-	// TODO : Use Hash instead of string for labels.
 	// TODO : FIX Imgui support for multiple windows.
 	// TODO : FIX Sliders
 	// TODO : FIX Custom Theme
@@ -63,8 +65,11 @@
 		friend int main( int, char** );
 
 	private:
+		mutable std::vector<NutImage> images;
+		MUT_VEC( NutLibrary, libraries );
 		MUT_VEC( NutModule, modules );
 		MUT_VEC( NutWindow, windows );
+		std::vector<NutPlatformLib> modules_libs;
 
 	public:
 		/**
@@ -78,6 +83,30 @@
 		 * @author : ALVES Quentin
 		 **/
 		~NutEditor( );
+
+		bool LoadLibrary( nString path );
+
+		inline bool LoadLibrary( const std::string& path );
+
+		bool LoadModule( nString path );
+
+		inline bool LoadModule( const std::string& path );
+
+		inline bool LoadImageAs( nString alias, nString path );
+
+		inline bool LoadImageAs( const std::string& alias, const std::string& path );
+
+		bool LoadImageAs( nString alias, nString path, nUShort columns, nUShort rows );
+
+		inline bool LoadImageAs( const std::string & alias, const std::string & path, nUShort columns, nUShort rows );
+
+		inline bool LoadImageAs( OpenGL::Texture& texture, nString alias, nString path );
+
+		inline bool LoadImageAs( OpenGL::Texture& texture, const std::string& alias, const std::string& path );
+
+		bool LoadImageAs( OpenGL::Texture& texture, nString alias, nString path, nUShort columns, nUShort rows );
+
+		inline bool LoadImageAs( OpenGL::Texture& texture, const std::string& alias, const std::string& path, nUShort columns, nUShort rows );
 
 		/**
 		 * EnableModule method
@@ -160,6 +189,8 @@
 		Type* Create( Args... args );
 
 	public:
+		NutImage* GetImage( nString alias ) const;
+		
 		/**
 		 * GetKernel inline const function
  		 * @author : ALVES Quentin
@@ -175,7 +206,7 @@
 		 * @param name : Name of the query library.
 		 * @return : NutLibrary*
 		 **/
-		inline NutLibrary* GetLibrary( nString name ) const;
+		NutLibrary* GetLibrary( nString name ) const;
 
 	private:
 		/**
@@ -186,7 +217,7 @@
 		 **/
 		inline std::vector< NutModule* >& GetModules( ) const;
 
-	public:
+ 	public:
 		template< typename Type = NutTool >
 		Type* GetTool( nString name ) const;
 

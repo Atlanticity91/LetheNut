@@ -192,6 +192,12 @@
 		 **/
 		NUT_API void Internal_StyleFooter( );
 
+		/**
+		 * GetIsSkiped function
+		 * @author : ALVES Quentin
+		 * @note : Get if the current window is skipped during rendering.
+		 * @return : const bool
+		 **/
 		NUT_API const bool GetIsSkiped( );
 
 		/**

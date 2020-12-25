@@ -39,8 +39,6 @@
 
 	#include "NutTool.hpp"
 
-	class NutContext;
-
 	typedef bool( *NutPropertyHas )( NutEditor*, NutContext* );
 	typedef void( *NutPropertyContent )( NutEditor*, NutContext* );
 

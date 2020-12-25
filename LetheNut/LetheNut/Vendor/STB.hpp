@@ -77,7 +77,7 @@
 		 * @param path : Path to the query image file.
 		 * @return : bool
 		 **/
-		bool Load( Image& image, nString path );
+		NUT_API bool Load( Image& image, nString path );
 
 		/**
 		 * Destroy method
@@ -85,7 +85,7 @@
 		 * @note : Destroy an image.
 		 * @param image : Image storage.
 		 **/
-		void Destroy( Image& image );
+		NUT_API void Destroy( Image& image );
 
 	};
 

@@ -133,6 +133,12 @@ OpenGL::Texture::Texture( )
 	Height( 0 )
 { }
 
+OpenGL::Texture::Texture( const Texture& texture )
+	: ID( texture.ID ),
+	Width( texture.Width ),
+	Height( texture.Height )
+{ }
+
 OpenGL::Material::Material( )
 	: ID( 0 ),
 	Buffer( 0 ),

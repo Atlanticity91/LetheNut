@@ -37,9 +37,10 @@
 #ifndef _IGS_NUT_HELPER_HPP_
 #define _IGS_NUT_HELPER_HPP_
 
+	#include <LetheNut/NutEditor.hpp>
+	#include <LetheNut/NutFramework.hpp>
+
 	#include "NutContext.hpp"
-	#include "NutEditor.hpp"
-	#include "NutFramework.hpp"
 
 	/**
 	 * NEXPORT macro

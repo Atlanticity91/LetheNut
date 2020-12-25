@@ -206,7 +206,7 @@
 	typedef uint8_t* nPointer;
 	typedef const char* nString;
 	typedef long long nTimePoint;
-	typedef nUInt nHash;
+	typedef nUInt NutHash;
 
 	/**
 	 * nHelper namespace
@@ -277,9 +277,9 @@
 		 * @author : ALVES Quentin
 		 * @note : Geenrate an MD5 hash for text.
 		 * @param text : String to hash.
-		 * @return : nHash
+		 * @return : NutHash
 		 **/
-		NUT_API nHash Hash_MD5( nString text );
+		NUT_API NutHash Hash_MD5( nString text );
 
 		/**
 		 * nClamp static template method

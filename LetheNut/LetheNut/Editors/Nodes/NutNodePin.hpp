@@ -37,7 +37,7 @@
 #ifndef _IGS_NUT_NODE_PIN_HPP_
 #define _IGS_NUT_NODE_PIN_HPP_
 
-	#include <LetheNut/NutBasic.hpp>
+	#include <LetheNut/Utils/NutBasic.hpp>
 
 	#define NPIN( TYPE, NAME, DESCRIPTION ) NutNodePin{ false, TYPE, NAME, DESCRIPTION }
 	#define NPIN_ARRAY( TYPE, NAME, DESCRIPTION ) NutNodePin{ true, TYPE, NAME, DESCRIPTION }

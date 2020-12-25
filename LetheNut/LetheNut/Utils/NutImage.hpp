@@ -34,56 +34,45 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_BASIC_HPP_
-#define _IGS_NUT_BASIC_HPP_
+#ifndef _IGS_NUT_IMAGE_HPP_
+#define _IGS_NUT_IMAGE_HPP_
 
-	#include "Core.hpp"
+	#include <LetheNut/Vendor/ImGUI.hpp>
+	#include <LetheNut/Vendor/OpenGL.hpp>
 
-	#define NUT_ELEMENT( NAME, ... ) NUT_CLASS( NAME, NutBasic, __VA_ARGS__ )
-
-	class NutEditor;
-
-	/**
-	 * NutBasic class
-	 * @author : ALVES Quentin
-	 * @note : Defined Nut Basic core class.
-	 **/
-	class NUT_API NutBasic {
+	class NUT_API NutImage final {
 
 	private:
-		nHash hash;
-		nString name;
+		NutHash hash;
+		mutable OpenGL::Texture texture;
+		nUInt sprite_count;
+		std::vector<ImRect> uvs;
 
 	public:
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 * @param name : Name of the current element.
-		 **/
-		NutBasic( nString name );
+		NutImage( );
 
-		/**
-		 * Destructor
-		 * @author : ALVES Quentin
-		 **/
-		virtual ~NutBasic( ) = default;
+		NutImage( NutHash hash, OpenGL::Texture texture, nUShort columns, nUShort rows );
+
+		~NutImage( ) = default;
+
+	private:
+		void GenerateUV( nUShort columns, nUShort rows );
 
 	public:
-		/**
-		 * GetHash inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get hash of the current element.
-		 * @return : nHash
-		 **/
-		inline nHash GetHash( ) const;
+		NutHash GetHash( ) const;
 
-		/**
-		 * GetName inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get the name of the current element.
-		 * @return : nString
-		 **/
-		inline nString GetName( ) const;
+		OpenGL::Texture& GetTexture( ) const;
+
+		ImTextureID GetTextureID( ) const;
+
+		const ImRect GetSprite( nUInt index ) const;
+
+	public:
+		operator OpenGL::Texture&( ) const;
+
+		operator ImTextureID( ) const;
+
+		const ImRect operator[]( nUInt index ) const;
 
 	};
 

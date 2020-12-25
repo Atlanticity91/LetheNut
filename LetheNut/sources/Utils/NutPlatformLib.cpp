@@ -36,7 +36,7 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/NutPlatformLib.hpp>
+#include <LetheNut/Utils/NutPlatformLib.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC

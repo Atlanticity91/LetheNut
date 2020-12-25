@@ -37,7 +37,7 @@
 #ifndef _IGS_NUT_MENU_ITEM_HPP_
 #define _IGS_NUT_MENU_ITEM_HPP_
 
-	#include <LetheNut/NutBasic.hpp>
+	#include <LetheNut/Utils/NutBasic.hpp>
 
 	#define NO_SHORTCUT nullptr
 	#define NO_CALLBACK nullptr

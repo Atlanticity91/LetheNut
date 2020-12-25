@@ -36,7 +36,7 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/NutLibrary.hpp>
+#include <LetheNut/Utils/NutLibrary.hpp>
 
 #define NCALL( NAME ) return ( this->##NAME ) ? this->##NAME( ) : "";
 
@@ -51,6 +51,9 @@ NutLibrary::NutLibrary( nString path )
 	this->author = this->handle[ "GetAuthor" ];
 	this->version = this->handle[ "GetVersion" ];
 	this->license = this->handle[ "GetLicense" ];
+
+	if ( this->name )
+		this->hash = nHelper::Hash_MD5( this->name( ) );
 }
 
 NutLibrary::NutLibrary( const std::string& path )
@@ -79,4 +82,6 @@ NutProcedure NutLibrary::Get( nString name ) const { return this->handle.Get( na
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      OPERATOR 
 ///////////////////////////////////////////////////////////////////////////////////////////
+NutHash NutLibrary::GetHash( ) const { return this->hash; }
+
 NutProcedure NutLibrary::operator[]( nString name ) const { return this->Get( name ); }

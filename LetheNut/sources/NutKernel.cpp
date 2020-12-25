@@ -45,41 +45,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutKernel::NutKernel( )
     : NutModule( "Kernel" ),
-    config( ),
-    libraries( ),
-    modules_libs( ),
-    images( )
+    config( )
 { }
-
-NutKernel::~NutKernel( ) { 
-    for ( auto& module_lib : this->modules_libs )
-        module_lib.Close( );
-
-    for ( auto& lib : this->libraries )
-        delete lib;
-
-    for ( auto& image : this->images )
-        OpenGL::Destroy( image.second );
-}
-
-bool NutKernel::LoadImage( nString alias, nString path ) {
-    if ( path && strlen( path ) > 0 && !this->GetImage( alias ) ) {
-        auto pair = std::make_pair( alias, OpenGL::Texture( ) );
-        
-        if ( 
-            STB::Load( this->image_loader, path ) && 
-            OpenGL::Create( pair.second, this->image_loader.width, this->image_loader.height, this->image_loader.data )
-        ) {
-            STB::Destroy( this->image_loader );
-
-            this->images.emplace( pair );
-
-            return true;
-        }
-    }
-
-    return false;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
@@ -135,39 +102,16 @@ void NutKernel::Process(  NutEditor* editor ) { }
 //      PRIVATE
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutKernel::LoadLibraries( NutEditor* editor ) {
-    for ( auto lib : this->config.Get<nJSON::StringArray>( "Libraries" ) ) {
-        if ( !lib.empty( ) ) {
-            NutLibrary* library = new NutLibrary( lib );
-
-            if ( library->GetIsValid( ) )
-                this->libraries.emplace_back( library );
-            else 
-                delete library;
-        }
+    for ( auto path : this->config.Get<nJSON::StringArray>( "Libraries" ) ) {
+        if ( !path.empty( ) )
+            editor->LoadLibrary( path );
     }
 }
 
 void NutKernel::LoadModules( NutEditor* editor ) {
     for ( auto path : this->config.Get<nJSON::StringArray>( "Modules" ) ) {
         if ( !path.empty( ) ) 
-            this->LoadModule( path.c_str( ), editor );
-    }
-}
-
-void NutKernel::LoadModule( nString path, NutEditor* editor ) {
-    typedef void ( *NutLoadModule )( NutEditor*, ImGuiContext* );
-
-    auto module_lib = NutPlatformLib( path );
-
-    if ( module_lib.GetIsValid( ) ) {
-        NutLoadModule module_load = module_lib[ "NutLoadModuleLib" ];
-
-        if ( module_load ) {
-            module_load( editor, ImGui::GetCurrentContext( ) );
-
-            this->modules_libs.emplace_back( module_lib );
-        } else
-            module_lib.Close( );
+            editor->LoadModule( path );
     }
 }
 
@@ -217,29 +161,4 @@ const std::string NutKernel::GetVersion( ) const {
 
 const std::string NutKernel::GetLicense( ) const {
     return this->config.Get<std::string>( "License" );
-}
-
-NutLibrary* NutKernel::GetLibrary( nString name ) const {
-    if ( nHelper::GetIsValid( name ) ) {
-        for ( auto lib : this->libraries ) {
-            if ( strcmp( name, lib->GetName( ) ) == 0 )
-                return lib;
-        }
-    }
-
-    return nullptr;
-}
-
-const ImTextureID NutKernel::GetImage( nString name ) const {
-    if ( nHelper::GetIsValid( name ) ) {
-        auto iterator = this->images.find( name );
-
-        if ( iterator != this->images.end( ) ) {
-            nULong image_id = ( *iterator ).second.ID;
-
-            return reinterpret_cast<ImTextureID>( image_id );
-        }
-    }
-
-    return 0;
 }

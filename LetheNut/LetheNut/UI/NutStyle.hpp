@@ -37,7 +37,7 @@
 #ifndef _IGS_NUT_STYLE_HPP_
 #define _IGS_NUT_STYLE_HPP_
 
-	#include <LetheNut/NutBasic.hpp>
+	#include <LetheNut/Utils/NutBasic.hpp>
 	#include <LetheNut/Vendor/ImGUI.hpp>
 
 	/**

@@ -37,7 +37,8 @@
 #ifndef _IGS_NUT_MENU_HPP_
 #define _IGS_NUT_MENU_HPP_
 
-	#include <LetheNut/NutBasic.hpp>
+	#include <LetheNut/Utils/NutBasic.hpp>
+
 	#include "NutMenuItem.hpp"
 
 	class NutPanel;

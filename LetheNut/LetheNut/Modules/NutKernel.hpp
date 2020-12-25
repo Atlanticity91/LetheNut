@@ -37,11 +37,9 @@
 #ifndef _IGS_NUT_KERNEL_HPP_
 #define _IGS_NUT_KERNEL_HPP_
 
-	#include "NutModule.hpp"
-	#include <LetheNut/NutLibrary.hpp>
 	#include <LetheNut/Vendor/JSON.hpp>
-	#include <LetheNut/Vendor/OpenGL.hpp>
-	#include <LetheNut/Vendor/STB.hpp>
+
+	#include "NutModule.hpp"
 
 	class NutMenuItem;
 	class NutPanel;
@@ -55,10 +53,6 @@
 	
 	private:
 		nJSON config;
-		STB::Image image_loader;
-		std::vector<NutLibrary*> libraries;
-		std::vector<NutPlatformLib> modules_libs;
-		std::map<nString, OpenGL::Texture> images;
 
 	public:
 		/**
@@ -71,9 +65,7 @@
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutKernel( );
-
-		bool LoadImage( nString alias, nString path );
+		~NutKernel( ) = default;
 
 	protected:
 		/**
@@ -116,8 +108,6 @@
 		 * @param editor : Pointer to current editor.
 		 **/
 		void LoadModules( NutEditor* editor );
-
-		void LoadModule( nString path, NutEditor * editor );
 
 	private:
 		/**
@@ -276,16 +266,6 @@
 		 * @return : const std::string
 		 **/
 		inline const std::string GetLicense( ) const;
-
-		/**
-		 * GetLibrary const function
-		 * @author : ALVES Quentin
-		 * @note : Get a library from current editor library list.
-		 * @return : NutLibrary*
-		 **/
-		NutLibrary* GetLibrary( nString name ) const;
-
-		const ImTextureID GetImage( nString name ) const;
 
 	};
 

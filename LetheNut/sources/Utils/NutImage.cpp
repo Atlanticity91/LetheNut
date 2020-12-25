@@ -36,46 +36,72 @@
 
 #include "__ui.hpp"
 
-#include <LetheNut/Tools/NutProperties.hpp>
-#include <LetheNut/Utils/NutContext.hpp>
-#include <LetheNut/Vendor/ImGUI.hpp>
+#include <LetheNut/Utils/NutImage.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutProperties::NutProperties( )
-	: NutTool( "Properties", ImGUI::DEFAULT_PADDING ),
-	context( nullptr ),
-	panes( )
+NutImage::NutImage( )
 { }
 
-void NutProperties::Register( bool need_context, nString name, nString description, NutPropertyContent content ) {
-	this->Register( need_context, name, description, nullptr, content );
+NutImage::NutImage( NutHash hash, OpenGL::Texture texture, nUShort columns, nUShort rows )
+	: hash( hash ),
+	texture( texture ),
+	sprite_count( columns * rows )
+{ 
+	if ( this->sprite_count > 1 ) {
+		this->uvs.reserve( this->sprite_count );
+
+		this->GenerateUV( columns, rows );
+	} else
+		this->sprite_count = 0;
 }
 
-void NutProperties::Register( bool need_context, nString name, nString description, NutPropertyHas condition, NutPropertyContent content ) {
-	if ( nHelper::GetIsValid( name ) && content ) {
-		for ( auto& pane : this->panes ) {
-			if ( strcmp( pane.name, name ) != 0 )
-				continue;
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PRIVATE
+///////////////////////////////////////////////////////////////////////////////////////////
+void NutImage::GenerateUV( nUShort columns, nUShort rows ) {
+	float sprite_width = 1.f / columns;
+	float sprite_height = 1.f / rows;
 
-			return;
+	for ( auto ydx = 0; ydx < rows; ydx++ ) {
+		for ( auto xdx = 0; xdx < columns; xdx++ ) {
+			float spr_x = xdx * sprite_width;
+			float spr_y = ydx * sprite_height;
+			ImRect uv = ImRect{ spr_x, spr_y, sprite_width + spr_x, sprite_height + spr_y };
+
+			this->uvs[ ydx * columns + xdx ] = uv;
 		}
-
-		auto pane = NutPropertyPane{ need_context, name ,description, condition, content };
-
-		this->panes.emplace_back( pane );
 	}
 }
 
-void NutProperties::SetContext( NutContext* context ) { this->context = context; }
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC GET
+///////////////////////////////////////////////////////////////////////////////////////////
+NutHash NutImage::GetHash( ) const { return this->hash; }
+
+OpenGL::Texture& NutImage::GetTexture( ) const { return this->texture; }
+
+ImTextureID NutImage::GetTextureID( ) const {
+	nULong texture = this->texture.ID;
+
+	return reinterpret_cast<ImTextureID>( texture );
+}
+
+const ImRect NutImage::GetSprite( nUInt index ) const {
+	if ( index < this->sprite_count )
+		return this->uvs[ index ];
+
+	return ImRect{ 0.f, 0.f, 1.f, 1.f };
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-//      PROTECTED 
+//     OPERATOR
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutProperties::OnEditorRender( NutEditor* editor ) { 
-	for ( auto& pane : this->panes ) {
-		if ( ( !pane.condition && !pane.need_context ) || ( pane.condition && pane.condition( editor, this->context ) ) )
-			ImGUI::Tree( pane.name, pane.description, pane.content, editor, this->context );
-	}
+NutImage::operator OpenGL::Texture& ( ) const { return this->GetTexture( ); }
+
+NutImage::operator ImTextureID( ) const { return this->GetTextureID( ); }
+
+const ImRect NutImage::operator[]( nUInt index ) const {
+	return this->GetSprite( index ); 
 }

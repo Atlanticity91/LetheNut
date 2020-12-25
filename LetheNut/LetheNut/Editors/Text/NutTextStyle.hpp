@@ -37,7 +37,7 @@
 #ifndef _IGS_NUT_TEXT_STYLE_HPP_
 #define _IGS_NUT_TEXT_STYLE_HPP_
 
-	#include <LetheNut/NutBasic.hpp>
+	#include <LetheNut/Utils/NutBasic.hpp>
 
 	/**
 	 * ENutTextStyleVars enum [ nUByte ]
