@@ -37,8 +37,10 @@
 #ifndef _IGS_NUT_STYLE_HPP_
 #define _IGS_NUT_STYLE_HPP_
 
-	#include <LetheNut/Utils/NutBasic.hpp>
+	#include <LetheNut/Utils/NutElement.hpp>
 	#include <LetheNut/Vendor/ImGUI.hpp>
+
+	#define NUT_STYLE( NAME ) class NUT_API NAME : public NutStyle 
 
 	/**
 	 * NutStyleColor struct
@@ -65,18 +67,37 @@
 	};
 
 	/**
+	 * NutStyleFont struct
+	 * @author : ALVES Quentin
+	 * @note : Defined style font.
+	 **/
+	struct NUT_API NutStyleFont {
+
+		nString path;
+		float size;
+
+	};
+
+	/**
 	 * NutStyle final class
 	 * @author : ALVES Quentin
 	 * @note : Define Nut Style core class.
 	 **/
-	NUT_ELEMENT( NutStyle, final ) {
+	NUT_ELEMENT( NutStyle ) {
 
-		using ColorRef = std::optional< std::reference_wrapper< NutStyleColor > >;
-		using RuleRef = std::optional< std::reference_wrapper< NutStyleRule > >;
+		friend class NutEditor;
+
+		using ColorList = std::vector<NutStyleColor>;
+		using RuleList = std::vector<NutStyleRule>;
+		using FontList = std::vector<NutStyleFont>;
+		using ColorRef = std::optional<std::reference_wrapper<NutStyleColor>>;
+		using RuleRef = std::optional<std::reference_wrapper<NutStyleRule>>;
 
 	private:
-		mutable std::vector< NutStyleColor > colors;
-		mutable std::vector< NutStyleRule > rules;
+		bool has_changed;
+		mutable ColorList colors;
+		mutable RuleList rules;
+		mutable FontList fonts;
 
 	public:
 		/**
@@ -100,7 +121,7 @@
 		 * @param query : Query color property to edit.
 		 * @param value : Value for the query color property.
 		 **/
-		void SetColor( ImGuiCol_ query, const ImVec4& value );
+		void SetColor( ImGuiCol_ query, const ImVec4 & value );
 
 		/**
 		 * SetColor method
@@ -109,7 +130,7 @@
 		 * @param query : Query color property to edit.
 		 * @param value : Value for the query color property.
 		 **/
-		void SetColor( ImGuiCol_ query, const ImVec4&& value );
+		void SetColor( ImGuiCol_ query, const ImVec4 && value );
 
 		/**
 		 * SetColor method
@@ -134,36 +155,62 @@
 		void SetRule( ImGuiStyleVar_ query, float x, float y = 0.f );
 
 		/**
+		 * AddFont method
+		 * @author : ALVES Quentin
+		 * @note : Add font to current style.
+		 * @param path : Path to font file.
+		 * @param size : Size of the font.
+		 **/
+		void AddFont( nString path, float size );
+
+		/**
+		 * AddFont method
+		 * @author : ALVES Quentin
+		 * @note : Add font to current style.
+		 * @param path : Path to font file.
+		 * @param size : Size of the font.
+		 **/
+		inline void AddFont( const std::string& path, float size );
+
+		/**
 		 * OnStyleInit virtual method
 		 * @author : ALVES Quentin
 		 * @note : Setup the current style.
 		 **/
-		virtual void OnStyleInit( );
-
-	private:
-		/**
-		 * Apply method
-		 * @author : ALVES Quentin
-		 * @note : Apply the theme.
-		 **/
-		void Apply( );
+		virtual void OnCreate( ) = 0;
 
 	public:
+		/**
+		 * GetHasChanged const function
+		 * @author : ALVES Quentin
+		 * @note : Get if the style has changed.
+		 * @preturn : bool
+		 **/
+		bool GetHasChanged( ) const;
+
 		/**
 		 * GetColors const function
 		 * @author : ALVES Quentin
 		 * @note : Get the list of color defined by the style.
-		 * return : std::vector< NutStyleColor >&
+		 * return : ColorList&
 		 **/
-		std::vector< NutStyleColor >& GetColors( ) const;
+		ColorList& GetColors( ) const;
 
 		/**
 		 * GetRules const function
 		 * @author : ALVES Quentin
 		 * @note : Get the list of rule defined by the style.
-		 * @return : std::vector< NutStyleRule >&
+		 * @return : RuleList&
 		 **/
-		std::vector< NutStyleRule >& GetRules( ) const;
+		RuleList& GetRules( ) const;
+
+		/**
+		 * GetFonts const function
+		 * @author : ALVES Quentin
+		 * @note : Get the list of fonts defined by the style.
+		 * @return : FontList&
+		 **/
+		FontList& GetFonts( ) const;
 
 		/**
 		 * GetColor const function

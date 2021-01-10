@@ -34,7 +34,7 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#include "__pch.hpp"
 
 #include <LetheNut/Utils/NutLibrary.hpp>
 
@@ -53,14 +53,12 @@ NutLibrary::NutLibrary( nString path )
 	this->license = this->handle[ "GetLicense" ];
 
 	if ( this->name )
-		this->hash = nHelper::Hash_MD5( this->name( ) );
+		this->hash = nHelper::Hash( this->name( ) );
 }
 
 NutLibrary::NutLibrary( const std::string& path )
 	: NutLibrary( path.c_str( ) )
 { }
-
-NutLibrary::~NutLibrary( ) { this->handle.Close( ); }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET

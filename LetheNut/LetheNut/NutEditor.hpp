@@ -37,39 +37,31 @@
 #ifndef _IGS_NUT_EDITOR_HPP_
 #define _IGS_NUT_EDITOR_HPP_
 
-	#include "Modules/NutKernel.hpp"
-	#include "UI/NutWindow.hpp"
-	#include "Utils/NutImage.hpp"
+	#include "NutFramework.hpp"
+	#include "Assets/NutAssetManager.hpp"
 	#include "Utils/NutLibrary.hpp"
-	#include "Utils/NutPlatformLib.hpp"
-	#include "Vendor/OpenGL.hpp"
-
-	// TODO : NutTextEditor
-	// TODO : NutNodeEditor
-	// TODO : NutSpriteEditor
-	// TODO : NutFrameEditor
-	// TODO : NutMaterialEditor
-	// TODO : NutParticleEditor
-	// TODO : FIX Imgui support for multiple windows.
-	// TODO : FIX Sliders
-	// TODO : FIX Custom Theme
+	#include "Utils/NutModule.hpp"
+	#include "Vendor/JSON.hpp"
 
 	/**
 	 * NutEditor final class
 	 * @author : ALVES Quentin
-	 * @note : Defined Nut Editor core class.
+	 * @note : Defined editor core class.
 	 **/
-	NUT_WINDOW( NutEditor, final ) {
-		
-		friend class NutKernel;
-		friend int main( int, char** );
+	class NUT_API NutEditor final {
+
+		friend int main( int argc, char** argv );
 
 	private:
-		mutable std::vector<NutImage> images;
-		MUT_VEC( NutLibrary, libraries );
-		MUT_VEC( NutModule, modules );
-		MUT_VEC( NutWindow, windows );
-		std::vector<NutPlatformLib> modules_libs;
+		bool is_running;
+		mutable NutFileSystem file_system;
+		mutable NutAssetManager assets;
+		NutLogger logger;
+		JSON config;
+		NutStyle* style;
+		NutList<NutLibrary*> libraries;
+		NutList<NutModule*> modules;
+		NutList<NutWindow*> windows;
 
 	public:
 		/**
@@ -84,53 +76,93 @@
 		 **/
 		~NutEditor( );
 
+		/**
+		 * LoadLibrary function
+		 * @author : ALVES Quentin
+		 * @note : Load a library to the editor.
+		 * @param path : Path to the query library file.
+		 * @return : bool 
+		 **/
 		bool LoadLibrary( nString path );
 
+		/**
+		 * LoadLibrary function
+		 * @author : ALVES Quentin
+		 * @note : Load a library to the editor.
+		 * @param path : Path to the query library file.
+		 * @return : bool
+		 **/
 		inline bool LoadLibrary( const std::string& path );
 
+		/**
+		 * LoadModule function
+		 * @author : ALVES Quentin
+		 * @note : Load a module to the editor.
+		 * @param path : Path to the query module file.
+		 * @return : bool
+		 **/
 		bool LoadModule( nString path );
 
+		/**
+		 * LoadModule function
+		 * @author : ALVES Quentin
+		 * @note : Load a module to the editor.
+		 * @param path : Path to the query module file.
+		 * @return : bool
+		 **/
 		inline bool LoadModule( const std::string& path );
 
-		inline bool LoadImageAs( nString alias, nString path );
-
-		inline bool LoadImageAs( const std::string& alias, const std::string& path );
-
-		bool LoadImageAs( nString alias, nString path, nUShort columns, nUShort rows );
-
-		inline bool LoadImageAs( const std::string & alias, const std::string & path, nUShort columns, nUShort rows );
-
-		inline bool LoadImageAs( OpenGL::Texture& texture, nString alias, nString path );
-
-		inline bool LoadImageAs( OpenGL::Texture& texture, const std::string& alias, const std::string& path );
-
-		bool LoadImageAs( OpenGL::Texture& texture, nString alias, nString path, nUShort columns, nUShort rows );
-
-		inline bool LoadImageAs( OpenGL::Texture& texture, const std::string& alias, const std::string& path, nUShort columns, nUShort rows );
+		/**
+		 * UnLoadLibrary function
+		 * @author : ALVES Quentin
+		 * @note : UnLoad a library from the editor.
+		 * @param name : Name to the query library.
+		 * @return : bool
+		 **/
+		void UnLoadLibrary( nString name );
 
 		/**
-		 * EnableModule method
+		 * UnLoadLibrary function
 		 * @author : ALVES Quentin
-		 * @note : Enable a module.
-		 * @param name : Name of the query module.
+		 * @note : UnLoad a library from the editor.
+		 * @param name : Name to the query library.
+		 * @return : bool
 		 **/
-		void EnableModule( nString name );
+		inline void UnLoadLibrary( const std::string& path );
 
 		/**
-		 * DisableModule method
+		 * UnLoadModule function
 		 * @author : ALVES Quentin
-		 * @note : Disable a module.
-		 * @param name : Name of the query module.
+		 * @note : UnLoad a module from the editor.
+		 * @param name : Name to the query module.
+		 * @return : bool
 		 **/
-		void DisableModule( nString name );
+		void UnLoadModule( nString name );
 
 		/**
-		 * Destroy method
+		 * UnLoadModule function
 		 * @author : ALVES Quentin
-		 * @note : Destroy a module.
-		 * @param name : Name of the query module.
+		 * @note : UnLoad a module from the editor.
+		 * @param name : Name to the query module.
+		 * @return : bool
 		 **/
-		void Destroy( nString name );
+		inline void UnLoadModule( const std::string& path );
+
+		/**
+		 * Close method
+		 * @author : ALVES Quentin
+		 * @note : Close a window from the editor.
+		 * @param name : Name of the query window.
+		 **/
+		void Close( nString name );
+
+		/**
+		 * Close method
+		 * @author : ALVES Quentin
+		 * @note : Close a window from the editor.
+		 * @param name : Name of the query window.
+		 **/
+		inline void Close( const std::string& name );
 
 		/**
 		 * Exit method
@@ -139,13 +171,13 @@
 		 **/
 		void Exit( );
 
-	protected:
+	private:
 		/**
-		 * OnCreate override method
+		 * LoadDependencies method
 		 * @author : ALVES Quentin
-		 * @note : Called when the current panel is created.
+		 * @note : Load dependencies of the editor.
 		 **/
-		virtual void OnCreate( class NutEditor* editor ) override;
+		void LoadDependencies( );
 
 		/**
 		 * Start function
@@ -153,6 +185,7 @@
 		 * @note : Start the editor.
 		 * @param argc : Count of argument.
 		 * @param argv : Value for argument.
+		 * @return : bool
 		 **/
 		bool Start( int argc, char** argv );
 
@@ -163,85 +196,199 @@
 		 **/
 		void Run( );
 
+		/**
+		 * Stop method
+		 * @author : ALVES Quentin
+		 * @note : Stop the editor.
+		 **/
+		void Stop( );
+
 	public:
+		/**
+		 * Log template method
+		 * @author : ALVES Quentin
+		 * @note : Log information with editor logger.
+		 * @template Args : Arguements types.
+		 * @param mode : Logger mode.
+		 * @param format : Format of the log.
+		 * @param args : Arguments of the log.
+		 **/
+		template<typename... Args>
+		void Log( NutLoggerModes mode, nString format, Args... args );
+
+		/**
+		 * Log template method
+		 * @author : ALVES Quentin
+		 * @note : Log information with editor logger.
+		 * @template Args : Arguements types.
+		 * @param mode : Logger mode.
+		 * @param format : Format of the log.
+		 * @param args : Arguments of the log.
+		 **/
+		template<typename... Args>
+		void Log( NutLoggerModes mode, const std::string& format, Args... args );
+
+		/**
+		 * LogProfile template method
+		 * @author : ALVES Quentin
+		 * @note : Log information with editor logger.
+		 * @template Args : Arguements types.
+		 * @param profile : Name of the logger profile.
+		 * @param mode : Logger mode.
+		 * @param format : Format of the log.
+		 * @param args : Arguments of the log.
+		 **/
+		template<typename... Args>
+		void LogProfile( nString profile, NutLoggerModes mode, nString format, Args... args );
+
+		/**
+		 * LogProfile template method
+		 * @author : ALVES Quentin
+		 * @note : Log information with editor logger.
+		 * @template Args : Arguements types.
+		 * @param profile : Name of the logger profile.
+		 * @param mode : Logger mode.
+		 * @param format : Format of the log.
+		 * @param args : Arguments of the log.
+		 **/
+		template<typename... Args>
+		void LogProfile( const std::string& profile, NutLoggerModes mode, const std::string& format, Args... args );
+
+		/**
+		 * SetStyle template method
+		 * @author : ALVES Quentin
+		 * @note : Set editor style.
+		 * @template Type : NutStyle instance.
+		 **/
+		template<typename Type = NutStyle>
+		void SetStyle( );
+
 		/**
 		 * Register template function
 		 * @author : ALVES Quentin
-		 * @note : Register a module.
-		 * @template Type : Type of the query moduke.
-		 * @template Args : All type of arguments pass for popup constructor call.
-		 * @param args : List of arguments for constructor call.
+		 * @note : Register a module to the editor.
+		 * @template Type : NutModule instance.
+		 * @template Args : Arguements types.
+		 * @param importer : Pointer to current module importer.
+		 * @param args : Arguments for module constructor.
 		 * @return : Type*
 		 **/
-		template< typename Type = class NutModule, typename... Args >
-		Type* Register( Args... args );
+		template<typename Type = NutModule, typename... Args>
+		Type* Register( NutPlatformLib* importer, Args... args );
 
 		/**
-		 * Create template function
+		 * Open template function
 		 * @author : ALVES Quentin
-		 * @note : Create a new window.
-		 * @template Type : Instance of NutWindow of the new window.
-		 * @template Args : Variadic template for arguments pass to window constructor.
-		 * @param args : 
+		 * @note : Open a new window on the editor.
+		 * @template Type : NutWindow instance.
+		 * @template Args : Arguements types.
+		 * @param args : Arguments for window constructor.
 		 * @return : Type*
 		 **/
-		template< typename Type = class NutWindow, typename... Args >
-		Type* Create( Args... args );
+		template<typename Type = NutWindow, typename... Args>
+		Type* Open( Args... args );
 
 	public:
-		NutImage* GetImage( nString alias ) const;
-		
 		/**
-		 * GetKernel inline const function
- 		 * @author : ALVES Quentin
-		 * @note : Get current kernel module.
-		 * @return : NutKernel*
+		 * GetVersion const function
+		 * @author : ALVES Quentin
+		 * @note : Get current editor version.
+		 * @return : const std::string
 		 **/
-		inline NutKernel* GetKernel( ) const;
+		const std::string GetVersion( ) const;
 
 		/**
-		 * GetLibrary inline const function
+		 * GetLicense const function
 		 * @author : ALVES Quentin
-		 * @note : Get a library from library list.
-		 * @param name : Name of the query library.
+		 * @note : Get current editor license.
+		 * @return : const std::string
+		 **/
+		const std::string GetLicense( ) const;
+
+		/**
+		 * GetFileSystem const function
+		 * @author : ALVES Quentin
+		 * @note : Get current editor file system.
+		 * @return : NutFileSystem*
+		 **/
+		inline NutFileSystem* GetFileSystem( ) const;
+
+		/**
+		 * GetAssetManager const function
+		 * @author : ALVES Quentin
+		 * @note : Get current editor asset manager.
+		 * @return : NutAssetManager*
+		 **/
+		inline NutAssetManager* GetAssetManager( ) const;
+
+		/**
+		 * GetStyle const function
+		 * @author : ALVES Quentin
+		 * @note : Get current editor style.
+		 * @return : NutStyle*
+		 **/
+		inline NutStyle* GetStyle( ) const;
+
+		/**
+		 * GetLibrary const function
+		 * @author : ALVES Quentin
+		 * @note : Get a library form the editor.
+		 * @param name : Name of the library.
 		 * @return : NutLibrary*
 		 **/
-		NutLibrary* GetLibrary( nString name ) const;
+		inline NutLibrary* GetLibrary( nString name ) const;
 
-	private:
 		/**
-		 * GetModules inline const function
+		 * GetModule const function
 		 * @author : ALVES Quentin
-		 * @note : Get reference to module list.
-		 * @return : const std::vector< NutModule* >&
+		 * @note : Get a module form the editor.
+		 * @param name : Name of the module.
+		 * @return : NutModule*
 		 **/
-		inline std::vector< NutModule* >& GetModules( ) const;
+		inline NutModule* GetModule( nString name ) const;
 
- 	public:
-		template< typename Type = NutTool >
-		Type* GetTool( nString name ) const;
+		/**
+		 * GetWindow const function
+		 * @author : ALVES Quentin
+		 * @note : Get a window form the editor.
+		 * @param name : Name of the window.
+		 * @return : NutWindow*
+		 **/
+		inline NutWindow* GetWindow( nString name ) const;
+
+	public:
+		/**
+		 * GetLibrary template const function
+		 * @author : ALVES Quentin
+		 * @note : Get a library form the editor.
+		 * @template Type : NutLibrary instance.
+		 * @param name : Name of the library.
+		 * @return : NutLibrary*
+		 **/
+		template<typename Type = NutLibrary>
+		inline Type* GetLibrary( nString name ) const;
 
 		/**
 		 * GetModule template const function
 		 * @author : ALVES Quentin
-		 * @note : Get a module from module list.
-		 * @template Type : Type of the query module.
-		 * @param name : Name of the query module.
-		 * @return : Type*
+		 * @note : Get a module form the editor.
+		 * @template Type : NutModule instance.
+		 * @param name : Name of the module.
+		 * @return : NutModule*
 		 **/
-		template< typename Type = NutModule >
-		Type* GetModule( nString name ) const;
+		template<typename Type = NutModule>
+		inline Type* GetModule( nString name ) const;
 
 		/**
 		 * GetWindow template const function
 		 * @author : ALVES Quentin
-		 * @note : Get a window from window list.
-		 * @template Type : Type of the query window.
-		 * @param name : Name of the query window.
+		 * @note : Get a window form the editor.
+		 * @template Type : NutWindow instance.
+		 * @param name : Name of the window.
 		 * @return : Type*
 		 **/
-		template< typename Type = NutWindow >
-		Type* GetWindow( nString name ) const;
+		template<typename Type = NutWindow>
+		inline Type* GetWindow( nString name ) const;
 
 	};
 

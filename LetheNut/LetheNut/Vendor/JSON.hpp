@@ -37,15 +37,15 @@
 #ifndef _IGS_NUT_VENDOR_JSON_HPP_
 #define _IGS_NUT_VENDOR_JSON_HPP_
 
-    #include <LetheNut/Core.hpp>
+    #include <LetheNut/NutCore.hpp>
     #include <Thirdparty/JSON/NLohmann.hpp>
 
     /**
-     * nJSON final class.
+     * JSON final class.
      * @author : ALVES Quentin
      * @node : Defined JSON core code.
      **/
-    class NUT_API nJSON final {
+    class NUT_API JSON final {
 
     public:
         using StringArray = std::vector<std::string>;
@@ -62,13 +62,13 @@
          * Constructor
          * @author : ALVES Quentin
          **/
-        nJSON( );
+        JSON( );
 
         /**
          * Destructor
          * @author : ALVES Quentin
          **/
-        ~nJSON( );
+        ~JSON( );
 
         /**
          * Load function
@@ -183,7 +183,7 @@
         const Array InternalGetArray( nString parameter ) const;
 
     };
-    
-    #include <Templates/VendorJSON.hpp>
+
+    #include <Templates/JSON.hpp>
 
 #endif

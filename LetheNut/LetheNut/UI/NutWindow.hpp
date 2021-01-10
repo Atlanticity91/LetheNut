@@ -37,117 +37,57 @@
 #ifndef _IGS_NUT_WINDOW_HPP_
 #define _IGS_NUT_WINDOW_HPP_
 
-	#include "NutPopup.hpp"
-	#include "NutStyle.hpp"
+	#include <LetheNut/Vendor/GLFW.hpp>
 
-	#define NUT_WINDOW( NAME, ... ) NUT_CLASS( NAME, NutWindow, __VA_ARGS__ )
-	#define MUT_VEC( TYPE, NAME ) mutable std::vector< TYPE * > NAME
+	#include "NutPanel.hpp"
 
-	/**
-	 * NutWindow class [ NutPopup ]
-	 * @author : ALVES Quentin
-	 * @note : Defined Nut Window core class.
-	 **/
-	NUT_POPUP( NutWindow ) {
+	#define NUT_WINDOW( NAME ) class NUT_API NAME : public NutWindow
 
+	NUT_UI_ELEMENT( NutWindow ) {
+
+		friend bool ImGUI::Window( NutWindow* );
 		friend class NutEditor;
 
 	private:
-		mutable nPointer handle;
-		MUT_CLASS( NutStyle, style );
-		MUT_VEC( NutPopup, popups );
+		mutable GLFW::Window handle;
+		mutable NutList<NutPanel*> panels;
 
 	public:
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 * @param name : Name of the current window.
-		 * @param width : Width of the window.
-		 * @param height : Height of the window.
-		 **/
-		NutWindow( nString label, const nUInt width, const nUInt height );
+		NutWindow( nString name, const nInt width, const nInt height );
 
-		/**
-		 * Destructor
-		 * @author : ALVES Quentin
-		 **/
 		virtual ~NutWindow( );
 
+		void Enable( NutEditor* editor, nString panel );
+
+		void Disable( NutEditor* editor, nString panel );
+
+		void Destroy( NutEditor* editor, nString panel );
+
 	protected:
-		/**
-		 * OnCreate override method
-		 * @author : ALVES Quentin
-		 * @note : Called when the current panel is created.
-		 **/
-		virtual void OnCreate( NutEditor* editor ) override;
+		bool Open( );
 
-		/**
-		 * OnEditorRender override method
-		 * @author : ALVES Quentin
-		 * @note : Called once a frame to render ImGUI stuff.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnEditorRender( NutEditor* editor ) override;
+		virtual void OnCreate( NutEditor* editor ) = 0;
 
-		/**
-		 * OnPopupRender method
-		 * @author : ALVES Quentin
-		 * @note : Render all popup's.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnPopupRender( NutEditor* editor );
+		virtual bool OnDestroy( NutEditor* editor );
+
+		virtual void OnRender( NutEditor* editor );
 
 	public:
-		/**
-		 * OpenPopup template function
-		 * @author : ALVES Quentin
-		 * @note : Open a popup.
-		 * @template Type : Type of the query popup.
-		 * @template Args : All type of arguments pass for popup constructor call.
-		 * @param popup : Internal use to store the popup address.
-		 * @param args : List of arguments for constructor call.
-		 * @return : PopupType*
-		 **/
-		template< typename Type = class NutPopup, typename... Args >
-		Type* OpenPopup( NutEditor* editor, Args... args );
-
-		/**
-		 * ClosePopup method
-		 * @author : ALVES Quentin
-		 * @note : Close a popup.
-		 * @template Type : Type of the query popup.
-		 **/
-		template< typename Type = class NutPopup >
-		void ClosePopup( );
+		template<typename Type = NutPanel, typename... Args>
+		Type* Create( NutEditor* editor, Args... args );
 
 	public:
-		/**
-		 * GetStyle inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get current editor style.
-		 * @return : class NutStyle&
-		 **/
-		inline class NutStyle& GetStyle( ) const;
+		GLFW::Window& GetHandle( ) const;
 
-		/**
-		 * GetHandle inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get current window GLFW window pointer.
-		 * @return : nPointer&
-		 **/
-		inline nPointer& GetHandle( ) const;
+		bool ShouldRun( ) const;
+
+		NutList<NutPanel*>& GetPanels( ) const;
+
+		NutPanel* GetPanel( nString name ) const;
 
 	public:
-		/**
-		 * GetPopup const template function
-		 * @author : ALVES Quentin
-		 * @note : Get a popup by it's name.
-		 * @template Type : Type of the query popup.
-		 * @param name : Name of the query popup.
-		 * @return : class NutPopup*
-		 **/
-		template< typename Type = class NutPopup >
-		Type* GetPopup( ) const;
+		template<typename Type = NutPanel>
+		Type* GetPanel( nString panel );
 
 	};
 

@@ -34,64 +34,56 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#include "__pch.hpp"
 
-#include <LetheNut/Vendor/GLFW.hpp>
-#include <LetheNut/Vendor/STB.hpp>
 #include <Thirdparty/GLFW/glfw3.h>
+#include <Thirdparty/GLFW/glfw3native.h>
+#include <LetheNut/Vendor/GLFW.hpp>
 
-bool GLFW::Initialize( nPointer& window ) {
-	if ( !window ) {
-		if ( glfwInit( ) ) {
-			glfwWindowHint( GLFW_RESIZABLE, GLFW_TRUE );
-			glfwWindowHint( GLFW_STEREO, GLFW_FALSE );
-			glfwWindowHint( GLFW_DOUBLEBUFFER, GLFW_TRUE );
-			glfwWindowHint( GLFW_CLIENT_API, GLFW_OPENGL_API );
-			glfwWindowHint( GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API );
-			glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-			glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
-			glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE );
-			glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-			glfwSwapInterval( GLFW_TRUE );
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC
+///////////////////////////////////////////////////////////////////////////////////////////
+bool GLFW::Initialize( ) { return glfwInit( ); }
 
-			auto* handle = glfwCreateWindow( 1280, 720, "Lethe Engine", nullptr, nullptr );
+bool GLFW::Create( Window& window ) {
+	glfwWindowHint( GLFW_RESIZABLE, GLFW_TRUE );
+	glfwWindowHint( GLFW_STEREO, GLFW_FALSE );
+	glfwWindowHint( GLFW_DOUBLEBUFFER, GLFW_TRUE );
+	glfwWindowHint( GLFW_CLIENT_API, GLFW_OPENGL_API );
+	glfwWindowHint( GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
+	glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE );
+	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+	glfwSwapInterval( GLFW_TRUE );
 
-			if ( handle )
-				glfwMakeContextCurrent( handle );
+	auto* handle = glfwCreateWindow( window.width, window.height, window.label, nullptr, nullptr );
 
-			window = (nPointer)handle;
+	if ( handle ) {
+		glfwMakeContextCurrent( handle );
+		glfwSwapInterval( GLFW_TRUE );
 
-			return handle;
-		}
+		window.handle = (nPointer)handle;
 	}
 
-	return false;
+	return handle;
 }
 
-bool GLFW::ShouldRun( const nPointer window ) {
-	if ( window ) {
-		auto* handle = (struct GLFWwindow*)window;
-
-		if ( !glfwWindowShouldClose( handle ) ) {
-			glfwMakeContextCurrent( handle );
-			glfwSwapBuffers( handle );
-			glfwPollEvents( );
-
-			return true;
-		}
-	}
-
-	return false;
+void GLFW::SetContext( Window& window ) {
+	glfwMakeContextCurrent( (GLFWwindow*)window.handle );
 }
 
-void GLFW::Destroy( nPointer& window ) {
-	if ( window ) {
-		auto* handle = (struct GLFWwindow*)window;
+bool GLFW::ShouldRun( Window& window ) {
+	return window.handle && !glfwWindowShouldClose( (GLFWwindow*)window.handle );
+}
 
-		glfwDestroyWindow( handle );
+void GLFW::Process( Window& window ) {
+	glfwSwapBuffers( (GLFWwindow*)window.handle );
+	glfwPollEvents( );
+}
 
-		window = nullptr;
-	}
+void GLFW::Destroy( Window& window ) {
+	glfwDestroyWindow( (GLFWwindow*)window.handle );
 }
 
 void GLFW::Cleanup( ) { glfwTerminate( ); }

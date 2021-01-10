@@ -37,7 +37,7 @@
 #ifndef _IGS_NUT_CONTEXT_HPP_
 #define _IGS_NUT_CONTEXT_HPP_
 
-	#include <LetheNut/Core.hpp>
+	#include <LetheNut/NutCore.hpp>
 
 	/**
 	 * NutContext class

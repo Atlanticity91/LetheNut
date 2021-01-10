@@ -37,90 +37,117 @@
 #ifndef _IGS_NUT_EDITOR_IMP_HPP_
 #define _IGS_NUT_EDITOR_IMP_HPP_
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    //      PUBLIC
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    template< typename Type, typename... Args >
-    Type* NutEditor::Register( Args... args ) {
-        if constexpr ( std::is_base_of<NutModule, Type>::value ) {
-            auto* module = new Type( args... );
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//      PUBLIC
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template<typename... Args>
+	void NutEditor::Log( NutLoggerModes mode, nString format, Args... args ) {
+		this->logger.Append( mode, format, args... );
+	}
 
-            if ( module ) {
-                this->modules.emplace_back( module );
+	template<typename... Args>
+	void NutEditor::Log( NutLoggerModes mode, const std::string& format, Args... args ) {
+		this->Log( mode, format.c_str( ), args... );
+	}
 
-                auto md = reinterpret_cast<NutModule*>( module );
-                md->OnCreate( this );
-                md->Initialize( this );
-            }
+	template<typename... Args>
+	void NutEditor::LogProfile( nString name, NutLoggerModes mode, nString format, Args... args ) {
+		this->logger.Append( name, mode, format, args... );
+	}
 
-            return module;
-        }
+	template<typename... Args>
+	void NutEditor::LogProfile( const std::string& name, NutLoggerModes mode, const std::string& format, Args... args ) {
+		this->Log( name.c_str( ), mode, format.c_str( ), args... );
+	}
 
-        return nullptr;
-    }
-    
-    template< typename Type, typename... Args >
-    Type* NutEditor::Create( Args... args ) {
-        if constexpr ( std::is_base_of<NutWindow, Type>::value ) {
-            auto* window = new Type( args... );
+	template<typename Type>
+	void NutEditor::SetStyle( ) {
+		if constexpr ( std::is_base_of<NutStyle, Type>::value ) {
+			auto* new_style = new Type( );
 
-            if ( window ) {
-                this->windows.emplace_back( window );
+			if ( new_style ) {
+				if ( this->style )
+					delete this->style;
 
-                reinterpret_cast<NutWindow*>( window )->OnCreate( this );
-            }
+				this->style = NUT_CAST( new_style, NutStyle );
+				this->style->OnCreate( );
+			}
+		}
+	}
 
-            return window;
-        }
+	template<typename Type, typename... Args>
+	Type* NutEditor::Register( NutPlatformLib* importer, Args... args ) {
+		if constexpr ( std::is_base_of<NutModule, Type>::value ) {
+			auto* module = new Type( importer, args... );
 
-        return nullptr;
-    }
+			if ( module ) {
+				this->modules.Emplace( module );
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    //      PUBLIC GET 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    template< typename Type >
-    Type* NutEditor::GetTool( nString name ) const {
-        if constexpr ( std::is_base_of<NutTool, Type>::value )
-            return this->GetPanel<Type>( name );
+				NUT_CAST( module, NutModule )->OnCreate( this );
 
-        return nullptr;
-    }
+				return module;
+			}
+		}
 
-    template< typename Type >
-    Type* NutEditor::GetModule( nString name ) const {
-        if constexpr ( std::is_base_of<NutModule, Type>::value ) {
-            if ( nHelper::GetIsValid( name ) ) {
-                auto hash = nHelper::Hash_MD5( name );
+		return nullptr;
+	}
 
-                for ( auto& module : this->modules ) {
-                    if ( hash != module->GetHash( ) || !dynamic_cast<Type*>( module ) )
-                        continue;
-                    else
-                        return reinterpret_cast<Type*>( module );
-                }
-            }
-        }
+	template<typename Type, typename... Args>
+	Type* NutEditor::Open( Args... args ) {
+		if constexpr ( std::is_base_of<NutWindow, Type>::value ) {
+			auto* window = new Type( args... );
 
-        return nullptr;
-    }
+			if ( window && window->Open( ) && OpenGL::Initialize( this ) ) {
+				this->windows.Emplace( window );
 
-    template< typename Type >
-    Type* NutEditor::GetWindow( nString name ) const {
-        if constexpr ( std::is_base_of<NutWindow, Type>::value ) {
-            if ( nHelper::GetIsValid( name ) ) {
-                auto hash = nHelper::Hash_MD5( name );
+				NUT_CAST( window, NutUIElement )->OnCreateUI( );
+				NUT_CAST( window, NutWindow )->OnCreate( this );
 
-                for ( auto& window : this->windows ) {
-                    if ( hash != window->GetHash( ) || !dynamic_cast<Type*>( window ) )
-                        continue;
-                    else
-                        return reinterpret_cast<Type*>( window );
-                }
-            }
-        }
+				return window;
+			} else
+				delete window;
+		}
 
-        return nullptr;
-    }
+		return nullptr;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//      PUBLIC GET
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template<typename Type>
+	Type* NutEditor::GetLibrary( nString name ) const {
+		if constexpr ( std::is_base_of<NutLibrary, Type>::value ) {
+			auto* library = this->libraries[ name ];
+
+			if ( dynamic_cast<Type*>( library ) )
+				return NUT_CAST( library, Type );
+		}
+
+		return nullptr;
+	}
+
+	template<typename Type>
+	Type* NutEditor::GetModule( nString name ) const {
+		if constexpr ( std::is_base_of<NutModule, Type>::value ) {
+			auto* library = this->modules[ name ];
+
+			if ( dynamic_cast<Type*>( library ) )
+				return NUT_CAST( library, Type );
+		}
+
+		return nullptr;
+	}
+
+	template<typename Type>
+	Type* NutEditor::GetWindow( nString name ) const {
+		if constexpr ( std::is_base_of<NutWindow, Type>::value ) {
+			auto* window = this->windows[ name ];
+
+			if ( dynamic_cast<Type*>( window ) )
+				return NUT_CAST( window, Type );
+		}
+
+		return nullptr;
+	}
 
 #endif

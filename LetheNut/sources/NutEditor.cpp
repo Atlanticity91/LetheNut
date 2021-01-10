@@ -34,265 +34,198 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#include "__pch.hpp"
 
 #include <LetheNut/NutEditor.hpp>
-#include <LetheNut/Tools/NutTool.hpp>
-#include <LetheNut/Vendor/STB.hpp>
+#include <LetheNut/Vendor/OpenGL.hpp>
 #include <LetheNut/Vendor/GLFW.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutEditor::NutEditor( )
-    : NutWindow( "Editor", 0, 0 ),
-    images( ),
-    libraries( ),
-    modules( ),
-    windows( ),
-    modules_libs( )
+	: is_running( true ),
+	file_system( ),
+	assets( ),
+	logger( ),
+	config( ),
+	style( nullptr ),
+	libraries( ),
+	modules( )
 { }
 
-NutEditor::~NutEditor( ) {
-    for ( auto& image : this->images )
-        OpenGL::Destroy( image.GetTexture( ) );
-
-    for ( auto& library : this->libraries )
-        delete library;
-
-    auto idx = this->modules.size( );
-    while ( idx-- > 0 )
-        delete this->modules[ idx ];
-
-    for ( auto& module_lib : this->modules_libs )
-        module_lib.Close( );
-
-    for ( auto& popup : this->popups )
-        delete popup;
-
-    for ( auto& window : this->windows ) 
-        delete window;
-
-    NutPopup::~NutPopup( );
-    NutWindow::~NutWindow( );
-    ImGUI::Destroy( );
-    GLFW::Cleanup( );
-}
+NutEditor::~NutEditor( ) { }
 
 bool NutEditor::LoadLibrary( nString path ) {
-    if ( nHelper::GetIsValid( path ) ) {
-        auto* library = new NutLibrary( path );
+	if ( nHelper::GetIsValid( path ) ) {
+		auto* library = new NutLibrary( path );
 
-        if ( library->GetIsValid( ) ) {
-            this->libraries.emplace_back( library );
+		if ( library->GetIsValid( ) ) {
+			this->libraries.Emplace( library );
 
-            return true;
-        } else
-            delete library;
-    }
+			return true;
+		} else
+			delete library;
+	}
 
-    return false;
+	return false;
 }
 
 bool NutEditor::LoadLibrary( const std::string& path ) {
-    return this->LoadLibrary( path.c_str( ) );
+	return this->LoadLibrary( path.c_str( ) );
 }
 
 bool NutEditor::LoadModule( nString path ) {
-    if ( nHelper::GetIsValid( path ) ) {
-        typedef void ( *NutLoadModule )( NutEditor*, ImGuiContext* );
+	if ( nHelper::GetIsValid( path ) ) {
+		typedef void ( *NutLoadModule )( NutEditor*, NutPlatformLib*, ImGuiContext* );
 
-        auto module_lib = NutPlatformLib( path );
+		auto* module_lib = new NutPlatformLib( path );
 
-        if ( module_lib.GetIsValid( ) ) {
-            NutLoadModule module_load = module_lib[ "NutLoadModuleLib" ];
+		if ( module_lib && module_lib->GetIsValid( ) ) {
+			NutLoadModule module_load = (*module_lib)[ "NutLoadModuleLib" ];
 
-            if ( module_load ) {
-                module_load( this, ImGui::GetCurrentContext( ) );
+			if ( module_load ) {
+				module_load( this, module_lib, ImGui::GetCurrentContext( ) );
 
-                this->modules_libs.emplace_back( module_lib );
+				return true;
+			} else
+				delete module_lib;
+		}
+	}
 
-                return true;
-            } else
-                module_lib.Close( );
-        }
-    }
-
-    return false;
+	return false;
 }
 
 bool NutEditor::LoadModule( const std::string& path ) {
-    return this->LoadModule( path.c_str( ) );
+	return this->LoadModule( path.c_str( ) );
 }
 
-bool NutEditor::LoadImageAs( nString alias, nString path ) {
-    return this->LoadImageAs( alias, path, 1, 1 );
+void NutEditor::UnLoadLibrary( nString name ) {
+	this->libraries.Erase( name );
 }
 
-bool NutEditor::LoadImageAs( const std::string& alias, const std::string& path ) {
-    return this->LoadImageAs( alias.c_str( ), path.c_str( ), 1, 1 );
+void NutEditor::UnLoadLibrary( const std::string& name ) {
+	this->UnLoadLibrary( name.c_str( ) );
 }
 
-bool NutEditor::LoadImageAs( nString alias, nString path, nUShort columns, nUShort rows ) {
-   if ( nHelper::GetIsValid( alias ) && nHelper::GetIsValid( path ) && !this->GetImage( alias ) ) {
-       auto hash = nHelper::Hash_MD5( alias );
-       auto texture = OpenGL::Texture( );
-       auto file = STB::Image( );
+void NutEditor::UnLoadModule( nString name ) {
+	auto* module = this->modules[ name ];
+	
+	if ( module ) {
+		(*module)->OnDestroy( this );
 
-       if ( STB::Load( file, path ) && OpenGL::Create( texture, file.width, file.height, file.data ) ) {
-           STB::Destroy( file );
-
-           this->images.emplace_back( NutImage( hash, texture, columns, rows ) );
-
-           return true;
-       }
-   }
-
-   return false;
+		this->modules.Erase( name );
+	}
 }
 
-bool NutEditor::LoadImageAs( const std::string& alias, const std::string& path, nUShort columns, nUShort rows ) {
-    return this->LoadImageAs( alias.c_str( ), path.c_str( ), columns, rows );
+void NutEditor::UnLoadModule( const std::string& name ) {
+	this->UnLoadModule( name.c_str( ) );
 }
 
-bool NutEditor::LoadImageAs( OpenGL::Texture& texture, nString alias, nString path ) {
-    return this->LoadImageAs( texture, alias, path, 1, 1 );
+void NutEditor::Close( nString name ) { 
+	auto* window = this->windows[ name ];
+
+	if ( window ) {
+		(*window)->OnDestroy( this );
+
+		this->windows.Erase( name );
+	}
 }
 
-bool NutEditor::LoadImageAs( OpenGL::Texture& texture, const std::string& alias, const std::string& path ) {
-    return this->LoadImageAs( texture, alias.c_str( ), path.c_str( ), 1, 1 );
+void NutEditor::Close( const std::string& name ) {
+	this->Close( name.c_str( ) );
 }
 
-bool NutEditor::LoadImageAs( OpenGL::Texture& texture, nString alias, nString path, nUShort columns, nUShort rows ) {
-    if ( this->LoadImageAs( alias, path, columns, rows ) ) {
-        texture = this->GetImage( alias )->GetTexture( );
-
-        return true;
-    }
-
-    return false;
-}
-
-bool NutEditor::LoadImageAs( OpenGL::Texture& texture, const std::string& alias, const std::string& path, nUShort columns, nUShort rows ) {
-    return this->LoadImageAs( texture, alias.c_str( ), path.c_str( ), columns, rows );
-}
-
-void NutEditor::EnableModule( nString name ) {
-    auto* module = this->GetModule<NutModule>( name );
-
-    if ( module )
-        module->Enable( );
-}
-
-void NutEditor::DisableModule( nString name ) {
-    auto* module = this->GetModule<NutModule>( name );
-
-    if ( module )
-        module->Disable( );
-}
-
-void NutEditor::Destroy( nString name ) {
-    if ( nHelper::GetIsValid( name ) ) {
-        auto hash = nHelper::Hash_MD5( name );
-        auto idx = this->modules.size( );
-
-        while ( idx > 0 ) {
-            idx -= 1;
-
-            auto* module = this->modules[ idx ];
-
-            if ( hash != module->GetHash( ) )
-                continue;
-            else if ( !dynamic_cast<NutKernel*>( module ) ) {
-                delete module;
-
-                this->modules.erase( this->modules.begin( ) + idx );
-
-                return;
-            }
-        }
-    }
-}
-
-void NutEditor::Exit( ) { this->is_open = false; }
+void NutEditor::Exit( ) { this->is_running = false; }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutEditor::OnCreate( class NutEditor* editor ) {
-    NutWindow::OnCreate( editor );
+void NutEditor::LoadDependencies( ) {
+	for ( auto path : this->config.Get<JSON::StringArray>( "Libraries" ) ) {
+		if ( !path.empty( ) ) 
+			this->LoadLibrary( path ) ;
+	}
 
-    editor->Register< NutKernel >( );
+	for ( auto path : this->config.Get<JSON::StringArray>( "Modules" ) ) {
+		if ( !path.empty( ) )
+			this->LoadModule( path );
+	}
 }
 
 bool NutEditor::Start( int argc, char** argv ) {
-    return GLFW::Initialize( this->GetHandle( ) ) && OpenGL::Initialize( this->GetHandle( ) );
+	this->Log( NutLoggerModes::NLM_INFO, "NutEditor Start !" );
+
+	if ( GLFW::Initialize( ) ) {
+		if ( this->config.Load( "Assets/NutEditor.json" ) ) {
+			this->Log( NutLoggerModes::NLM_WARN, this->config.Get<std::string>( "Version" ) );
+			this->Log( NutLoggerModes::NLM_WARN, this->config.Get<std::string>( "License" ) );
+
+			this->SetStyle<NutEditorStyle>( );
+			this->Open<NutEditorWindow>( );
+			
+			return true;
+		} else
+			this->Log( NutLoggerModes::NLM_ERRR, "Can't load configuration file : NutEditor.json !" );
+	} else
+		this->Log( NutLoggerModes::NLM_ERRR, "Can't initialize GLFW !" );
+
+	return false;
 }
 
 void NutEditor::Run( ) {
-    this->OnCreate( this );
+	while ( this->is_running && this->windows ) {
+		this->modules.Foreach(
+			[ this ]( auto& module ) {
+				if ( module->GetState( ) )
+					module->Process( this );
+			}
+		);
 
-    while ( this->is_open && GLFW::ShouldRun( this->GetHandle( ) ) ) {
-        for ( auto& module : this->modules ) {
-            if ( module->GetIsActive( ) )
-                module->Process( this );
-        }
-        
-        this->OnEditorRender( this );
+		if ( this->style && this->style->GetHasChanged( ) )
+			ImGUI::SetStyle( this->style );
 
-        auto idx = this->windows.size( );
-        while ( idx > 0 ) {
-            idx -= 1;
+		this->windows.Foreach(
+			[ this ]( auto& window ) {
+				if ( window->ShouldRun( ) )
+					window->OnRender( this );
+				else if ( window->OnDestroy( this ) )
+					this->windows.Erase( window->GetName( ) );
+			}
+		);
+	}
+}
 
-            if ( GLFW::ShouldRun( this->GetHandle( ) ) )
-                this->windows[ idx ]->OnEditorRender( this );
-            else {
-                delete this->windows[ idx ];
+void NutEditor::Stop( ) {
+	if ( this->style )
+		delete this->style;
 
-                this->windows.erase( this->windows.begin( ) + idx );
-            }
-        }
-    }
+	GLFW::Cleanup( );
+
+	this->Log( NutLoggerModes::NLM_INFO, "NutEditor Stop !" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutImage* NutEditor::GetImage( nString alias ) const {
-    if ( nHelper::GetIsValid( alias ) ) {
-        auto hash = nHelper::Hash_MD5( alias );
-
-        auto size = this->images.size( );
-
-        while ( size-- > 0 ) {
-            if ( this->images[ size ].GetHash( ) != hash )
-                continue;
-            else
-                return &this->images[ size ];
-        }
-    }
-
-    return nullptr;
+const std::string NutEditor::GetVersion( ) const { 
+	return this->config.Get<std::string>( "Version" );
 }
 
-NutKernel* NutEditor::GetKernel( ) const { return (NutKernel*)this->modules[ 0 ]; }
-
-NutLibrary* NutEditor::GetLibrary( nString name ) const {
-    if ( nHelper::GetIsValid( name ) ) {
-        auto hash = nHelper::Hash_MD5( name );
-
-        for ( auto& library : this->libraries ) {
-            if ( library->GetHash( ) != hash )
-                continue;
-            else
-                return library;
-        }
-    }
-
-    return nullptr;
+const std::string NutEditor::GetLicense( ) const { 
+	return this->config.Get<std::string>( "License" );
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PRIVATE GET
-///////////////////////////////////////////////////////////////////////////////////////////
-std::vector< NutModule* >& NutEditor::GetModules( ) const { return this->modules; }
+NutFileSystem* NutEditor::GetFileSystem( ) const { return &this->file_system; }
+
+NutAssetManager* NutEditor::GetAssetManager( ) const { return &this->assets; }
+
+NutStyle* NutEditor::GetStyle( ) const { return this->style; }
+
+NutLibrary* NutEditor::GetLibrary( nString name ) const { 
+	return *this->libraries[ name ]; 
+}
+
+NutModule* NutEditor::GetModule( nString name ) const { return *this->modules[ name ]; }
+
+NutWindow* NutEditor::GetWindow( nString name ) const { return *this->windows[ name ]; }

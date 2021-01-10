@@ -1,12 +1,12 @@
 /************************************************************************************
  *
- *	 _          _   _          _   _       _   
- *	| |        | | | |        | \ | |     | |  
- *	| |     ___| |_| |__   ___|  \| |_   _| |_ 
+ *	 _          _   _          _   _       _
+ *	| |        | | | |        | \ | |     | |
+ *	| |     ___| |_| |__   ___|  \| |_   _| |_
  *	| |    / _ \ __| '_ \ / _ \ . ` | | | | __|
- *	| |___|  __/ |_| | | |  __/ |\  | |_| | |_ 
+ *	| |___|  __/ |_| | | |  __/ |\  | |_| | |_
  *	|______\___|\__|_| |_|\___|_| \_|\__,_|\__|
- * 
+ *
  * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
  * SPDX-License-Identifier: MIT
  *
@@ -37,13 +37,21 @@
 #ifndef _IGS_NUT_FRAMEWORK_HPP_
 #define _IGS_NUT_FRAMEWORK_HPP_
 
-	#include "Editors/Nodes/NutNodeEditor.hpp"
-	#include "Editors/Text/NutTextEditor.hpp"
+	#include "Framework/NutEditorStyle.hpp"
+	#include "Framework/NutEditorWindow.hpp"
 
-	#include "Tools/NutBrowser.hpp"
-	#include "Tools/NutProfiler.hpp"
-	#include "Tools/NutProperties.hpp"
-	#include "Tools/NutScene.hpp"
-	#include "Tools/NutViewport.hpp"
+	#include "Framework/Editors/Nodes/NutNodeEditor.hpp"
+	#include "Framework/Editors/Text/NutTextEditor.hpp"
+
+	#include "Framework/Logger/NutLogger.hpp"
+
+	#include "Framework/Panels/NutBrowser.hpp"
+	#include "Framework/Panels/NutProfiler.hpp"
+	#include "Framework/Panels/NutProperties.hpp"
+	#include "Framework/Panels/NutScene.hpp"
+	#include "Framework/Panels/NutViewport.hpp"
+	
+	#include "Framework/Utils/NutCamera.hpp"
+	#include "Framework/Utils/NutFileSystem.hpp"
 
 #endif

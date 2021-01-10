@@ -34,7 +34,7 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#include "__pch.hpp"
 
 #include <LetheNut/Utils/NutPlatformLib.hpp>
 
@@ -67,7 +67,7 @@ NutPlatformLib::NutPlatformLib( const std::string& path )
 	: NutPlatformLib( path.c_str( ) )
 { }
 
-void NutPlatformLib::Close( ) {
+NutPlatformLib::~NutPlatformLib( ) {
 	printf( "[ %p ] ~\n", this->handle );
 
 	if ( this->handle != nullptr ) {

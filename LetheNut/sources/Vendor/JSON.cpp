@@ -34,7 +34,7 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#include "__pch.hpp"
 
 #include <fstream>
 #include <LetheNut/Vendor/JSON.hpp>
@@ -42,13 +42,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-nJSON::nJSON( ) : data( ) { }
+JSON::JSON( ) : data( ) { }
 
-nJSON::~nJSON( ) { }
+JSON::~JSON( ) { }
 
-bool nJSON::Load( nString path ) { return this->Load( std::string( path ) ); }
+bool JSON::Load( nString path ) { return this->Load( std::string( path ) ); }
 
-bool nJSON::Load( std::string path ) {
+bool JSON::Load( std::string path ) {
 	if ( !path.empty( ) ) {
 		std::ifstream file( path );
 
@@ -62,9 +62,9 @@ bool nJSON::Load( std::string path ) {
 	return false;
 }
 
-bool nJSON::Write( nString path ) { return this->Write( std::string( path ) ); }
+bool JSON::Write( nString path ) { return this->Write( std::string( path ) ); }
 
-bool nJSON::Write( std::string path ) {
+bool JSON::Write( std::string path ) {
 	if ( !path.empty( ) ) {
 		std::ofstream file( path );
 

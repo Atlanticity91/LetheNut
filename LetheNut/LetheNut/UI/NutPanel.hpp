@@ -37,116 +37,60 @@
 #ifndef _IGS_NUT_PANEL_HPP_
 #define _IGS_NUT_PANEL_HPP_
 
-	#include "NutMenu.hpp"
-	#include <LetheNut/Vendor/OpenGL.hpp>
+	#include "NutUIElement.hpp"
 
-	#define NUT_PANEL( NAME, ... ) NUT_CLASS( NAME, NutPanel, __VA_ARGS__ )
+	#define NUT_PANEL( NAME ) class NUT_API NAME : public NutPanel
+	
+	class NutWindow;
 
-	/**
-	 * NutPanel class
-	 * @author : ALVES Quentin
-	 * @note : Define Nut Panel core class.
-	 **/
-	NUT_ELEMENT( NutPanel ) {
+	NUT_UI_ELEMENT( NutPanel ) {
 
-		friend class NutPopup;
-		friend class NutEditor;
+		friend bool ImGUI::Panel( NutPanel* );
+		friend class NutWindow;
 
 	private:
-		mutable bool is_active;
+		bool is_active;
 		mutable ImVec2 padding;
-		mutable std::vector< class NutMenu > menus;
+		ImGuiWindowFlags flags;
 
 	public:
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 * @param name : Name of the current panel.
-		 * @param is_active : Defined if the current panel is active by default.
-		 **/
-		NutPanel( nString name, bool is_active, const ImVec2& padding );
+		NutPanel( nString label );
 
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 * @param name : Name of the current panel.
-		 * @param is_active : Defined if the current panel is active by default.
-		 **/
-		NutPanel( nString name, bool is_active, const ImVec2 && padding );
+		NutPanel( nString label, ImGuiWindowFlags flags );
 
-		/**
-		 * Destructor
-		 * @author : ALVES Quentin
-		 **/
+		NutPanel( nString label, const ImVec2& padding );
+
+		NutPanel( nString label, const ImVec2& padding, ImGuiWindowFlags flags );
+
 		virtual ~NutPanel( ) = default;
 
-		/**
-		 * Enable virtual function
-		 * @author : ALVES Quentin
-		 * @note : Enable the current panel.
-		 * @return : class NutPanel*
-		 **/
-		virtual class NutPanel* Enable( );
-
-		/**
-		 * Disable virtual function
-		 * @author : ALVES Quentin
-		 * @note : Disable the current panel.
-		 * @return : class NutPanel*
-		 **/
-		virtual class NutPanel* Disable( );
-
-		/**
-		 * CreateMenu function
-		 * @author : ALVES Quentin
-		 * @note : Create a menu for the current panel.
-		 * @param name : Name for the new menu.
-		 * @return : class NutMenu*
-		 **/
-		class NutMenu* CreateMenu( nString name );
-
 	protected:
-		/**
-		 * OnCreate virtual method
-		 * @author : ALVES Quentin
-		 * @note : Called when the current panel is created.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnCreate( NutEditor* editor );
+		void Enable( NutEditor* editor, NutWindow* parent );
 
-		/**
-		 * OnEditorRender virtual method
-		 * @author : ALVES Quentin
-		 * @note : Called once a frame to render ImGUI stuff.
-		 * @param editor : Pointer to current editor.
-		 **/
-		virtual void OnEditorRender( NutEditor* editor );
+		void Disable( NutEditor* editor, NutWindow* parent );
+
+		virtual void OnEnable( NutEditor* editor, NutWindow* parent );
+
+		virtual void OnDisable( NutEditor* editor, NutWindow* parent );
+
+		virtual void OnCreate( NutEditor* editor, NutWindow* parent ) = 0;
+
+		virtual bool OnDestroy( NutEditor* editor, NutWindow* parent );
+
+		virtual void OnProcess( NutEditor* editor, NutWindow* parent ) = 0;
+
+		virtual void OnRender( NutEditor* editor, NutWindow* parent ) = 0;
 
 	public:
-		/**
-		 * IsActive inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get if the current panel is active.
-		 * @return : bool
-		 **/
-		inline bool GetIsActive( ) const;
+		bool GetIsActive( ) const;
 
-		/**
-		 * GetPadding inline const function
-		 * @author : ALVES Quentin
-		 * @note : Get the current panel padding.
-		 * @return : const ImVec2&
-		 **/
-		inline const ImVec2& GetPadding( ) const;
+	private:
+		ImGuiWindowFlags GetFlags( ) const;
 
-		/**
-		 * GetMenu const function
-		 * @author : ALVES Quentin
-		 * @note : Cet a menu of the current panel by is name.
-		 * @param name : Name of the query panel.
-		 * @return : class NutMenu*
-		 **/
-		class NutMenu* GetMenu( nString name ) const;
+		ImVec2& GetPadding( ) const;
+
+	public:
+		NutMenu* operator[]( nString label ) const;
 
 	};
 

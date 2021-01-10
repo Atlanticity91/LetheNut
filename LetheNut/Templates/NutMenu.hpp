@@ -40,44 +40,19 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
-	template< typename Callback >
-	NutMenu* NutMenu::CreateButton( nString label, nString shortcut, Callback&& callback ) {
-		if ( nHelper::GetIsValid( label ) ) {
-			auto item = NutMenuItem( label, shortcut );
-
-			item.SetCallback( callback );
-
-			this->items.emplace_back( item );
-		}
-
-		return this;
+	template<typename OnClick>
+	void NutMenu::Append( nString label, nString shortcut, OnClick&& on_click ) {
+		this->Append( label, shortcut, (NutItemCallback)on_click );
 	}
 
-	template< typename Mark >
-	NutMenu* NutMenu::CreateCheckbox( nString label, bool state, Mark&& mark ) {
-		if ( nHelper::GetIsValid( label ) ) {
-			auto item = NutMenuItem( label, state );
-
-			item.SetMark( mark );
-
-			this->items.emplace_back( item );
-		}
-
-		return this;
+	template<typename OnMark>
+	void NutMenu::Append( nString label, bool state, OnMark&& on_mark ) {
+		this->Append( label, state, (NutItemCallback)on_mark, nullptr );
 	}
 
-	template< typename Mark, typename UnMark >
-	NutMenu* NutMenu::CreateCheckbox( nString label, bool state, Mark&& mark, UnMark&& unmark ) {
-		if ( nHelper::GetIsValid( label ) ) {
-			auto item = NutMenuItem( label, state );
-
-			item.SetMark( mark );
-			item.SetUnMark( unmark );
-
-			this->items.emplace_back( item );
-		}
-
-		return this;
+	template<typename OnMark, typename OnUnMark>
+	void NutMenu::Append( nString label, bool state, OnMark&& on_mark, OnUnMark&& on_unmark ) {
+		this->Append( label, state, (NutItemCallback)on_mark, (NutItemCallback)on_unmark );
 	}
 
 #endif

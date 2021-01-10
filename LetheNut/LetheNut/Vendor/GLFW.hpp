@@ -34,49 +34,34 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_VENDOR_GLFW_HPP_
-#define _IGS_NUT_VENDOR_GLFW_HPP_
+#ifndef _IGS_NUT_GLFW_HPP_
+#define _IGS_NUT_GLFW_HPP_
 
-	#include <LetheNut/Core.hpp>
+	#include <LetheNut/NutCore.hpp>
 
-	/**
-	 * GLFW namspace
-	 * @author : ALVES Quentin
-	 * @note : Contain GLFW code wrapper.
-	 **/
 	namespace GLFW {
 
-		/**
-		 * Initialize function
-		 * @author : ALVES Quentin
-		 * @note : Initialize the current GLFW context.
-		 * @param window : Pointer to current window pointer.
-		 * @return : bool
-		 **/
-		bool Initialize( nPointer& window );
+		struct Window {
 
-		/**
-		 * ShouldRun function
-		 * @author : ALVES Quentin
-		 * @note : Get if the current window is running.
-		 * @param window : Pointer to current window.
-		 * @return : bool
-		 **/
-		bool ShouldRun( const nPointer window );
+			nPointer handle;
+			nString label;
+			nInt width;
+			nInt height;
 
-		/**
-		 * Destroy method
-		 * @author : ALVES Quentin
-		 * @note : Destroy the current GLFW context.
-		 * @param window : Pointer to current window.
-		 **/
-		void Destroy( nPointer& window );
+		};
 
-		/**
-		 * Cleanup method
-		 * @author : ALVES Quentin
-		 * @note : Cleanup GLFW context.
-		 **/
+		bool Initialize( );
+
+		bool Create( Window& window );
+
+		void SetContext( Window& window );
+
+		bool ShouldRun( Window& window );
+
+		void Process( Window& window );
+
+		void Destroy( Window& window );
+
 		void Cleanup( );
 
 	};

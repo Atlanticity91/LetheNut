@@ -34,17 +34,13 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_VENDOR_OPENGL_HPP_
-#define _IGS_NUT_VENDOR_OPENGL_HPP_
+#ifndef _IGS_NUT_OPENGL_HPP_
+#define _IGS_NUT_OPENGL_HPP_
 
-	#include <LetheNut/Core.hpp>
-	#include <ImGui/imgui.h>
+	#include <LetheNut/NutCore.hpp>
 
-	/**
-	 * Graphics namspace
-	 * @author : ALVES Quentin
-	 * @note : Contain Graphics code wrapper.
-	 **/
+	class NutEditor;
+
 	namespace OpenGL {
 
 		enum EParameterTypes : nUByte {
@@ -94,8 +90,8 @@
 
 		};
 
-		struct Frame { 
-			
+		struct Frame {
+
 			nUInt ID;
 			nUInt Width;
 			nUInt Height;
@@ -109,8 +105,8 @@
 		struct Texture {
 
 			nUInt ID;
-			nUInt Width;
-			nUInt Height;
+			nInt Width;
+			nInt Height;
 
 			Texture( );
 
@@ -151,24 +147,20 @@
 
 		};
 
-		NUT_API bool Initialize( const nPointer& window );
+		bool Initialize( NutEditor* editor );
 
 		NUT_API void Create( Context& context, const Frame& frame );
 
 		NUT_API bool Create( Frame& frame, const ImVec2& size );
 
-		NUT_API bool Create( Frame& frame, const ImVec2&& size );
-
 		NUT_API bool Create( Frame& frame, nUInt width, nUInt height );
 
 		NUT_API bool Create( Texture& texture, const ImVec2& size );
-		
-		NUT_API bool Create( Texture& texture, const ImVec2&& size );
 
 		NUT_API bool Create( Texture& texture, nUInt width, nUInt height );
 
 		NUT_API bool Create( Texture& texture, nUInt width, nUInt height, nUByte* pixels );
-		
+
 		NUT_API bool Create( Material& material, nString vertex, nString fragment );
 
 		NUT_API bool Create( Material& material, nString vertex, nString fragment, nUInt size, nString* parameters );
@@ -193,17 +185,15 @@
 
 		NUT_API void Resize( Frame& frame, const ImVec2& size );
 
-		NUT_API void Resize( Frame& frame, const ImVec2&& size );
-
 		NUT_API void Resize( Frame& frame, nUInt width, nUInt height );
 
 		NUT_API void Refresh( const ImVec4& color );
 
-		NUT_API void Refresh( const ImVec4&& color );
+		NUT_API void Refresh( const ImColor& color );
 
 		NUT_API void Refresh( const Frame& frame, const ImVec4& color );
 
-		NUT_API void Refresh( const Frame& frame, const ImVec4&& color );
+		NUT_API void Refresh( const Frame& frame, const ImColor& color );
 
 		NUT_API void Fill( const Texture& texture, const void* pixels );
 

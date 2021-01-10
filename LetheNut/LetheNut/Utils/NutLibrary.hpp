@@ -89,7 +89,7 @@
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutLibrary( );
+		~NutLibrary( ) = default;
 
 	public:
 		/**
@@ -103,7 +103,7 @@
 		 * @param args : Arguments for the function call.
 		 * @return : Return
 		 **/
-		template< typename Functor, typename... Args >
+		template<typename Functor, typename... Args>
 		auto Call( nString name, Args... args );
 
 	public:

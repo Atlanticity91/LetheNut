@@ -34,10 +34,11 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#include "__pch.hpp"
 
+#include <LetheNut/NutEditor.hpp>
 #include <LetheNut/Vendor/OpenGL.hpp>
-#include <Thirdparty/GLFW/glfw3.h>
+#include <Thirdparty/OpenGL/glew.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      INTERNAL 
@@ -84,10 +85,10 @@ nUInt internal_CreateShader( nInt type, nString source ) {
 
 nUInt internal_BufferType( nUByte type ) {
 	switch ( type ) {
-		case OpenGL::EBufferTypes::EBT_INDEX : return GL_ELEMENT_ARRAY_BUFFER;
-		case OpenGL::EBufferTypes::EBT_BUFFER : return GL_ARRAY_BUFFER;
-		case OpenGL::EBufferTypes::EBT_STORAGE : return GL_SHADER_STORAGE_BUFFER;
-		case OpenGL::EBufferTypes::EBT_UNIFORM : return GL_UNIFORM_BUFFER;
+		case OpenGL::EBufferTypes::EBT_INDEX: return GL_ELEMENT_ARRAY_BUFFER;
+		case OpenGL::EBufferTypes::EBT_BUFFER: return GL_ARRAY_BUFFER;
+		case OpenGL::EBufferTypes::EBT_STORAGE: return GL_SHADER_STORAGE_BUFFER;
+		case OpenGL::EBufferTypes::EBT_UNIFORM: return GL_UNIFORM_BUFFER;
 
 		default: break;
 	}
@@ -97,11 +98,11 @@ nUInt internal_BufferType( nUByte type ) {
 
 nUInt internal_AttributeType( nUByte type ) {
 	switch ( type ) {
-		case OpenGL::EAttributeTypes::EAT_BYTE : return GL_BYTE;
-		case OpenGL::EAttributeTypes::EAT_INT : return GL_INT;
-		case OpenGL::EAttributeTypes::EAT_UNSIGNED_BYTE : return GL_UNSIGNED_BYTE;
-		case OpenGL::EAttributeTypes::EAT_UNSIGNED_INT : return GL_UNSIGNED_INT;
-		case OpenGL::EAttributeTypes::EAT_FLOAT : return GL_FLOAT;
+		case OpenGL::EAttributeTypes::EAT_BYTE: return GL_BYTE;
+		case OpenGL::EAttributeTypes::EAT_INT: return GL_INT;
+		case OpenGL::EAttributeTypes::EAT_UNSIGNED_BYTE: return GL_UNSIGNED_BYTE;
+		case OpenGL::EAttributeTypes::EAT_UNSIGNED_INT: return GL_UNSIGNED_INT;
+		case OpenGL::EAttributeTypes::EAT_FLOAT: return GL_FLOAT;
 
 		default: break;
 	}
@@ -160,17 +161,15 @@ OpenGL::Mesh::Mesh( )
 	vbo( )
 { }
 
-bool OpenGL::Initialize( const nPointer& window ) {
-	if ( glewInit( ) == GLEW_OK ) {
-		nInt width, height;
+bool OpenGL::Initialize( NutEditor* editor ) {
+	auto state = glewInit( ); 
 
-		glfwGetWindowSize( (struct GLFWwindow*)window, &width, &height );
-		glViewport( 0, 0, width, height );
+	if ( state != GLEW_OK ) {
 
-		return true;
+		editor->Log( NutLoggerModes::NLM_ERRR, (nString)glewGetErrorString( state ) );
 	}
 
-	return false;
+	return state == GLEW_OK;
 }
 
 void OpenGL::Create( Context& context, const Frame& frame ) {
@@ -189,22 +188,18 @@ void OpenGL::Create( Context& context, const Frame& frame ) {
 	}
 }
 
-bool OpenGL::Create( Frame& frame, const ImVec2& size ) { 
-	return OpenGL::Create( frame, (nUInt)size.x, (nUInt)size.y ); 
-}
-
-bool OpenGL::Create( Frame& frame, const ImVec2&& size ) { 
-	return OpenGL::Create( frame, (nUInt)size.x, (nUInt)size.y ); 
+bool OpenGL::Create( Frame& frame, const ImVec2& size ) {
+	return OpenGL::Create( frame, (nUInt)size.x, (nUInt)size.y );
 }
 
 bool OpenGL::Create( Frame& frame, nUInt width, nUInt height ) {
 	glCreateFramebuffers( 1, &frame.ID );
 
 	if ( OpenGL::IsValid( frame ) ) {
-		if ( 
-			internal_CreateTexture( frame.color, width, height, nullptr ) && 
-			internal_CreateRender( frame.render, width, height ) 
-		) {
+		if (
+			internal_CreateTexture( frame.color, width, height, nullptr ) &&
+			internal_CreateRender( frame.render, width, height )
+			) {
 			glBindFramebuffer( GL_FRAMEBUFFER, frame.ID );
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, frame.color, 0 );
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, frame.render );
@@ -223,10 +218,6 @@ bool OpenGL::Create( Frame& frame, nUInt width, nUInt height ) {
 }
 
 bool OpenGL::Create( Texture& texture, const ImVec2& size ) {
-return OpenGL::Create( texture, (nUInt)size.x, (nUInt)size.y );
-}
-
-bool OpenGL::Create( Texture& texture, const ImVec2&& size ) {
 	return OpenGL::Create( texture, (nUInt)size.x, (nUInt)size.y );
 }
 
@@ -276,7 +267,7 @@ bool OpenGL::Create( Material& material, nString vertex, nString fragment, nStri
 bool OpenGL::Create( Material& material, nString vertex, nString fragment, nString geometry, nUInt size, nString* parameters ) {
 	if ( OpenGL::Create( material, vertex, fragment, nullptr ) && size > 0 && parameters ) {
 		material.Locations = nHelper::Alloc<nUInt>( size );
-		
+
 		if ( material.Locations ) {
 			glUseProgram( material.ID );
 
@@ -338,10 +329,6 @@ void OpenGL::Resize( Frame& frame, const ImVec2& size ) {
 	OpenGL::Resize( frame, (nUInt)size.x, (nUInt)size.y );
 }
 
-void OpenGL::Resize( Frame& frame, const ImVec2&& size ) {
-	OpenGL::Resize( frame, (nUInt)size.x, (nUInt)size.y );
-}
-
 void OpenGL::Resize( Frame& frame, nUInt width, nUInt height ) {
 	if ( OpenGL::IsValid( frame ) ) {
 		OpenGL::Destroy( frame );
@@ -351,7 +338,7 @@ void OpenGL::Resize( Frame& frame, nUInt width, nUInt height ) {
 
 void OpenGL::Refresh( const ImVec4& color ) { glClearColor( color.x, color.y, color.z, color.w ); }
 
-void OpenGL::Refresh( const ImVec4&& color ) { OpenGL::Refresh( color ); }
+void OpenGL::Refresh( const ImColor& color ) { OpenGL::Refresh( color.Value ); }
 
 void OpenGL::Refresh( const Frame& frame, const ImVec4& color ) {
 	if ( OpenGL::IsValid( frame ) ) {
@@ -363,7 +350,7 @@ void OpenGL::Refresh( const Frame& frame, const ImVec4& color ) {
 	}
 }
 
-void OpenGL::Refresh( const Frame& frame, const ImVec4&& color ) { OpenGL::Refresh( frame, color ); }
+void OpenGL::Refresh( const Frame& frame, const ImColor& color ) { OpenGL::Refresh( frame, color.Value ); }
 
 void OpenGL::Fill( const Texture& texture, const void* pixels ) {
 	OpenGL::Fill( texture, 0, 0, 0, texture.Width, texture.Height, pixels );
@@ -397,7 +384,7 @@ void OpenGL::Attribute( const Mesh& mesh, const nUInt index, const nUInt size, E
 
 void OpenGL::Upload( const Material& material, nString parameter, EParameterTypes type, const void* data ) {
 	if ( OpenGL::IsValid( material ) && parameter && strlen( parameter ) > 0 && data ) {
-
+		// TODO :
 	}
 }
 
@@ -411,8 +398,8 @@ void OpenGL::Bind( const Material& material ) {
 		glUseProgram( material.ID );
 }
 
-void OpenGL::Clear( ) {
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+void OpenGL::Clear( ) { 
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT ); 
 }
 
 void OpenGL::Clear( const Frame& frame ) {

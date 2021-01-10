@@ -34,10 +34,10 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_PLATFORM_LIB_HPP_
-#define _IGS_PLATFORM_LIB_HPP_
+#ifndef _IGS_NUT_PLATFORM_LIB_HPP_
+#define _IGS_NUT_PLATFORM_LIB_HPP_
 
-	#include <LetheNut/Core.hpp>
+	#include <LetheNut/NutCore.hpp>
 
 	 /**
 	  * NutLibrary final class
@@ -118,14 +118,7 @@
 		 * Destructor
 		 * @author : ALVES Quentin
 		 **/
-		~NutPlatformLib( ) = default;
-
-		/**
-		 * Close method
-		 * @author : ALVES Quentin
-		 * @note : Close the current library.
-		 **/
-		void Close( );
+		~NutPlatformLib( );
 
 	public:
 		/**

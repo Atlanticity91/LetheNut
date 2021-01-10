@@ -34,7 +34,7 @@
  *
  ************************************************************************************/
 
-#include "__ui.hpp"
+#include "__pch.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -46,9 +46,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-STB::Image::Image( )
-	: data( nullptr )
-{ }
+STB::Image::Image( ) : data( nullptr ) { }
 
 bool STB::Load( Image& image, nString path ) {
 	if ( !image.data && strcmp( path, "" ) != 0 )

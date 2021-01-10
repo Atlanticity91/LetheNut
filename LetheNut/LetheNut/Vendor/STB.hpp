@@ -37,17 +37,17 @@
 #ifndef _IGS_NUT_VENDOR_STB_HPP_
 #define _IGS_NUT_VENDOR_STB_HPP_
 
-	#include <LetheNut/Core.hpp>
+	#include <LetheNut/NutCore.hpp>
 	#include <Thirdparty/STB/Image.hpp>
 	#include <Thirdparty/STB/ImageResize.hpp>
 	#include <Thirdparty/STB/ImageWrite.hpp>
 	#include <Thirdparty/STB/Perlin.hpp>
 
-	/**
-	 * STB namspace
-	 * @author : ALVES Quentin
-	 * @note : Contain STB code wrapper.
-	 **/
+	 /**
+	  * STB namspace
+	  * @author : ALVES Quentin
+	  * @note : Contain STB code wrapper.
+	  **/
 	namespace STB {
 
 		/**

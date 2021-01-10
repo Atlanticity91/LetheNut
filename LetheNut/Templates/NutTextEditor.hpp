@@ -10,7 +10,7 @@
  * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
  * SPDX-License-Identifier: MIT
  *
- * Copyright (C) 2020 ALVES Quentin.
+ * Copyright (C) 2021 ALVES Quentin.
  *
  * This file is part of Lethe Nut project : https://github.com/Atlanticity91/LetheNut.
  *
@@ -40,23 +40,19 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
-	template< typename Type >
+	template<typename Type>
 	void NutTextEditor::SetStyle( ) {
 		if constexpr ( std::is_base_of<NutTextStyle, Type>::value ) {
-			if ( this->style )
-				delete this->style;
+			auto* new_style = new Type( );
 
-			this->style = new Type( );
-		}
-	}
+			if ( new_style ) {
+				if ( !this->styles[ new_style->GetName( ) ] ) {
+					this->styles.Emplace( new_style );
 
-	template< typename Type >
-	void NutTextEditor::SetParser( ) {
-		if constexpr ( std::is_base_of<NutTextParser, Type>::value ) {
-			if ( this->parser )
-				delete this->parser;
-
-			this->parser = new Type( );
+					this->style = new_style;
+				} else
+					delete new_style;
+			}
 		}
 	}
 

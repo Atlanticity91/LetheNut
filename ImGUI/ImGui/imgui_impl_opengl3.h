@@ -68,7 +68,7 @@ IMGUI_IMPL_API void     ImGui_ImplOpenGL3_DestroyDeviceObjects();
 #elif defined(__has_include)
 
 #ifdef IM_BUILD
-    #if __has_include(<LetheNut/Thirdparty/OpenGL/glew.h>)
+    #if __has_include(<Thirdparty/OpenGL/glew.h>)
         #define IMGUI_IMPL_OPENGL_LOADER_GLEW
     #elif __has_include(<glad/glad.h>)
         #define IMGUI_IMPL_OPENGL_LOADER_GLAD

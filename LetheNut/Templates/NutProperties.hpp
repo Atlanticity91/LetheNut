@@ -34,20 +34,30 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_PROPRETIES_IMP_HPP_
-#define _IGS_NUT_PROPRETIES_IMP_HPP_
+#ifndef _IGS_NUT_PROPERTIES_IMP_HPP_
+#define _IGS_NUT_PROPERTIES_IMP_HPP_
 
 	///////////////////////////////////////////////////////////////////////////////////////////
-	//      PUBLIC
+	//      PUBLIC	
 	///////////////////////////////////////////////////////////////////////////////////////////
-	template<typename Condition, typename Content>
-	void NutProperties::Register( bool need_context, nString name, nString description, Content&& content ) {
-		this->Register( need_context, name, description, nullptr, content );
+	template<typename Content>
+	void NutProperties::Register( nString label, Content&& content ) {
+		this->Register( label, "", nullptr, (NutPropertyContent)content );
 	}
 
 	template<typename Condition, typename Content>
-	void NutProperties::Register( bool need_context, nString name, nString description, Condition&& condition, Content&& content ) {
-		this->Register( need_context, name, description, (NutPropertyHas)condition, (NutPropertyContent)content );
+	void NutProperties::Register( nString label, Condition&& condition, Content&& content ) {
+		this->Register( label, "", (NutPropertyCondition)condition, (NutPropertyContent)content );
+	}
+
+	template<typename Content>
+	void NutProperties::Register( nString label, nString description, Content&& content ) {
+		this->Register( label, description, nullptr, (NutPropertyContent)content );
+	}
+
+	template<typename Condition, typename Content>
+	void NutProperties::Register( nString label, nString description, Condition&& condition, Content&& content ) {
+		this->Register( label, description, (NutPropertyCondition)condition, (NutPropertyContent)content );
 	}
 
 #endif

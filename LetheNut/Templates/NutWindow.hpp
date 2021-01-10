@@ -37,64 +37,40 @@
 #ifndef _IGS_NUT_WINDOW_IMP_HPP_
 #define _IGS_NUT_WINDOW_IMP_HPP_
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    //      PUBLIC
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    template< typename Type, typename... Args  >
-    Type* NutWindow::OpenPopup( NutEditor* editor, Args... args ) {
-        if  constexpr ( std::is_base_of<NutPopup, Type>::value ) {
-            auto* popup = new Type( args... );
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//      PUBLIC
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template<typename Type, typename... Args>
+	Type* NutWindow::Create( NutEditor* editor, Args... args ) {
+		if constexpr ( std::is_base_of<NutPanel, Type>::value ) {
+			auto* panel = new Type( args... );
 
-            if ( popup ) {
-                this->popups.emplace_back( popup );
+			if ( panel ) {
+				this->panels.Emplace( panel );
+				
+				NUT_CAST( panel, NutUIElement )->OnCreateUI( );
+				NUT_CAST( panel, NutPanel )->OnCreate( editor, this );
 
-                reinterpret_cast<NutPopup*>( popup )->OnCreate( editor );
-            }
+				return panel;
+			}
+		}
 
-            return popup;
-        }
+		return nullptr;
+	}
 
-        return nullptr;
-    }
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//      PUBLIC GET
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template<typename Type>
+	Type* NutWindow::GetPanel( nString panel ) {
+		if constexpr ( std::is_base_of<NutPanel, Type>::value ) {
+			auto* query = this->panels[ panel ];
 
-    template< typename Type >
-    void NutWindow::ClosePopup( ) {
-        if  constexpr ( std::is_base_of<NutPopup, Type>::value ) {
-            auto idx = this->popups.size( );
+			if ( query && dynamic_cast<Type*>( *query ) )
+				return NUT_CAST( *query, Type );
+		}
 
-            while ( idx > 0 ) {
-                idx -= 1;
-
-                auto* popup = this->popups[ idx ];
-
-                if ( !dynamic_cast<Type*>( popup ) )
-                    continue;
-                else {
-                    delete popup;
-
-                    this->popups.erase( this->popups.begin( ) + idx );
-
-                    return;
-                }
-            }
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    //      PUBLIC GET
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    template< typename Type >
-    Type* NutWindow::GetPopup( ) const {
-        if  constexpr ( std::is_base_of<NutPopup, Type>::value ) {
-            for ( auto& popup : this->popups ) {
-                if ( !dynamic_cast<Type*>( popup ) )
-                    continue;
-                else
-                    return reinterpret_cast<Type*>( popup );
-            }
-        }
-
-        return nullptr;
-    }
+		return nullptr;
+	}
 
 #endif
