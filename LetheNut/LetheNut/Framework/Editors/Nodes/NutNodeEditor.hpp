@@ -39,10 +39,13 @@
 
 	#include <LetheNut/UI/NutPanel.hpp>
 
+	#include "NutNode.hpp"
+
 	NUT_PANEL( NutNodeEditor ) {
 
 	private:
 		ImGUI::ImCanvas canvas;
+		ImGUI::ImNodeStyle node_style;
 
 	public:
 		NutNodeEditor( );
@@ -61,6 +64,8 @@
 		virtual void OnProcess( NutEditor* editor, NutWindow* parent ) override;
 
 		virtual void OnRender( NutEditor* editor, NutWindow* parent ) override;
+
+		virtual void OnRenderCanvas( NutEditor* editor, NutWindow* parent );
 
 	};
 

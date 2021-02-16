@@ -46,7 +46,7 @@
 	 /**
 	  * STB namspace
 	  * @author : ALVES Quentin
-	  * @note : Contain STB code wrapper.
+	  * @note : Wrapper for STB.
 	  **/
 	namespace STB {
 
@@ -55,7 +55,7 @@
 		 * @author : ALVES Quentin
 		 * @note : Defined Image core code.
 		 **/
-		struct Image {
+		struct NUT_API Image {
 
 			nInt width;
 			nInt height;

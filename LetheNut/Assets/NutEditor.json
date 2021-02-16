@@ -1,6 +1,11 @@
 {
   "Version": "a1.10.2",
-  "License" :  "MIT (c) 2020",
+  "License": "MIT (c) 2020",
+  "Images": [
+    [ "BlueprintHeader", "Assets/Media/node_background.png" ],
+    [ "BlueprintIcons", "Assets/Icons/node_icons.png" ]
+  ],
+  "Assemblies" : [ ],
   "Libraries": [ ],
-  "Modules": [ ]
+  "Modules": [ "LetheEditor.dll" ]
 }

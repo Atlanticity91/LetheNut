@@ -48,19 +48,23 @@
 	template<typename Type>
 	NutList<Type>::~NutList( ) {
 		if constexpr ( std::is_pointer<Type>::value ) {
-			for ( auto& element : this->data ) 
-				delete element;
+			for ( auto& element : this->data ) {
+				if ( element )
+					delete element;
+			}
 		}
 	}
 
 	template<typename Type>
-	void NutList<Type>::Emplace( const Type& data ) {
+	Type* NutList<Type>::Emplace( const Type& data ) {
 		if constexpr ( !std::is_pointer<Type>::value )
 			this->data.emplace_back( data );
 		else {
 			if ( data )
 				this->data.emplace_back( data );
 		}
+
+		return &this->data[ this->data.size( ) - 1 ];
 	}
 
 	template<typename Type>
@@ -177,6 +181,12 @@
 	Type* NutList<Type>::Get( const std::string& label ) const {
 		return this->Get( label.c_str( ) );
 	}
+
+	template<typename Type>
+	auto NutList<Type>::begin( ) { return this->data.begin( ); }
+
+	template<typename Type>
+	auto NutList<Type>::end( ) { return this->data.end( ); }
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//      OPERATOR

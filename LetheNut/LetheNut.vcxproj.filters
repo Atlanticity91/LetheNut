@@ -51,12 +51,6 @@
     <ClInclude Include="LetheNut\Framework\Panels\NutViewport.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="LetheNut\Framework\NutEditorStyle.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="LetheNut\Framework\NutEditorWindow.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="LetheNut\UI\NutPanel.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -1380,6 +1374,51 @@
     <ClInclude Include="LetheNut\Assets\NutBinary.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imconfig.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imgui.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_dx12.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_glfw.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_opengl3.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_osx.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_vulkan.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_win32.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imgui_internal.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imstb_rectpack.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imstb_textedit.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Thirdparty\ImGUI\imstb_truetype.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LetheNut\NutDev.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LetheNut\Framework\Editors\Nodes\NutNode.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="LetheNut\Vendor\Mono.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sources\Framework\Panels\NutBrowser.cpp">
@@ -1401,12 +1440,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="sources\Framework\TextEditor\NutTextEditor.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Framework\NutEditorStyle.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Framework\NutEditorWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="sources\Framework\NutLogger.cpp">
@@ -1545,6 +1578,36 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="sources\Assets\NutBinary.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_demo.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_draw.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_dx12.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_glfw.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_opengl3.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_vulkan.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_win32.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_tables.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_widgets.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -68,7 +68,38 @@
 
 		virtual void Save( NutEditor* editor, NutTextDocument& document );
 
+		virtual void SaveAll( );
+
 		virtual void Close( NutEditor* editor, const std::string& name );
+
+		virtual void Undo( );
+
+		virtual void Redo( );
+
+		virtual void Copy( );
+
+		virtual void Cut( );
+
+		virtual void Paste( );
+
+	public:
+		static void OnOpen( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
+
+		static void OnSave( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
+
+		static void OnSaveAs( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
+
+		static void OnExit( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
+
+		static void OnUndo( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
+
+		static void OnRedo( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
+
+		static void OnCopy( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
+
+		static void OnCut( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
+
+		static void OnPaste( const NutMenuItem& button, NutEditor* editor, NutWindow* window, NutPanel* panel );
 
 	public:
 		template<typename Type = NutTextStyle>

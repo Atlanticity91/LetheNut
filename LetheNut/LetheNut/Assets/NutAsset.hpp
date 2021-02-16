@@ -39,21 +39,66 @@
 	
 	#include <LetheNut/Utils/NutElement.hpp>
 
+	/**
+	 * NUT_ASSET macro
+	 * @author : ALVES Quentin
+	 * @node : Helper for child class of NutAsset.
+	 * @param NAME : Name of the new class.
+	 * @usage :
+	 *		NUT_ASSET( Test ) { ... };
+	 *
+	 *	-> Create a Test class inherit from NutAsset.
+	 **/
 	#define NUT_ASSET( NAME ) class NUT_API NAME : public NutAsset
 
+	/**
+	 * NutAsset class
+	 * @author : ALVES Quentin
+	 * @node : Defined NutAsset core class.
+	 **/
 	NUT_ELEMENT( NutAsset ) {
 
 		friend class NutAssetManager;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param alias : Alias of the asset.
+		 **/
 		NutAsset( nString alias );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		virtual ~NutAsset( ) = default;
 		
+		/**
+		 * Load virtual function
+		 * @author : ALVES Quentin
+		 * @note : Load the current asset.
+		 * @param editor : Pointer to current editor.
+		 * @param path : Path to the query asset.
+		 * @return : bool
+		 **/
 		virtual bool Load( NutEditor* editor, nString path );
 
+		/**
+		 * Write virtual function
+		 * @author : ALVES Quentin
+		 * @note : Write the current asset.
+		 * @param editor : Pointer to current editor.
+		 * @param path : Path to the query asset.
+		 * @return : bool
+		 **/
 		virtual bool Write( NutEditor* editor, nString path );
 
+		/**
+		 * Cleanup virtual method
+		 * @author : ALVES Quentin
+		 * @note : Cleanup the current asset.
+		 **/
 		virtual void Cleanup( );
 
 	};

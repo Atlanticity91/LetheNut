@@ -10,7 +10,7 @@
  * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
  * SPDX-License-Identifier: MIT
  *
- * Copyright (C) 2020 ALVES Quentin.
+ * Copyright (C) 2021 ALVES Quentin.
  *
  * This file is part of Lethe Nut project : https://github.com/Atlanticity91/LetheNut.
  *
@@ -34,57 +34,26 @@
  *
  ************************************************************************************/
 
-#include "__pch.hpp"
-
-#include <LetheNut/NutEditor.hpp>
-
+#include <LetheEditor/NutEditorModule.hpp>
+#include <LetheEditor/NutEditorStyle.hpp>
+#include <LetheEditor/NutEditorWindow.hpp>
+ 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
-NutEditorWindow::NutEditorWindow( )
-	: NutWindow( "LetheNut - Editor", 1280, 720 )
+EditorModule::EditorModule( NutPlatformLib* importer )
+	: NutModule( importer, "EditorModule" )
 { }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PROTECTED
-///////////////////////////////////////////////////////////////////////////////////////////
-void NutEditorWindow::OnCreateMenus( ) {
-	auto lambda = [ ]( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* ) { };
-	auto* file_menu = this->CreateMenu( "File", true );
-
-	file_menu->Append( "Open", "Ctrl+O", lambda );
-	file_menu->Append( "Open Scene", "", lambda );
-	file_menu->Append( "Save", "Ctrl+S", lambda );
-	file_menu->Append( "Save As", "Ctrl+Maj+S", lambda );
-	file_menu->Append( );
-	file_menu->Append( "Import", "", lambda );
-	file_menu->Append( "Export", "", lambda );
-	file_menu->Append( );
-	file_menu->Append( "Exit", "Ctrl+Q", lambda );
-
-	auto* edit_menu = this->CreateMenu( "Edit", true );
-
-	edit_menu->Append( "Undo", "Ctrl+Z", lambda );
-	edit_menu->Append( "Redo", "Ctrl+Y", lambda );
-	edit_menu->Append( );
-	edit_menu->Append( "Copy", "Ctrl+C", lambda );
-	edit_menu->Append( "Cut", "Ctrl+X", lambda );
-	edit_menu->Append( "Paste", "Ctrl+V", lambda );
-
-	auto* prefs_menu = this->CreateMenu( "Preferences", true );
-
-	prefs_menu->Append( "Theme", "", lambda );
-	prefs_menu->Append( );
-	prefs_menu->Append( "About", "", lambda );
+void EditorModule::OnCreate( NutEditor* editor ) { 
+	editor->SetStyle<NutEditorStyle>( );
+	editor->Open<NutEditorWindow>( );
 }
 
-void NutEditorWindow::OnCreate( NutEditor* editor ) {
-	this->Create<NutBrowser>( editor );
-	this->Create<NutProfiler>( editor );
-	this->Create<NutProperties>( editor );
-	this->Create<NutScene>( editor );
-	this->Create<NutViewport>( editor );
+void EditorModule::OnEnable( NutEditor* editor ) { }
 
-	this->Create<NutTextEditor>( editor );
-	this->Create<NutNodeEditor>( editor );
-}
+void EditorModule::OnDisable( NutEditor* editor ) { }
+
+void EditorModule::OnDestroy( NutEditor* editor ) { }
+
+void EditorModule::Process( NutEditor* editor ) { }

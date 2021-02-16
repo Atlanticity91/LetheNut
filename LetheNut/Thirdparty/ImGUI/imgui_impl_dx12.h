@@ -14,6 +14,8 @@
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
+#ifdef NDX
+
 #pragma once
 #include "imgui.h"      // IMGUI_IMPL_API
 
@@ -37,3 +39,5 @@ IMGUI_IMPL_API void     ImGui_ImplDX12_RenderDrawData(ImDrawData* draw_data, ID3
 // Use if you want to reset your rendering device without losing Dear ImGui state.
 IMGUI_IMPL_API void     ImGui_ImplDX12_InvalidateDeviceObjects();
 IMGUI_IMPL_API bool     ImGui_ImplDX12_CreateDeviceObjects();
+
+#endif

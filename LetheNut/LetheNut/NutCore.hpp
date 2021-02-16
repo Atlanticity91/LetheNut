@@ -124,7 +124,7 @@
 	/**
 	 * NUT_DEPRECATED macro
 	 * @author : ALVES Quentin
-	 * @note :
+	 * @note : Helper for deprecated function prototype.
 	 * @usage : NUT_DEPRECATED( NUT_VERSION, NEW_DEFINITION )
 	 * @example :
 	 *		NUT_DEPRECATED( 1.8, void Print( nString sender, nString format, ... ) )

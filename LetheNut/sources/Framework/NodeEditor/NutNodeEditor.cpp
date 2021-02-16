@@ -36,6 +36,7 @@
 
 #include "__pch.hpp"
 
+#include <LetheNut/NutEditor.hpp>
 #include <LetheNut/Framework/Editors/Nodes/NutNodeEditor.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +44,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutNodeEditor::NutNodeEditor( )
 	: NutPanel( "Blueprint" ),
-	canvas( 4.f )
+	canvas( 4.f ),
+    node_style( )
 { }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -53,13 +55,25 @@ void NutNodeEditor::OnCreateMenus( ) { }
 
 void NutNodeEditor::OnCreateModals( ) { }
 
-void NutNodeEditor::OnCreate( NutEditor* editor, NutWindow* parent ) { }
+void NutNodeEditor::OnCreate( NutEditor* editor, NutWindow* parent ) {  }
 
-bool NutNodeEditor::OnDestroy( NutEditor* editor, NutWindow* parent ) {
-	return true;
-}
+bool NutNodeEditor::OnDestroy( NutEditor* editor, NutWindow* parent ) { return true; }
 
 void NutNodeEditor::OnProcess( NutEditor* editor, NutWindow* parent ) { 
+    if ( this->node_style.Var_Header == 0 ) {
+        auto* header = editor->GetAssetManager( )->GetImage( "BlueprintHeader" );
+
+        if ( header )
+            this->node_style.SetHeader( header->Get( ) );
+    }
+
+    if ( !this->node_style.Var_Icons.GetIsValid( ) ) {
+        auto* icons = editor->GetAssetManager( )->GetImage( "BlueprintIcons" );
+
+        if ( icons )
+            this->node_style.SetIcons( icons->Get( ), 8, 8 );
+    }
+
     if ( !ImGui::IsMouseDown( ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) ) {
         if ( ImGui::IsMouseDragging( ImGuiMouseButton_Middle ) )
             this->canvas.offset += ImGUI::GetMouseDelta( );
@@ -91,8 +105,16 @@ void NutNodeEditor::OnProcess( NutEditor* editor, NutWindow* parent ) {
 }
 
 void NutNodeEditor::OnRender( NutEditor* editor, NutWindow* parent ) { 
-	if ( ImGUI::Canvas( this->canvas ) ) {
+    this->OnRenderCanvas( editor, parent );
+}
 
-		ImGUI::EndCanvas( this->canvas );
-	}
+void NutNodeEditor::OnRenderCanvas( NutEditor* editor, NutWindow* parent ) {
+    if ( ImGUI::Canvas( this->canvas ) ) {
+        auto node = NutNode<1,1>( "Test", "Hello I'm a test node", ImColor{ 128, 128, 255, 255 } );
+        auto position = ImVec2{ 0.f, 0.f };
+
+        node.OnRender( this->canvas, this->node_style, position, false );
+
+        ImGUI::EndCanvas( this->canvas );
+    }
 }

@@ -34,9 +34,7 @@
  *
  ************************************************************************************/
 
-#include "__pch.hpp"
-
-#include <LetheNut/Framework/NutEditorStyle.hpp>
+#include <LetheEditor/NutEditorStyle.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC

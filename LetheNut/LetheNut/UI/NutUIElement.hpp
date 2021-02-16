@@ -45,7 +45,12 @@
 
 	#define NUT_UI_ELEMENT( NAME ) class NUT_API NAME : public NutUIElement
 
-	NUT_ELEMENT( NutUIElement ), public NutMenuManager, public NutModalManager{
+	/**
+	 * NutUIElement class [ NutMenuManager, NutModalManager ]
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut UI Element core class.
+	 **/
+	NUT_ELEMENT( NutUIElement ), public NutMenuManager, public NutModalManager {
 
 		friend class NutWindow;
 		friend class NutEditor;
@@ -55,28 +60,81 @@
 		NutContext* context;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param label : Label of the element.
+		 **/
 		NutUIElement( nString label );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		virtual ~NutUIElement( ) = default;
 
+		/**
+		 * Reset method
+		 * @author : ALVES Quentin
+		 * @note : Reset the current element state. 
+		 **/
 		void Reset( );
 
+		/**
+		 * SetContext method
+		 * @author : ALVES Quentin
+		 * @note : Set current element context.
+		 * @param context : New context value.
+		 **/
 		void SetContext( NutContext* context );
 
 	protected:
+		/**
+		 * OnCreateMenus method
+		 * @author : ALVES Quentin
+		 * @note : Create menus of the element.
+		 **/
 		virtual void OnCreateMenus( );
 
+		/**
+		 * OnCreateModals method
+		 * @author : ALVES Quentin
+		 * @note : Create modals of the element.
+		 **/
 		virtual void OnCreateModals( );
 
 	private:
+		/**
+		 * OnCreateUI  method
+		 * @author : ALVES Quentin
+		 * @note : Create current element menus and modals.
+		 **/
 		void OnCreateUI( );
 
 	public:
+		/**
+		 * GetIsOpen const function
+		 * @author : ALVES Quentin
+		 * @note : Get current element is open.
+		 * @return : bool
+		 **/
 		bool GetIsOpen( ) const;
 		
+		/**
+		 * GetContext const function
+		 * @author : ALVES Quentin
+		 * @note : Get current element context.
+		 * @return : NutContext*
+		 **/
 		NutContext* GetContext( ) const;
 
 	protected:
+		/**
+		 * GetState const function
+		 * @author : ALVES Quentin
+		 * @note : Get current element state.
+		 * @return : bool*
+		 **/
 		bool* GetState( );
 
 	};

@@ -39,9 +39,19 @@
 
 	#include <LetheNut/NutCore.hpp>
 
+	/**
+	 * GLFW namespace
+	 * @author : ALVES Quentin
+	 * @node : Wrapper for GLFW.
+	 **/
 	namespace GLFW {
 
-		struct Window {
+		/**
+		 * Window struct
+		 * @author : ALVES Quentin
+		 * @node : Wrapper for GLFW.
+		 **/
+		struct NUT_API Window {
 
 			nPointer handle;
 			nString label;
@@ -50,19 +60,80 @@
 
 		};
 
+		/**
+		 * Initialize function
+		 * @author : ALVES Quentin
+		 * @node : Initialize GLFW.
+		 * @return : bool
+		 **/
 		bool Initialize( );
 
-		bool Create( Window& window );
+		/**
+		 * CreateContext function
+		 * @author : ALVES Quentin
+		 * @node : Create GLFW window for OpenGL ressource loader context.
+		 * @param window : Reference to GLFW window to hold the window.
+		 * @return : bool
+		 **/
+		bool CreateWindowLess( nPointer& window );
 
-		void SetContext( Window& window );
+		/**
+		 * Create function
+		 * @author : ALVES Quentin
+		 * @node : Create a GLFW window.
+		 * @param window : Reference to GLFW window to hold the window.
+		 * @param ressources : Current OpenGL ressource loader context.
+		 * @return : bool
+		 **/
+		NUT_API bool Create( Window& window, const nPointer ressources );
 
-		bool ShouldRun( Window& window );
+		/**
+		 * SetContext method
+		 * @author : ALVES Quentin
+		 * @node : Set current GLFW context.
+		 * @param window : Reference to query GLFW window.
+		 **/
+		NUT_API void SetContext( Window& window );
 
-		void Process( Window& window );
+		/**
+		 * ShouldRun function
+		 * @author : ALVES Quentin
+		 * @node : Return true if the query window should run.
+		 * @param window : Reference to query GLFW window.
+		 * @return : bool
+		 **/
+		NUT_API bool ShouldRun( Window& window );
 
-		void Destroy( Window& window );
+		/**
+		 * Process method
+		 * @author : ALVES Quentin
+		 * @node : Process a GLFW window.
+		 * @param window : Reference to query GLFW window.
+		 **/
+		NUT_API void Process( Window& window );
 
-		void Cleanup( );
+		/**
+		 * Destroy method
+		 * @author : ALVES Quentin
+		 * @node : Destroy a GLFW window.
+		 * @param window : Reference to query GLFW window.
+		 **/
+		NUT_API void Destroy( Window& window );
+
+		/**
+		 * Destroy method
+		 * @author : ALVES Quentin
+		 * @node : Destroy a GLFW window.
+		 * @param window : Reference to query GLFW window.
+		 **/
+		NUT_API void Destroy( nPointer& window );
+
+		/**
+		 * Cleanup method
+		 * @author : ALVES Quentin
+		 * @node : Cleanup GLFW.
+		 **/
+		NUT_API void Cleanup( );
 
 	};
 

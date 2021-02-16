@@ -47,6 +47,7 @@
 	class NUT_API NutAssetManager final {
 
 	private:
+		nPointer gl_context;
 		NutList<NutImage> images;
 		NutList<NutSound> sounds;
 		NutList<NutJSON> jsons;
@@ -56,6 +57,8 @@
 		NutAssetManager( );
 
 		~NutAssetManager( );
+
+		bool Initialize( );
 
 		bool LoadImageAs( NutEditor* editor, nString alias, nString path );
 
@@ -82,6 +85,8 @@
 		inline bool WriteBinary( NutEditor* editor, const std::string& alias, const std::string& path );
 
 	public:
+		nPointer GetContext( ) const;
+
 		NutImage* GetImage( nString alias ) const;
 
 		NutSound* GetSound( nString alias ) const;

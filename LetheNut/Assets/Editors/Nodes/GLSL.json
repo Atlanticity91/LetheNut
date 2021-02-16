@@ -1,0 +1,257 @@
+{
+  "Types" : [ "" ],
+  "Nodes": [
+    {
+      "Name": "sin",
+      "Description": "Returns the sine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "cos",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "tan",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "acos",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "cos",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "atan",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "sinh",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "cosh",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "tanh",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "asinh",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "acosh",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "atanh",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "pow",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@", "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "exp",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "log",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "exp2",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "log2",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "sqrt",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "inversesqrt",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "abs",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "sign",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "floor",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "ceil",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "fract",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "trunc",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "round",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "roundEven",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "mod",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@", "float" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "mod",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@", "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "modf",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@", "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "min",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "max",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "clamp",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@", "@", "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "mix",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@", "@", "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "step",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@", "@" ],
+      "Outputs": [ "@" ]
+    },
+    {
+      "Name": "smoothstep",
+      "Description": "Returns the cosine of angle",
+      "Types": [ "int", "float", "vec2", "vec3", "vec4" ],
+      "Inputs": [ "@", "@", "@" ],
+      "Outputs": [ "@" ]
+    }
+  ]
+}

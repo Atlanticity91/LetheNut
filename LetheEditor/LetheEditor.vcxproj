@@ -13,19 +13,19 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{511b1d2c-7bcd-4a91-9efe-abd057c3478e}</ProjectGuid>
-    <RootNamespace>ImGUI</RootNamespace>
+    <ProjectGuid>{721f44d6-6694-42aa-a3df-18c8b030c7d1}</ProjectGuid>
+    <RootNamespace>LetheEditor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -46,26 +46,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(SolutionDir)bin-int\</IntDir>
-    <IncludePath>$(SolutionDir)LetheNut\;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)bin-int\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)LetheNut\Thirdparty\;$(SolutionDir)LetheNut\;$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(SolutionDir)bin-int\</IntDir>
-    <IncludePath>$(SolutionDir)LetheNut\;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)bin-int\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)LetheNut\Thirdparty\;$(SolutionDir)LetheNut\;$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>IM_BUILD;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)bin\LetheNut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -74,7 +75,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>IM_BUILD;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -83,17 +84,18 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)bin\LetheNut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="sources\imgui.cpp" />
-    <ClCompile Include="sources\imgui_demo.cpp" />
-    <ClCompile Include="sources\imgui_draw.cpp" />
-    <ClCompile Include="sources\imgui_impl_glfw.cpp" />
-    <ClCompile Include="sources\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="sources\imgui_impl_win32.cpp" />
-    <ClCompile Include="sources\imgui_tables.cpp" />
-    <ClCompile Include="sources\imgui_widgets.cpp" />
+    <ClInclude Include="LetheEditor\NutEditorModule.hpp" />
+    <ClInclude Include="LetheEditor\NutEditorStyle.hpp" />
+    <ClInclude Include="LetheEditor\NutEditorWindow.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="sources\NutEditorModule.cpp" />
+    <ClCompile Include="sources\NutEditorStyle.cpp" />
+    <ClCompile Include="sources\NutEditorWindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -46,11 +46,6 @@ NutModule::NutModule( NutPlatformLib* importer, nString name )
 	importer( importer )
 { }
 
-NutModule::~NutModule( ) {
-	if ( this->importer ) 
-		delete this->importer;
-}
-
 void NutModule::Enable( NutEditor* editor ) {
 	if ( !this->is_active ) {
 		this->is_active = true;
@@ -67,21 +62,12 @@ void NutModule::Disable( NutEditor* editor ) {
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////
-//      PROTECTED
-///////////////////////////////////////////////////////////////////////////////////////////
-void NutModule::OnCreate( NutEditor* editor ) { }
-
-void NutModule::OnEnable( NutEditor* editor ) { }
-
-void NutModule::OnDisable( NutEditor* editor ) { }
-
-void NutModule::OnDestroy( NutEditor* editor ) { }
-
 ///////////////////////////////////////////////////////////////////////////////////////////	
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
 bool NutModule::GetState( ) const { return this->is_active; }
+
+NutPlatformLib* NutModule::GetImporter( ) const { return this->importer; }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      OPERATOR

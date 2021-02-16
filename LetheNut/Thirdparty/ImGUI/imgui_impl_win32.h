@@ -12,6 +12,8 @@
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
+#ifdef _WIN32
+
 #pragma once
 #include "imgui.h"      // IMGUI_IMPL_API
 
@@ -40,3 +42,5 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 IMGUI_IMPL_API void     ImGui_ImplWin32_EnableDpiAwareness();
 IMGUI_IMPL_API float    ImGui_ImplWin32_GetDpiScaleForHwnd(void* hwnd);       // HWND hwnd
 IMGUI_IMPL_API float    ImGui_ImplWin32_GetDpiScaleForMonitor(void* monitor); // HMONITOR monitor
+
+#endif

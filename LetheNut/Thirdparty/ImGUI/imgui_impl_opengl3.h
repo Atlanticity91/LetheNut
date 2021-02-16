@@ -22,6 +22,8 @@
 //  On computer platform the GLSL version default to "#version 130". On OpenGL ES 3 platform it defaults to "#version 300 es"
 //  Only override if your GL version doesn't handle this GLSL version. See GLSL version table at the top of imgui_impl_opengl3.cpp.
 
+#ifdef NGL
+
 #pragma once
 #include "imgui.h"      // IMGUI_IMPL_API
 
@@ -103,6 +105,8 @@ IMGUI_IMPL_API void     ImGui_ImplOpenGL3_DestroyDeviceObjects();
 
 #else
     #define IMGUI_IMPL_OPENGL_LOADER_GL3W   // Default to GL3W embedded in our repository
+#endif
+
 #endif
 
 #endif

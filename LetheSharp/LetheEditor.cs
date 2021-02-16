@@ -1,4 +1,4 @@
-/************************************************************************************
+﻿/************************************************************************************
  *
  *	 _          _   _          _   _       _
  *	| |        | | | |        | \ | |     | |
@@ -34,33 +34,21 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_ASSET_JSON_HPP_
-#define _IGS_NUT_ASSET_JSON_HPP_
+namespace LetheSharp {
 
-	#include <LetheNut/Vendor/JSON.hpp>
+    /**
+	 * LetheEditor sealed class
+	 * @author : ALVES Quentin
+	 * @note : Defined editor core class for C#.
+	 **/
+    public sealed class LetheEditor {
 
-	#include "NutAsset.hpp"
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 **/
+		public LetheEditor( ) { }
 
-	NUT_ASSET( NutJSON ) {
+    }
 
-	private:
-		mutable JSON json;
-
-	public:
-		NutJSON( nString alias );
-
-		virtual ~NutJSON( ) = default;
-
-		virtual bool Load( NutEditor* editor, nString path ) override;
-
-		virtual bool Write( NutEditor* editor, nString path ) override;
-
-	public:
-		JSON& Get( ) const;
-
-	public:
-		operator JSON( ) const;
-
-	};
-
-#endif
+}

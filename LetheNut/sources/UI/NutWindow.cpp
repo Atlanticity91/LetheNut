@@ -45,13 +45,14 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutWindow::NutWindow( nString name, const nInt width, const nInt height )
 	: NutUIElement( name ),
-	handle{ nullptr, name, width, height },
+	window{ nullptr, name, width, height },
+	context( nullptr ),
 	panels( )
 { }
 
 NutWindow::~NutWindow( ) {
 	ImGUI::Cleanup( );
-	GLFW::Destroy( this->handle );
+	GLFW::Destroy( this->window );
 }
 
 void NutWindow::Enable( NutEditor* editor, nString panel ) {
@@ -81,11 +82,11 @@ void NutWindow::Destroy( NutEditor* editor, nString panel ) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-bool NutWindow::Open( ) { 
-	auto state = GLFW::Create( this->handle ); 
+bool NutWindow::Open( const nPointer ressources ) {
+	auto state = GLFW::Create( this->window, ressources );
 
 	if ( state )
-		ImGUI::Setup( this->handle );
+		ImGUI::Setup( this->window, this->context );
 
 	return state;
 }
@@ -93,8 +94,8 @@ bool NutWindow::Open( ) {
 bool NutWindow::OnDestroy( NutEditor* editor ) { return true; }
 
 void NutWindow::OnRender( NutEditor* editor ) { 
-	GLFW::SetContext( this->handle );
-	ImGUI::Start( );
+	GLFW::SetContext( this->window );
+	ImGUI::Start( this->context );
 
 	if ( ImGUI::Window( this ) ) {
 		ImGUI::DockSpace( );
@@ -132,15 +133,17 @@ void NutWindow::OnRender( NutEditor* editor ) {
 
 	ImGui::End( );
 	ImGUI::Stop( );
-	GLFW::Process( this->handle );
+	GLFW::Process( this->window );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
-GLFW::Window& NutWindow::GetHandle( ) const { return this->handle; }
+GLFW::Window& NutWindow::GetHandle( ) const { return this->window; }
 
-bool NutWindow::ShouldRun( ) const { return GLFW::ShouldRun( this->handle ); }
+const ImGuiContext* NutWindow::GetContext( ) const { return this->context; }
+
+bool NutWindow::ShouldRun( ) const { return GLFW::ShouldRun( this->window ); }
 
 NutList<NutPanel*>& NutWindow::GetPanels( ) const { return this->panels; }
 

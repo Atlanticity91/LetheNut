@@ -63,13 +63,13 @@
 	template<typename Type>
 	void NutEditor::SetStyle( ) {
 		if constexpr ( std::is_base_of<NutStyle, Type>::value ) {
-			auto* new_style = new Type( );
+			auto new_style = std::make_shared<Type>( );
 
 			if ( new_style ) {
 				if ( this->style )
-					delete this->style;
+					this->style.reset( );
 
-				this->style = NUT_CAST( new_style, NutStyle );
+				this->style = new_style;
 				this->style->OnCreate( );
 			}
 		}
@@ -97,7 +97,7 @@
 		if constexpr ( std::is_base_of<NutWindow, Type>::value ) {
 			auto* window = new Type( args... );
 
-			if ( window && window->Open( ) && OpenGL::Initialize( this ) ) {
+			if ( window && window->Open( this->assets.GetContext( ) ) && OpenGL::Initialize( this ) ) {
 				this->windows.Emplace( window );
 
 				NUT_CAST( window, NutUIElement )->OnCreateUI( );

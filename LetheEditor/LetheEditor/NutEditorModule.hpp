@@ -10,7 +10,7 @@
  * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
  * SPDX-License-Identifier: MIT
  *
- * Copyright (C) 2020 ALVES Quentin.
+ * Copyright (C) 2021 ALVES Quentin.
  *
  * This file is part of Lethe Nut project : https://github.com/Atlanticity91/LetheNut.
  *
@@ -34,35 +34,58 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_EDITOR_STYLE_HPP_
-#define _IGS_NUT_EDITOR_STYLE_HPP_
+#pragma once
 
-	#include <LetheNut/UI/NutStyle.hpp>
+#include <LetheNut/NutDev.hpp>
 
-	NUT_STYLE( NutEditorStyle ) {
+NCLASS( EditorModule ) final : public NutModule{
 
-	public:
-		/**
-		 * Constructor
-		 * @author : ALVES Quentin
-		 * @param name : Name of the style.
-		 **/
-		NutEditorStyle( );
+public:
+	EditorModule( NutPlatformLib* importer );
 
-		/**
-		 * Destructor
-		 * @author : ALVES Quentin
-		 **/
-		~NutEditorStyle( ) = default;
-	
-	protected:
-		/**
-		 * OnStyleInit virtual method
-		 * @author : ALVES Quentin
-		 * @note : Setup the current style.
-		 **/
-		virtual void OnCreate( ) override;
+	~EditorModule( ) = default;
 
-	};
+protected:
+	/**
+	 * OnCreate pure-virtual method
+	 * @author : ALVES Quentin
+	 * @node : Called once when the module is created.
+	 * @param editor : Pointer to current editor.
+	 **/
+	virtual void OnCreate( NutEditor* editor ) override;
 
-#endif
+	/**
+	 * OnEnable pure-virtual method
+	 * @author : ALVES Quentin
+	 * @node : Called every time the module is enabled.
+	 * @param editor : Pointer to current editor.
+	 **/
+	virtual void OnEnable( NutEditor* editor ) override;
+
+	/**
+	 * OnDisable pure-virtual method
+	 * @author : ALVES Quentin
+	 * @node : Called every time the module is disable.
+	 * @param editor : Pointer to current editor.
+	 **/
+	virtual void OnDisable( NutEditor* editor ) override;
+
+	/**
+	 * OnDestroy pure-virtual method
+	 * @author : ALVES Quentin
+	 * @node : Called once when the module is destoyed.
+	 * @param editor : Pointer to current editor.
+	 **/
+	virtual void OnDestroy( NutEditor* editor ) override;
+
+	/**
+	 * Process pure-virtual method
+	 * @author : ALVES Quentin
+	 * @node : Called every tick of the editor when the module is enabled.
+	 * @param editor : Pointer to current editor.
+	 **/
+	virtual void Process( NutEditor* editor ) override;
+
+};
+
+NMODULE_CREATE( EditorModule )

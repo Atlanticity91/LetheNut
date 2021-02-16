@@ -43,7 +43,7 @@
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutTextEditor::NutTextEditor( )
-	: NutPanel( "Text Editor" ),
+	: NutPanel( "Text Editor", ImGuiWindowFlags_MenuBar ),
 	document_id( 0 ),
 	parser( nullptr ),
 	style( nullptr ),
@@ -87,6 +87,8 @@ void NutTextEditor::Save( NutEditor* editor, NutTextDocument& document ) {
 	}
 }
 
+void NutTextEditor::SaveAll( ) { }
+
 void NutTextEditor::Close( NutEditor* editor, const std::string& name ) {
 	auto* document = this->documents[ name ];
 
@@ -94,10 +96,69 @@ void NutTextEditor::Close( NutEditor* editor, const std::string& name ) {
 		*document->GetState( ) = false;
 }
 
+void NutTextEditor::Undo( ) { }
+
+void NutTextEditor::Redo( ) { }
+
+void NutTextEditor::Copy( ) { }
+
+void NutTextEditor::Cut( ) { }
+
+void NutTextEditor::Paste( ) { }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+//      PUBLIC STATIC
+///////////////////////////////////////////////////////////////////////////////////////////
+void NutTextEditor::OnOpen( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { }
+
+void NutTextEditor::OnSave( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { }
+
+void NutTextEditor::OnSaveAs( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { }
+
+void NutTextEditor::OnExit( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { }
+
+void NutTextEditor::OnUndo( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { 
+	NUT_CAST( panel, NutTextEditor )->Undo( );
+}
+
+void NutTextEditor::OnRedo( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { 
+	NUT_CAST( panel, NutTextEditor )->Redo( );
+}
+
+void NutTextEditor::OnCopy( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { 
+	NUT_CAST( panel, NutTextEditor )->Copy( );
+}
+
+void NutTextEditor::OnCut( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { 
+	NUT_CAST( panel, NutTextEditor )->Cut( );
+}
+
+void NutTextEditor::OnPaste( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* panel ) { 
+	NUT_CAST( panel, NutTextEditor )->Paste( );
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
-void NutTextEditor::OnCreateMenus( ) { }
+void NutTextEditor::OnCreateMenus( ) { 
+	auto lambda = [ ]( const NutMenuItem&, NutEditor*, NutWindow*, NutPanel* ) { };
+	auto* file_menu = this->CreateMenu( "File", true );
+
+	file_menu->Append( "Open", "Ctrl+O", &NutTextEditor::OnOpen );
+	file_menu->Append( "Save", "Ctrl+S", &NutTextEditor::OnSave );
+	file_menu->Append( "Save As", "Ctrl+Maj+S", &NutTextEditor::OnSaveAs );
+	file_menu->Append( );
+	file_menu->Append( "Exit", "Ctrl+Q", &NutTextEditor::OnExit );
+
+	auto* edit_menu = this->CreateMenu( "Edit", true );
+
+	edit_menu->Append( "Undo", "Ctrl+Z", &NutTextEditor::OnUndo );
+	edit_menu->Append( "Redo", "Ctrl+Y", &NutTextEditor::OnRedo );
+	edit_menu->Append( );
+	edit_menu->Append( "Copy", "Ctrl+C", &NutTextEditor::OnCopy );
+	edit_menu->Append( "Cut", "Ctrl+X", &NutTextEditor::OnCut );
+	edit_menu->Append( "Paste", "Ctrl+V", &NutTextEditor::OnPaste );
+}
 
 void NutTextEditor::OnCreateModals( ) {
 	auto* save = this->CreateModal( "Save ?" );
@@ -191,6 +252,7 @@ void NutTextEditor::OnCreate( NutEditor* editor, NutWindow* parent ) {
 	for ( int i = 0; i < 3; i++ ) {
 		std::string n = "Test " + std::to_string( i );
 		this->Create( n );
+		this->GetDocument( n )->Append( n );
 	}
 }
 
@@ -205,7 +267,7 @@ bool NutTextEditor::OnDestroy( NutEditor* editor, NutWindow* parent ) {
 		}
 	);
 
-	return ( no_save ) ? true : this->OnRenderModal( editor, nullptr, this, "Save all ?" );
+	return ( no_save ) ? true : this->OnRenderModal( editor, parent, this, "Save all ?" );
 }
 
 void NutTextEditor::OnProcess( NutEditor* editor, NutWindow* parent ) { }
@@ -224,7 +286,7 @@ void NutTextEditor::OnRender( NutEditor* editor, NutWindow* parent ) {
 					}
 
 					if ( !document.GetIsOpen( ) ) {
-						if ( document.GetIsSaved( ) || this->OnRenderModal( editor, nullptr, this, "Save ?" ) ) {
+						if ( document.GetIsSaved( ) || this->OnRenderModal( editor, window, this, "Save ?" ) ) {
 							if ( !document.GetIsOpen( ) )
 								this->documents.Erase( document.GetName( ) );
 						}

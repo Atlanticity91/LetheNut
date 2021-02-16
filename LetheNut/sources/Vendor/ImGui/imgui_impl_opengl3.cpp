@@ -73,6 +73,8 @@
 //  ES 3.0    300       "#version 300 es"   = WebGL 2.0
 //----------------------------------------
 
+#ifdef NGL
+
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -729,24 +731,24 @@ void    ImGui_ImplOpenGL3_DestroyDeviceObjects()
 // If you are new to dear imgui or creating a new binding for dear imgui, it is recommended that you completely ignore this section first..
 //--------------------------------------------------------------------------------------------------------
 
-static void ImGui_ImplOpenGL3_RenderWindow(ImGuiViewport* viewport, void*)
-{
-    if (!(viewport->Flags & ImGuiViewportFlags_NoRendererClear))
-    {
+static void ImGui_ImplOpenGL3_RenderWindow(ImGuiViewport* viewport, void*) {
+    if (!(viewport->Flags & ImGuiViewportFlags_NoRendererClear) ) {
         ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
         glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
     }
+
     ImGui_ImplOpenGL3_RenderDrawData(viewport->DrawData);
 }
 
-static void ImGui_ImplOpenGL3_InitPlatformInterface()
-{
-    ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+static void ImGui_ImplOpenGL3_InitPlatformInterface( ) {
+    ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO( );
+
     platform_io.Renderer_RenderWindow = ImGui_ImplOpenGL3_RenderWindow;
 }
 
-static void ImGui_ImplOpenGL3_ShutdownPlatformInterface()
-{
-    ImGui::DestroyPlatformWindows();
+static void ImGui_ImplOpenGL3_ShutdownPlatformInterface( ) {
+    ImGui::DestroyPlatformWindows( );
 }
+
+#endif

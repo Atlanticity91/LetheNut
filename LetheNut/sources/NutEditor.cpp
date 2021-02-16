@@ -45,16 +45,32 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutEditor::NutEditor( )
 	: is_running( true ),
+	logger( ),
 	file_system( ),
 	assets( ),
-	logger( ),
-	config( ),
 	style( nullptr ),
 	libraries( ),
 	modules( )
 { }
 
-NutEditor::~NutEditor( ) { }
+NutEditor::~NutEditor( ) { 
+	if ( this->style )
+		this->style.reset( );
+
+	this->modules.Foreach( 
+		[ this ]( auto& module ) {
+			auto* importer = module->GetImporter( );;
+
+			module->OnDestroy( this );
+			delete module;
+			module = nullptr;
+
+			delete importer;
+		}
+	);
+
+	this->Log( NutLoggerModes::NLM_INFO, "NutEditor Stop !" );
+}
 
 bool NutEditor::LoadLibrary( nString path ) {
 	if ( nHelper::GetIsValid( path ) ) {
@@ -77,20 +93,26 @@ bool NutEditor::LoadLibrary( const std::string& path ) {
 
 bool NutEditor::LoadModule( nString path ) {
 	if ( nHelper::GetIsValid( path ) ) {
-		typedef void ( *NutLoadModule )( NutEditor*, NutPlatformLib*, ImGuiContext* );
+		typedef void ( *NutLoadModule )( NutEditor*, NutPlatformLib* );
 
 		auto* module_lib = new NutPlatformLib( path );
 
 		if ( module_lib && module_lib->GetIsValid( ) ) {
-			NutLoadModule module_load = (*module_lib)[ "NutLoadModuleLib" ];
+			NutLoadModule module_load = (*module_lib)[ "RegisterModule" ];
 
 			if ( module_load ) {
-				module_load( this, module_lib, ImGui::GetCurrentContext( ) );
+				module_load( this, module_lib );
+
+				this->Log( NutLoggerModes::NLM_INFO, "Loaded module : %s", path );
 
 				return true;
-			} else
+			} else {
+				this->Log( NutLoggerModes::NLM_ERRR, "Unable to open the module : %s", path );
+				
 				delete module_lib;
-		}
+			}
+		} else
+			this->Log( NutLoggerModes::NLM_ERRR, "Unable to load module at %s", path );
 	}
 
 	return false;
@@ -142,12 +164,17 @@ void NutEditor::Exit( ) { this->is_running = false; }
 //      PROTECTED
 ///////////////////////////////////////////////////////////////////////////////////////////
 void NutEditor::LoadDependencies( ) {
-	for ( auto path : this->config.Get<JSON::StringArray>( "Libraries" ) ) {
+	auto& nut_json = this->assets.GetJSON( "Config" )->Get( );
+	nlohmann::json json = nut_json;
+	for ( auto images : json[ "Images" ] ) 
+		this->assets.LoadImageAs( this, images[ 0 ], images[ 1 ] );
+
+	for ( auto path : nut_json.Get<JSON::StringArray>( "Libraries" ) ) {
 		if ( !path.empty( ) ) 
 			this->LoadLibrary( path ) ;
 	}
-
-	for ( auto path : this->config.Get<JSON::StringArray>( "Modules" ) ) {
+	
+	for ( auto path : nut_json.Get<JSON::StringArray>( "Modules" ) ) {
 		if ( !path.empty( ) )
 			this->LoadModule( path );
 	}
@@ -156,14 +183,11 @@ void NutEditor::LoadDependencies( ) {
 bool NutEditor::Start( int argc, char** argv ) {
 	this->Log( NutLoggerModes::NLM_INFO, "NutEditor Start !" );
 
-	if ( GLFW::Initialize( ) ) {
-		if ( this->config.Load( "Assets/NutEditor.json" ) ) {
-			this->Log( NutLoggerModes::NLM_WARN, this->config.Get<std::string>( "Version" ) );
-			this->Log( NutLoggerModes::NLM_WARN, this->config.Get<std::string>( "License" ) );
+	if ( this->assets.Initialize( ) ) {
+		if ( this->assets.LoadJSONAs( this, "Config", "Assets/NutEditor.json" ) && OpenGL::Initialize( this ) ) {
+			this->Log( NutLoggerModes::NLM_WARN, this->GetVersion( ) );
+			this->Log( NutLoggerModes::NLM_WARN, this->GetLicense( ) );
 
-			this->SetStyle<NutEditorStyle>( );
-			this->Open<NutEditorWindow>( );
-			
 			return true;
 		} else
 			this->Log( NutLoggerModes::NLM_ERRR, "Can't load configuration file : NutEditor.json !" );
@@ -174,6 +198,8 @@ bool NutEditor::Start( int argc, char** argv ) {
 }
 
 void NutEditor::Run( ) {
+	this->LoadDependencies( );
+
 	while ( this->is_running && this->windows ) {
 		this->modules.Foreach(
 			[ this ]( auto& module ) {
@@ -183,7 +209,7 @@ void NutEditor::Run( ) {
 		);
 
 		if ( this->style && this->style->GetHasChanged( ) )
-			ImGUI::SetStyle( this->style );
+			ImGUI::SetStyle( this->style.get( ) );
 
 		this->windows.Foreach(
 			[ this ]( auto& window ) {
@@ -196,31 +222,24 @@ void NutEditor::Run( ) {
 	}
 }
 
-void NutEditor::Stop( ) {
-	if ( this->style )
-		delete this->style;
-
-	GLFW::Cleanup( );
-
-	this->Log( NutLoggerModes::NLM_INFO, "NutEditor Stop !" );
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
 const std::string NutEditor::GetVersion( ) const { 
-	return this->config.Get<std::string>( "Version" );
+	return this->assets.GetJSON( "Config" )->Get( ).Get<std::string>( "Version" );
 }
 
 const std::string NutEditor::GetLicense( ) const { 
-	return this->config.Get<std::string>( "License" );
+	return this->assets.GetJSON( "Config" )->Get( ).Get<std::string>( "License" );
 }
 
 NutFileSystem* NutEditor::GetFileSystem( ) const { return &this->file_system; }
 
 NutAssetManager* NutEditor::GetAssetManager( ) const { return &this->assets; }
 
-NutStyle* NutEditor::GetStyle( ) const { return this->style; }
+NutMono* NutEditor::GetMono( ) const { return &this->mono; }
+
+NutStyle* NutEditor::GetStyle( ) const { return this->style.get( ); }
 
 NutLibrary* NutEditor::GetLibrary( nString name ) const { 
 	return *this->libraries[ name ]; 

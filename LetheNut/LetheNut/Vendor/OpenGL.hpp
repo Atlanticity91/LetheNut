@@ -41,6 +41,11 @@
 
 	class NutEditor;
 
+	/**
+	 * OpenGL namespace
+	 * @author : ALVES Quentin
+	 * @node : Wrapper for OpenGL.
+	 **/
 	namespace OpenGL {
 
 		enum EParameterTypes : nUByte {
@@ -79,7 +84,7 @@
 		 * @author : ALVES Quentin
 		 * @note : Graphic context representation.
 		 **/
-		struct Context {
+		struct NUT_API Context {
 
 			nInt FrameBuffer;
 			nInt Width;
@@ -90,7 +95,7 @@
 
 		};
 
-		struct Frame {
+		struct NUT_API Frame {
 
 			nUInt ID;
 			nUInt Width;
@@ -102,7 +107,7 @@
 
 		};
 
-		struct Texture {
+		struct NUT_API Texture {
 
 			nUInt ID;
 			nInt Width;
@@ -114,7 +119,7 @@
 
 		};
 
-		struct Material {
+		struct NUT_API Material {
 
 			nUInt ID;
 			nUInt Buffer;
@@ -126,7 +131,7 @@
 
 		};
 
-		struct Buffer {
+		struct NUT_API Buffer {
 
 			nUInt ID;
 			nUInt type;
@@ -136,7 +141,7 @@
 
 		};
 
-		struct Mesh {
+		struct NUT_API Mesh {
 
 			nUInt ID;
 			nUInt stride;
@@ -147,7 +152,7 @@
 
 		};
 
-		bool Initialize( NutEditor* editor );
+		NUT_API bool Initialize( NutEditor* editor );
 
 		NUT_API void Create( Context& context, const Frame& frame );
 

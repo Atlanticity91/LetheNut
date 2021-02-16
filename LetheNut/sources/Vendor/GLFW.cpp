@@ -45,7 +45,36 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 bool GLFW::Initialize( ) { return glfwInit( ); }
 
-bool GLFW::Create( Window& window ) {
+bool GLFW::CreateWindowLess( nPointer& window ) {
+	if ( glfwInit( ) ) {
+		glfwWindowHint( GLFW_VISIBLE, GLFW_FALSE );
+		glfwWindowHint( GLFW_RESIZABLE, GLFW_FALSE );
+		glfwWindowHint( GLFW_STEREO, GLFW_FALSE );
+		glfwWindowHint( GLFW_DOUBLEBUFFER, GLFW_FALSE );
+		glfwWindowHint( GLFW_CLIENT_API, GLFW_OPENGL_API );
+		glfwWindowHint( GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API );
+		glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
+		glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 5 );
+		glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE );
+		glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+		glfwSwapInterval( GLFW_FALSE );
+
+		auto* handle = glfwCreateWindow( 512, 512, "", nullptr, nullptr );
+
+		if ( handle ) {
+			glfwMakeContextCurrent( handle );
+
+			window = (nPointer)handle;
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool GLFW::Create( Window& window, const nPointer ressources ) {
+	glfwWindowHint( GLFW_VISIBLE, GLFW_TRUE );
 	glfwWindowHint( GLFW_RESIZABLE, GLFW_TRUE );
 	glfwWindowHint( GLFW_STEREO, GLFW_FALSE );
 	glfwWindowHint( GLFW_DOUBLEBUFFER, GLFW_TRUE );
@@ -57,11 +86,10 @@ bool GLFW::Create( Window& window ) {
 	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 	glfwSwapInterval( GLFW_TRUE );
 
-	auto* handle = glfwCreateWindow( window.width, window.height, window.label, nullptr, nullptr );
+	auto* handle = glfwCreateWindow( window.width, window.height, window.label, nullptr, (GLFWwindow*)ressources );
 
 	if ( handle ) {
 		glfwMakeContextCurrent( handle );
-		glfwSwapInterval( GLFW_TRUE );
 
 		window.handle = (nPointer)handle;
 	}
@@ -83,7 +111,17 @@ void GLFW::Process( Window& window ) {
 }
 
 void GLFW::Destroy( Window& window ) {
-	glfwDestroyWindow( (GLFWwindow*)window.handle );
+	if ( window.handle ) {
+		glfwDestroyWindow( (GLFWwindow*)window.handle );
+		window.handle = nullptr;
+	}
+}
+
+void GLFW::Destroy( nPointer& window ) {
+	if ( window ) {
+		glfwDestroyWindow( (GLFWwindow*)window );
+		window = nullptr;
+	}
 }
 
 void GLFW::Cleanup( ) { glfwTerminate( ); }

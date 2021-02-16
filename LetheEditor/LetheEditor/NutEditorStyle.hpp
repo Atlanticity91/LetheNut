@@ -34,22 +34,39 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_EDITOR_WINDOW_HPP_
-#define _IGS_NUT_EDITOR_WINDOW_HPP_
+#ifndef _IGS_NUT_EDITOR_STYLE_HPP_
+#define _IGS_NUT_EDITOR_STYLE_HPP_
 
-	#include <LetheNut/UI/NutWindow.hpp>
+	#include <LetheNut/UI/NutStyle.hpp>
 
-	NUT_WINDOW( NutEditorWindow ) {
+	/**
+	 * NutEditorStyle class [ NutStyle ]
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Editor Style core class.
+	 **/
+	class NutEditorStyle : public NutStyle {
 
 	public:
-		NutEditorWindow( );
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param name : Name of the style.
+		 **/
+		NutEditorStyle( );
 
-		virtual ~NutEditorWindow( ) = default;
-
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
+		~NutEditorStyle( ) = default;
+	
 	protected:
-		virtual void OnCreateMenus( ) override;
-		
-		virtual void OnCreate( NutEditor* editor ) override;
+		/**
+		 * OnStyleInit virtual method
+		 * @author : ALVES Quentin
+		 * @note : Setup the current style.
+		 **/
+		virtual void OnCreate( ) override;
 
 	};
 

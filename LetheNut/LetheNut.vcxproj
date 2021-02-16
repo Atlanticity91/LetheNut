@@ -17,6 +17,7 @@
     <ClInclude Include="LetheNut\Assets\NutImage.hpp" />
     <ClInclude Include="LetheNut\Assets\NutJSON.hpp" />
     <ClInclude Include="LetheNut\Assets\NutSound.hpp" />
+    <ClInclude Include="LetheNut\Framework\Editors\Nodes\NutNode.hpp" />
     <ClInclude Include="LetheNut\Framework\Editors\Nodes\NutNodeEditor.hpp" />
     <ClInclude Include="LetheNut\Framework\Editors\Text\NutTextDocument.hpp" />
     <ClInclude Include="LetheNut\Framework\Editors\Text\NutTextEditor.hpp" />
@@ -27,8 +28,6 @@
     <ClInclude Include="LetheNut\Framework\Logger\NutLoggerProfile.hpp" />
     <ClInclude Include="LetheNut\Framework\Utils\NutCamera.hpp" />
     <ClInclude Include="LetheNut\Framework\Utils\NutProjection.hpp" />
-    <ClInclude Include="LetheNut\Framework\NutEditorStyle.hpp" />
-    <ClInclude Include="LetheNut\Framework\NutEditorWindow.hpp" />
     <ClInclude Include="LetheNut\Framework\Panels\NutBrowser.hpp" />
     <ClInclude Include="LetheNut\Framework\Panels\NutProfiler.hpp" />
     <ClInclude Include="LetheNut\Framework\Panels\NutProperties.hpp" />
@@ -36,6 +35,7 @@
     <ClInclude Include="LetheNut\Framework\Panels\NutViewport.hpp" />
     <ClInclude Include="LetheNut\Framework\Utils\NutFileSystem.hpp" />
     <ClInclude Include="LetheNut\NutCore.hpp" />
+    <ClInclude Include="LetheNut\NutDev.hpp" />
     <ClInclude Include="LetheNut\NutEditor.hpp" />
     <ClInclude Include="LetheNut\NutFramework.hpp" />
     <ClInclude Include="LetheNut\UI\Menus\NutMenu.hpp" />
@@ -57,6 +57,7 @@
     <ClInclude Include="LetheNut\Vendor\GLM.hpp" />
     <ClInclude Include="LetheNut\Vendor\ImGUI.hpp" />
     <ClInclude Include="LetheNut\Vendor\JSON.hpp" />
+    <ClInclude Include="LetheNut\Vendor\Mono.hpp" />
     <ClInclude Include="LetheNut\Vendor\OpenAL.hpp" />
     <ClInclude Include="LetheNut\Vendor\OpenGL.hpp" />
     <ClInclude Include="LetheNut\Vendor\STB.hpp" />
@@ -361,6 +362,18 @@
     <ClInclude Include="Thirdparty\GLM\vec3.hpp" />
     <ClInclude Include="Thirdparty\GLM\vec4.hpp" />
     <ClInclude Include="Thirdparty\GLM\vector_relational.hpp" />
+    <ClInclude Include="Thirdparty\ImGUI\imconfig.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imgui.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_dx12.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_glfw.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_osx.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_vulkan.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imgui_impl_win32.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imgui_internal.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imstb_rectpack.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imstb_textedit.h" />
+    <ClInclude Include="Thirdparty\ImGUI\imstb_truetype.h" />
     <ClInclude Include="Thirdparty\JSON\NLohmann.hpp" />
     <ClInclude Include="Thirdparty\OpenAL\al.h" />
     <ClInclude Include="Thirdparty\OpenAL\alc.h" />
@@ -480,8 +493,6 @@
     <ClCompile Include="sources\Framework\TextEditor\NutTextStyle.cpp" />
     <ClCompile Include="sources\Framework\Utils\NutCamera.cpp" />
     <ClCompile Include="sources\Framework\Utils\NutProjection.cpp" />
-    <ClCompile Include="sources\Framework\NutEditorStyle.cpp" />
-    <ClCompile Include="sources\Framework\NutEditorWindow.cpp" />
     <ClCompile Include="sources\Framework\NutLogger.cpp" />
     <ClCompile Include="sources\Framework\NutLoggerProfile.cpp" />
     <ClCompile Include="sources\Framework\Panels\NutBrowser.cpp" />
@@ -510,6 +521,46 @@
     <ClCompile Include="sources\Vendor\GLFW.cpp" />
     <ClCompile Include="sources\Vendor\GLM.cpp" />
     <ClCompile Include="sources\Vendor\ImGUI.cpp" />
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_dx12.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_glfw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_opengl3.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_vulkan.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_impl_win32.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="sources\Vendor\ImGui\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="sources\Vendor\JSON.cpp" />
     <ClCompile Include="sources\Vendor\OpenGL.cpp" />
     <ClCompile Include="sources\Vendor\SpdLog\async.cpp">
@@ -729,20 +780,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(SolutionDir)bin-int\</IntDir>
-    <IncludePath>$(ProjectDir)Thirdparty\;$(SolutionDir)ImGui\;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)bin-int\$(ProjectName)\</IntDir>
+    <IncludePath>$(ProjectDir)Thirdparty\;$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(SolutionDir)bin-int\</IntDir>
-    <IncludePath>$(ProjectDir)Thirdparty\;$(SolutionDir)ImGui\;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)bin-int\$(ProjectName)\</IntDir>
+    <IncludePath>$(ProjectDir)Thirdparty\;$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SPDLOG_COMPILED_LIB;NBUILD;NDEBUG;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SPDLOG_COMPILED_LIB;NBUILD;NDEBUG;NGL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -751,7 +802,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;$(SolutionDir)bin\ImGui.lib;$(SolutionDir)bin\Thirdparty\glfw3.lib;$(SolutionDir)bin\Thirdparty\glew32.lib;$(SolutionDir)bin\Thirdparty\openAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;$(SolutionDir)bin\Thirdparty\glfw3.lib;$(SolutionDir)bin\Thirdparty\glew32.lib;$(SolutionDir)bin\Thirdparty\openAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:library %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -760,7 +812,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SPDLOG_COMPILED_LIB;NBUILD;NDEBUG;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SPDLOG_COMPILED_LIB;NBUILD;NDEBUG;NGL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -771,7 +823,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;$(SolutionDir)bin\ImGui.lib;$(SolutionDir)bin\Thirdparty\glfw3.lib;$(SolutionDir)bin\Thirdparty\glew32.lib;$(SolutionDir)bin\Thirdparty\openAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;$(SolutionDir)bin\Thirdparty\glfw3.lib;$(SolutionDir)bin\Thirdparty\glew32.lib;$(SolutionDir)bin\Thirdparty\openAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:library %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

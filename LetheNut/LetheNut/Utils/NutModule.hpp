@@ -42,6 +42,11 @@
 
 	class NutEditor;
 
+	/**
+	 * NutModule class
+	 * @author : ALVES Quentin
+	 * @node : Defined NutModule core class.
+	 **/
 	NUT_ELEMENT( NutModule ) {
 
 		friend class NutEditor;
@@ -51,29 +56,102 @@
 		NutPlatformLib* importer;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param importer : Pointer to current module importer.
+		 * @param name : Name of the current module.
+		 **/
 		NutModule( NutPlatformLib* importer, nString name );
 
-		virtual ~NutModule( );
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
+		virtual ~NutModule( ) = default;
 
+		/**
+		 * Enable method
+		 * @author : ALVES Quentin
+		 * @node : Enable the current module.
+		 * @param editor : Pointer to current editor.
+		 **/
 		void Enable( NutEditor* editor );
 
+		/**
+		 * Disable method
+		 * @author : ALVES Quentin
+		 * @node : Disable the current module.
+		 * @param editor : Pointer to current editor.
+		 **/
 		void Disable( NutEditor* editor );
 
 	protected:
-		virtual void OnCreate( NutEditor* editor );
+		/**
+		 * OnCreate pure-virtual method
+		 * @author : ALVES Quentin
+		 * @node : Called once when the module is created.
+		 * @param editor : Pointer to current editor.
+		 **/
+		virtual void OnCreate( NutEditor* editor ) = 0;
 
-		virtual void OnEnable( NutEditor* editor );
+		/**
+		 * OnEnable pure-virtual method
+		 * @author : ALVES Quentin
+		 * @node : Called every time the module is enabled.
+		 * @param editor : Pointer to current editor.
+		 **/
+		virtual void OnEnable( NutEditor* editor ) = 0;
 
-		virtual void OnDisable( NutEditor* editor );
+		/**
+		 * OnDisable pure-virtual method
+		 * @author : ALVES Quentin
+		 * @node : Called every time the module is disable.
+		 * @param editor : Pointer to current editor.
+		 **/
+		virtual void OnDisable( NutEditor* editor ) = 0;
 
-		virtual void OnDestroy( NutEditor* editor );
+		/**
+		 * OnDestroy pure-virtual method
+		 * @author : ALVES Quentin
+		 * @node : Called once when the module is destoyed.
+		 * @param editor : Pointer to current editor.
+		 **/
+		virtual void OnDestroy( NutEditor* editor ) = 0;
 
+		/**
+		 * Process pure-virtual method
+		 * @author : ALVES Quentin
+		 * @node : Called every tick of the editor when the module is enabled.
+		 * @param editor : Pointer to current editor.
+		 **/
 		virtual void Process( NutEditor* editor ) = 0;
 
 	public:
+		/**
+		 * GetState virtual const function
+		 * @author : ALVES Quentin
+		 * @node : Get state of the current module.
+		 * @return : bool
+		 **/
 		virtual bool GetState( ) const;
 
+		/**
+		 * GetImporter const function
+		 * @author : ALVES Quentin
+		 * @node : Get current library importer.
+		 * @return : NutPlatformLib*
+		 **/
+		NutPlatformLib* GetImporter( ) const;
+
 	public:
+		/**
+		 * cast operator
+		 * @author : ALVES Quentin
+		 * @node : Cast the module to boolean aka get state 
+				   of the current module.
+		 * @return : bool
+		 **/
 		operator bool( ) const;
 
 	};

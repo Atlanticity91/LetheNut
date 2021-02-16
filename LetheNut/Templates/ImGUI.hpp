@@ -38,6 +38,73 @@
 #define _IGS_NUT_IMGUI_IMP_HPP_
 
 	///////////////////////////////////////////////////////////////////////////////////////////
+	//      INTERNAL
+	///////////////////////////////////////////////////////////////////////////////////////////
+	template< typename Type >
+	void Internal_Vector( const char axe, const ImVec4& normal, const ImVec4& hovered, Type& value, Type reset ) {
+		ImGui::BeginGroup( );
+
+		char axe_str[ 2 ] = { axe, '\0' };
+		auto lineHeight = ImGUI::GetLineHeight( );
+		auto buttonSize = ImVec2{ lineHeight + 3.0f, lineHeight };
+
+		ImGui::PushStyleColor( ImGuiCol_Button, normal );
+		ImGui::PushStyleColor( ImGuiCol_ButtonHovered, hovered );
+		ImGui::PushStyleColor( ImGuiCol_ButtonActive, normal );
+
+		if ( ImGui::Button( axe_str, buttonSize ) )
+			value = reset;
+
+		ImGui::PopStyleColor( 3 );
+
+		ImGui::SameLine( );
+
+		char drag_str[ 4 ] = { '#', '#', axe, '\0' };
+		if constexpr ( std::is_floating_point<Type>::value )
+			ImGui::DragFloat( drag_str, &value, 0.1f, 0.0f, 0.0f, "%.2f" );
+		else
+			ImGui::DragInt( drag_str, &value, 0.1f, 0.0f, 0.0f, "%.2f" );
+
+		ImGui::EndGroup( );
+	}
+
+	template< typename Type >
+	void Internal_Slider( char axe, const ImVec4& normal, const ImVec4& hovered, Type& value, Type min, Type max ) {
+		char axe_str[ 2 ] = { axe, '\0' };
+
+		nHelper::Clamp( value, min, max );
+
+		auto lineHeight = ImGUI::GetLineHeight( );
+		auto buttonSize = ImVec2{ lineHeight + 3.0f, lineHeight };
+
+		ImGui::BeginGroup( );
+		ImGui::PushStyleColor( ImGuiCol_Button, normal );
+		ImGui::PushStyleColor( ImGuiCol_ButtonHovered, hovered );
+		ImGui::PushStyleColor( ImGuiCol_ButtonActive, normal );
+
+		if ( ImGui::Button( axe_str, buttonSize ) )
+			value = min;
+
+		ImGui::SameLine( );
+
+		if constexpr ( std::is_floating_point<Type>::value )
+			ImGui::SliderFloat( "", &value, min, max );
+		else
+			ImGui::SliderInt( "", &value, min, max );
+
+
+		ImGui::SameLine( );
+
+		axe_str[ 0 ] = toupper( axe );
+
+		if ( ImGui::Button( axe_str, buttonSize ) )
+			value = max;
+
+		ImGui::PopStyleColor( 3 );
+		ImGui::EndGroup( );
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////
 	//      PUBLIC
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template<typename... Args>
@@ -131,6 +198,114 @@
 		if ( nHelper::GetIsValid( label ) && !ImGUI::GetIsSkiped( ) ) {
 			if ( ImGui::Button( label, size ) )
 				on_click( args... );
+		}
+	}
+
+	template<typename Type>
+	void ImGUI::ItemVector( nString label, Type reset, Type& value ) {
+		if constexpr ( std::is_arithmetic<Type>::value ) {
+			if ( ImGUI::Item( label ) ) {
+				ImGui::PushItemWidth( ImGui::GetColumnWidth( ) * .85f );
+				Internal_Vector( 'X', AxeX_Normal, AxeX_Hovered, value, reset );
+
+				ImGUI::EndItem( );
+			}
+		}
+	}
+
+	template<typename Type>
+	void ImGUI::ItemVector2( nString label, Type reset, Type& value_x, Type& value_y ) {
+		if constexpr ( std::is_arithmetic<Type>::value ) {
+			if ( ImGUI::Item( label ) ) {
+				ImGui::PushItemWidth( ImGui::GetColumnWidth( ) * .85f );
+				Internal_Vector( 'X', AxeX_Normal, AxeX_Hovered, value_x, reset );
+				Internal_Vector( 'Y', AxeY_Normal, AxeY_Hovered, value_y, reset );
+
+				ImGUI::EndItem( );
+			}
+		}
+	}
+
+	template<typename Type>
+	void ImGUI::ItemVector3( nString label, Type reset, Type& value_x, Type& value_y, Type& value_z ) {
+		if constexpr ( std::is_arithmetic<Type>::value ) {
+			if ( ImGUI::Item( label ) ) {
+				ImGui::PushItemWidth( ImGui::GetColumnWidth( ) * .85f );
+				Internal_Vector( 'X', AxeX_Normal, AxeX_Hovered, value_x, reset );
+				Internal_Vector( 'Y', AxeY_Normal, AxeY_Hovered, value_y, reset );
+				Internal_Vector( 'Z', AxeZ_Normal, AxeZ_Hovered, value_z, reset );
+
+				ImGUI::EndItem( );
+			}
+		}
+	}
+
+	template<typename Type>
+	void ImGUI::ItemVector4( nString label, Type reset, Type& value_x, Type& value_y, Type& value_z, Type& value_w ) {
+		if constexpr ( std::is_arithmetic<Type>::value ) {
+			if ( ImGUI::Item( label ) ) {
+				ImGui::PushItemWidth( ImGui::GetColumnWidth( ) * .85f );
+				Internal_Vector( 'X', AxeX_Normal, AxeX_Hovered, value_x, reset );
+				Internal_Vector( 'Y', AxeY_Normal, AxeY_Hovered, value_y, reset );
+				Internal_Vector( 'Z', AxeZ_Normal, AxeZ_Hovered, value_z, reset );
+				Internal_Vector( 'W', AxeW_Normal, AxeW_Hovered, value_z, reset );
+
+				ImGUI::EndItem( );
+			}
+		}
+	}
+
+	template<typename Type>
+	void ImGUI::ItemSlider( nString label, Type min, Type max, Type& value ) {
+		if constexpr ( std::is_arithmetic<Type>::value ) {
+			if ( ImGUI::Item( label ) ) {
+				ImGui::PushItemWidth( ImGui::GetColumnWidth( ) * .7f );
+				Internal_Slider( 'X', AxeX_Normal, AxeX_Hovered, value, min, max );
+
+				ImGUI::EndItem( );
+			}
+		}
+	}
+
+	template<typename Type>
+	void ImGUI::ItemSlider2( nString label, Type min, Type max, Type& value_x, Type& value_y ) {
+		if constexpr ( std::is_arithmetic<Type>::value ) {
+			if ( ImGUI::Item( label ) ) {
+				ImGui::PushItemWidth( ImGui::GetColumnWidth( ) * .7f );
+				Internal_Slider( 'X', AxeX_Normal, AxeX_Hovered, value_x, min, max );
+				Internal_Slider( 'Y', AxeY_Normal, AxeY_Hovered, value_y, min, max );
+
+				ImGUI::EndItem( );
+			}
+		}
+	}
+
+	template<typename Type>
+	void ImGUI::ItemSlider3( nString label, Type min, Type max, Type& value_x, Type& value_y, Type& value_z ) {
+		if constexpr ( std::is_arithmetic<Type>::value ) {
+			if ( ImGUI::Item( label ) ) {
+				ImGui::PushItemWidth( ImGui::GetColumnWidth( ) * .7f );
+				Internal_Slider( 'X', AxeX_Normal, AxeX_Hovered, value_x, min, max );
+				Internal_Slider( 'Y', AxeY_Normal, AxeY_Hovered, value_y, min, max );
+				Internal_Slider( 'Z', AxeZ_Normal, AxeZ_Hovered, value_z, min, max );
+
+				ImGUI::EndItem( );
+			}
+		}
+	}
+
+	template<typename Type>
+	void ImGUI::ItemSlider4( nString label, Type min, Type max, Type& value_x, Type& value_y, Type& value_z, Type& value_w ) {
+		if constexpr ( std::is_arithmetic<Type>::value ) {
+			if ( ImGUI::Item( label ) ) {
+				ImGui::PushItemWidth( ImGui::GetColumnWidth( ) * .7f );
+				Internal_Slider( 'X', AxeX_Normal, AxeX_Hovered, value_x, min, max );
+				Internal_Slider( 'Y', AxeY_Normal, AxeY_Hovered, value_y, min, max );
+				Internal_Slider( 'Z', AxeZ_Normal, AxeZ_Hovered, value_z, min, max );
+				Internal_Slider( 'W', AxeW_Normal, AxeW_Hovered, value_z, min, max );
+
+				ImGUI::EndItem( );
+			}
 		}
 	}
 

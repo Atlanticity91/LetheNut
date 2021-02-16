@@ -43,6 +43,11 @@
 	
 	class NutWindow;
 
+	/**
+	 * NutPanel class [ NutUIElement ]
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Panel core class.
+	 **/
 	NUT_UI_ELEMENT( NutPanel ) {
 
 		friend bool ImGUI::Panel( NutPanel* );
@@ -54,42 +59,151 @@
 		ImGuiWindowFlags flags;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param label : Label of the panel.
+		 **/
 		NutPanel( nString label );
 
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param label : Label of the panel.
+		 * @param flags : Flags of the panel.
+		 **/
 		NutPanel( nString label, ImGuiWindowFlags flags );
 
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param label : Label of the panel.
+		 * @param padding : Padding of the panel.
+		 **/
 		NutPanel( nString label, const ImVec2& padding );
 
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param label : Label of the panel.
+		 * @param padding : Padding of the panel.
+		 * @param flags : Flags of the panel.
+		 **/
 		NutPanel( nString label, const ImVec2& padding, ImGuiWindowFlags flags );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		virtual ~NutPanel( ) = default;
 
 	protected:
+		/**
+		 * Enable method
+		 * @author : ALVES Quentin
+		 * @note : Enable the current panel.
+		 * @param editor : Pointer to current editor instance.
+		 * @param parent : Current panel parent window.
+		 **/
 		void Enable( NutEditor* editor, NutWindow* parent );
 
+		/**
+		 * Disable method
+		 * @author : ALVES Quentin
+		 * @note : Disable the current panel.
+		 * @param editor : Pointer to current editor instance.
+		 * @param parent : Current panel parent window.
+		 **/
 		void Disable( NutEditor* editor, NutWindow* parent );
 
+		/**
+		 * OnEnable method
+		 * @author : ALVES Quentin
+		 * @note : On enable the current panel.
+		 * @param editor : Pointer to current editor instance.
+		 * @param parent : Current panel parent window.
+		 **/
 		virtual void OnEnable( NutEditor* editor, NutWindow* parent );
 
+		/**
+		 * OnDisable method
+		 * @author : ALVES Quentin
+		 * @note : On disable the current panel.
+		 * @param editor : Pointer to current editor instance.
+		 * @param parent : Current panel parent window.
+		 **/
 		virtual void OnDisable( NutEditor* editor, NutWindow* parent );
 
+		/**
+		 * OnCreate pure-virtual method
+		 * @author : ALVES Quentin
+		 * @note : On create the current panel.
+		 * @param editor : Pointer to current editor instance.
+		 * @param parent : Current panel parent window.
+		 **/
 		virtual void OnCreate( NutEditor* editor, NutWindow* parent ) = 0;
 
+		/**
+		 * OnDestroy function
+		 * @author : ALVES Quentin
+		 * @note : On destroy the current panel.
+		 * @param editor : Pointer to current editor instance.
+		 * @param parent : Current panel parent window.
+		 * @return : bool
+		 **/
 		virtual bool OnDestroy( NutEditor* editor, NutWindow* parent );
 
+		/**
+		 * OnProcess pure-virtual method
+		 * @author : ALVES Quentin
+		 * @note : On process the current panel.
+		 * @param editor : Pointer to current editor instance.
+		 * @param parent : Current panel parent window.
+		 **/
 		virtual void OnProcess( NutEditor* editor, NutWindow* parent ) = 0;
 
+		/**
+		 * OnRender pure-virtual method
+		 * @author : ALVES Quentin
+		 * @note : On render the current panel.
+		 * @param editor : Pointer to current editor instance.
+		 * @param parent : Current panel parent window.
+		 **/
 		virtual void OnRender( NutEditor* editor, NutWindow* parent ) = 0;
 
 	public:
+		/**
+		 * GetIsActive const function
+		 * @author : ALVES Quentin
+		 * @note : Get current panel state.
+		 * @return : bool
+		 **/
 		bool GetIsActive( ) const;
 
 	private:
+		/**
+		 * GetFlags const function
+		 * @author : ALVES Quentin
+		 * @note : Get current panel flags.
+		 * @return : ImGuiWindowFlags
+		 **/
 		ImGuiWindowFlags GetFlags( ) const;
 
+		/**
+		 * GetPadding const function
+		 * @author : ALVES Quentin
+		 * @note : Get current panel padding.
+		 * @return : ImVec2&
+		 **/
 		ImVec2& GetPadding( ) const;
 
 	public:
+		/**
+		 * [] const operator
+		 * @author : ALVES Quentin
+		 * @note : Get a menu of the current panel.
+		 * @return : NutMenu*
+		 **/
 		NutMenu* operator[]( nString label ) const;
 
 	};

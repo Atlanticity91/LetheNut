@@ -34,32 +34,30 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_ASSET_JSON_HPP_
-#define _IGS_NUT_ASSET_JSON_HPP_
+#ifndef _IGS_NUT_MONO_HPP_
+#define _IGS_NUT_MONO_HPP_
 
-	#include <LetheNut/Vendor/JSON.hpp>
+	#include <LetheNut/NutCore.hpp>
 
-	#include "NutAsset.hpp"
-
-	NUT_ASSET( NutJSON ) {
-
-	private:
-		mutable JSON json;
-
-	public:
-		NutJSON( nString alias );
-
-		virtual ~NutJSON( ) = default;
-
-		virtual bool Load( NutEditor* editor, nString path ) override;
-
-		virtual bool Write( NutEditor* editor, nString path ) override;
+	/**
+	 * NutMono final class
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Mono core class.
+	 **/
+	class NUT_API NutMono final {
 
 	public:
-		JSON& Get( ) const;
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 **/
+		NutMono( ) = default;
 
-	public:
-		operator JSON( ) const;
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
+		~NutMono( ) = default;
 
 	};
 

@@ -159,6 +159,9 @@
         void InternalForeach( nString parameter, Action&& action, Args... args );
 
     public:
+        operator nlohmann::json();
+
+    public:
         /**
          * Get template const function
          * @author : ALVES Quentin

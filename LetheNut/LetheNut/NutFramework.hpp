@@ -36,10 +36,7 @@
 
 #ifndef _IGS_NUT_FRAMEWORK_HPP_
 #define _IGS_NUT_FRAMEWORK_HPP_
-
-	#include "Framework/NutEditorStyle.hpp"
-	#include "Framework/NutEditorWindow.hpp"
-
+	
 	#include "Framework/Editors/Nodes/NutNodeEditor.hpp"
 	#include "Framework/Editors/Text/NutTextEditor.hpp"
 

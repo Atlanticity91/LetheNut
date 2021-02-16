@@ -42,12 +42,9 @@
 	#ifdef _WIN64
 		#define _CRTDBG_MAP_ALLOC
 		#include <crtdbg.h>
-
 	#else
-		// Linux Memory Leak Tracker
+		// TODO : Linux Memory Leak Tracker
 	#endif
-#else
-	#define NEW new
 #endif
 
  /**
@@ -72,14 +69,15 @@ int main( int argc, char** argv ) {
 	if ( editor && editor->Start( argc, argv ) ) 
 		editor->Run( );
 
-	editor->Stop( );
-
 	delete editor;
+
+	GLFW::Cleanup( );
 
 #ifdef NDEBUG
 	#ifdef _WIN64
 		_CrtDumpMemoryLeaks( );
 	#else
+		// TODO : Linux Memory Leak Tracker
 	#endif
 #endif
 

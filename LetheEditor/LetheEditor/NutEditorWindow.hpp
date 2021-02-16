@@ -10,7 +10,7 @@
  * Licensed under the MIT License <http://opensource.org/licenses/MIT>.
  * SPDX-License-Identifier: MIT
  *
- * Copyright (C) 2021 ALVES Quentin.
+ * Copyright (C) 2020 ALVES Quentin.
  *
  * This file is part of Lethe Nut project : https://github.com/Atlanticity91/LetheNut.
  *
@@ -34,32 +34,45 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_ASSET_JSON_HPP_
-#define _IGS_NUT_ASSET_JSON_HPP_
+#ifndef _IGS_NUT_EDITOR_WINDOW_HPP_
+#define _IGS_NUT_EDITOR_WINDOW_HPP_
 
-	#include <LetheNut/Vendor/JSON.hpp>
+	#include <LetheNut/UI/NutWindow.hpp>
 
-	#include "NutAsset.hpp"
-
-	NUT_ASSET( NutJSON ) {
-
-	private:
-		mutable JSON json;
-
-	public:
-		NutJSON( nString alias );
-
-		virtual ~NutJSON( ) = default;
-
-		virtual bool Load( NutEditor* editor, nString path ) override;
-
-		virtual bool Write( NutEditor* editor, nString path ) override;
+	/**
+	 * NutEditorWindow class [ NutWindow ]
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Editor Window core class.
+	 **/
+	class NutEditorWindow : public NutWindow {
 
 	public:
-		JSON& Get( ) const;
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 **/
+		NutEditorWindow( );
 
-	public:
-		operator JSON( ) const;
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
+		virtual ~NutEditorWindow( ) = default;
+
+	protected:
+		/**
+		 * OnCreateMenus method
+		 * @author : ALVES Quentin
+		 * @note : Called once to create menus.
+		 **/
+		virtual void OnCreateMenus( ) override;
+		
+		/**
+		 * OnCreate method
+		 * @author : ALVES Quentin
+		 * @note : Called once to create current editor window.
+		 **/
+		virtual void OnCreate( NutEditor* editor ) override;
 
 	};
 

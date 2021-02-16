@@ -36,13 +36,14 @@
 
 #include "__pch.hpp"
 
-#include <LetheNut/Assets/NutAssetManager.hpp>
+#include <LetheNut/NutEditor.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC
 ///////////////////////////////////////////////////////////////////////////////////////////
 NutAssetManager::NutAssetManager( )
-	: images( ),
+	: gl_context( nullptr ),
+	images( ),
 	sounds( ),
 	jsons( ),
 	binaries( )
@@ -52,14 +53,28 @@ NutAssetManager::~NutAssetManager( ) {
 	this->images.Foreach( [ ]( auto& element ) { element.Cleanup( ); } );
 	this->sounds.Foreach( [ ]( auto& element ) { element.Cleanup( ); } );
 	this->binaries.Foreach( [ ]( auto& element ) { element.Cleanup( ); } );
+	
+	GLFW::Destroy( this->gl_context );
 }
+
+bool NutAssetManager::Initialize( ) { return GLFW::CreateWindowLess( this->gl_context ); }
 
 bool NutAssetManager::LoadImageAs( NutEditor* editor, nString alias, nString path ) {
 	if ( nHelper::GetIsValid( alias ) && path ) {
 		auto* image = this->images.Append( alias );
 
-		if ( image )
-			return NUT_CAST( image, NutAsset )->Load( editor, path );
+		if ( image ) {
+			auto state = NUT_CAST( image, NutAsset )->Load( editor, path );
+
+			if ( !state ) {
+				this->images.Erase( alias );
+
+				editor->Log( NutLoggerModes::NLM_INFO, "Image loading fail : %s", alias );
+			} else
+				editor->Log( NutLoggerModes::NLM_INFO, "Image loading success : %s", alias );
+
+			return state;
+		}
 	}
 
 	return false;
@@ -73,8 +88,18 @@ bool NutAssetManager::LoadSoundAs( NutEditor* editor, nString alias, nString pat
 	if ( nHelper::GetIsValid( alias ) && path ) {
 		auto* sound = this->sounds.Append( alias );
 
-		if ( sound )
-			return NUT_CAST( sound, NutAsset )->Load( editor, path );
+		if ( sound ) {
+			auto state = NUT_CAST( sound, NutAsset )->Load( editor, path );
+
+			if ( !state ) {
+				this->sounds.Erase( alias );
+
+				editor->Log( NutLoggerModes::NLM_INFO, "Sound loading fail : %s", alias );
+			} else
+				editor->Log( NutLoggerModes::NLM_INFO, "Sound loading success : %s", alias );
+
+			return state;
+		}
 	}
 
 	return false;
@@ -88,8 +113,18 @@ bool NutAssetManager::LoadJSONAs( NutEditor* editor, nString alias, nString path
 	if ( nHelper::GetIsValid( alias ) && path ) {
 		auto* json = this->jsons.Append( alias );
 
-		if ( json )
-			return NUT_CAST( json, NutAsset )->Load( editor, path );
+		if ( json ) {
+			auto state = NUT_CAST( json, NutAsset )->Load( editor, path );
+
+			if ( !state ) {
+				this->jsons.Erase( alias );
+
+				editor->Log( NutLoggerModes::NLM_INFO, "JSON loading fail : %s", alias );
+			} else
+				editor->Log( NutLoggerModes::NLM_INFO, "JSON loading success : %s", alias );
+
+			return state;
+		}
 	}
 
 	return false;
@@ -103,8 +138,18 @@ bool NutAssetManager::LoadBinaryAs( NutEditor* editor, nString alias, nString pa
 	if ( nHelper::GetIsValid( alias ) && path ) {
 		auto* binary = this->binaries.Append( alias );
 
-		if ( binary )
-			return NUT_CAST( binary, NutAsset )->Load( editor, path );
+		if ( binary ) {
+			auto state = NUT_CAST( binary, NutAsset )->Load( editor, path );
+
+			if ( !state ) {
+				this->binaries.Erase( alias );
+
+				editor->Log( NutLoggerModes::NLM_INFO, "Binary loading fail : %s", alias );
+			} else
+				editor->Log( NutLoggerModes::NLM_INFO, "Binary loading success : %s", alias );
+
+			return state;
+		}
 	}
 
 	return false;
@@ -119,6 +164,8 @@ bool NutAssetManager::WriteJSON( NutEditor* editor, nString alias, nString path 
 
 	if ( json )
 		return NUT_CAST( json, NutAsset )->Write( editor, path );
+	else
+		editor->Log( NutLoggerModes::NLM_INFO, "Can't find JSON : %s", alias );
 
 	return false;
 }
@@ -132,6 +179,8 @@ bool NutAssetManager::WriteBinary( NutEditor* editor, nString alias, nString pat
 
 	if ( binary )
 		return NUT_CAST( binary, NutAsset )->Write( editor, path );
+	else
+		editor->Log( NutLoggerModes::NLM_INFO, "Can't find Binary : %s", alias );
 
 	return false;
 }
@@ -143,6 +192,8 @@ bool NutAssetManager::WriteBinary( NutEditor* editor, const std::string& alias, 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //      PUBLIC GET
 ///////////////////////////////////////////////////////////////////////////////////////////
+nPointer NutAssetManager::GetContext( ) const { return this->gl_context; }
+
 NutImage* NutAssetManager::GetImage( nString alias ) const { return this->images[ alias ]; }
 
 NutSound* NutAssetManager::GetSound( nString alias ) const { return this->sounds[ alias ]; }

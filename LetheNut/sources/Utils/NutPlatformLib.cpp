@@ -59,17 +59,13 @@ NutPlatformLib::NutPlatformLib( nString path )
 #else
 	: handle( dlopen( path, RTLD_LAZY ) )
 #endif
-{ 
-	printf( "[ %p ] %s\n", this->handle, path );
-}
+{ }
 
 NutPlatformLib::NutPlatformLib( const std::string& path )
 	: NutPlatformLib( path.c_str( ) )
 { }
 
 NutPlatformLib::~NutPlatformLib( ) {
-	printf( "[ %p ] ~\n", this->handle );
-
 	if ( this->handle != nullptr ) {
 #ifdef _WIN64
 		FreeLibrary( this->handle );

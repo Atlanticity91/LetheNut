@@ -37,55 +37,170 @@
 #ifndef _IGS_NUT_WINDOW_HPP_
 #define _IGS_NUT_WINDOW_HPP_
 
-	#include <LetheNut/Vendor/GLFW.hpp>
+	#include <LetheNut/Vendor/ImGUI.hpp>
 
 	#include "NutPanel.hpp"
 
 	#define NUT_WINDOW( NAME ) class NUT_API NAME : public NutWindow
 
+	/**
+	 * NutWindow class [ NutUIElement ]
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Window core class.
+	 **/
 	NUT_UI_ELEMENT( NutWindow ) {
 
 		friend bool ImGUI::Window( NutWindow* );
 		friend class NutEditor;
 
 	private:
-		mutable GLFW::Window handle;
+		mutable GLFW::Window window;
+		mutable ImGuiContext* context;
 		mutable NutList<NutPanel*> panels;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param name : Name of the window.
+		 * @param width : Default width of the window.
+		 * @param height : Default height of the window.
+		 **/
 		NutWindow( nString name, const nInt width, const nInt height );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		virtual ~NutWindow( );
 
+		/**
+		 * Enable method
+		 * @author : ALVES Quentin
+		 * @note : Enable a panel.
+		 * @param editor : Pointer to current editor.
+		 * @param panel : Name of the panel to enable.
+		 **/
 		void Enable( NutEditor* editor, nString panel );
 
+		/**
+		 * Disable method
+		 * @author : ALVES Quentin
+		 * @note : Disable a panel.
+		 * @param editor : Pointer to current editor.
+		 * @param panel : Name of the panel to disable.
+		 **/
 		void Disable( NutEditor* editor, nString panel );
 
+		/**
+		 * Destroy method
+		 * @author : ALVES Quentin
+		 * @note : Destroy a panel.
+		 * @param editor : Pointer to current editor.
+		 * @param panel : Name of the panel to destroy.
+		 **/
 		void Destroy( NutEditor* editor, nString panel );
 
 	protected:
-		bool Open( );
+		/**
+		 * Open function
+		 * @author : ALVES Quentin
+		 * @note : Open the current window.
+		 * @param ressources : OpenGL context used for ressources loading.
+		 * @return : bool
+		 **/
+		bool Open( const nPointer ressources );
 
+		/**
+		 * OnCreate pure-virtual method
+		 * @author : ALVES Quentin
+		 * @note : Called once when the window is created.
+		 * @param editor : Pointer to current editor.
+		 **/
 		virtual void OnCreate( NutEditor* editor ) = 0;
 
+		/**
+		 * OnCreate function
+		 * @author : ALVES Quentin
+		 * @note : Called once when the window is destroyed.
+		 * @param editor : Pointer to current editor.
+		 * @return : bool
+		 **/
 		virtual bool OnDestroy( NutEditor* editor );
 
+		/**
+		 * OnRender method
+		 * @author : ALVES Quentin
+		 * @note : Called every tick when is active to render current window.
+		 * @param editor : Pointer to current editor.
+		 **/
 		virtual void OnRender( NutEditor* editor );
 
 	public:
+		/**
+		 * Create template function
+		 * @author : ALVES Quentin
+		 * @note : Called every tick when is active to render current window.
+		 * @template Type : Query instance of panel to create.
+		 * @template Args : Arguments type capture.
+		 * @param editor : Pointer to current editor.
+		 * @param Args : Arguements for the panel contructor call.
+		 * @return : Type*
+		 **/
 		template<typename Type = NutPanel, typename... Args>
 		Type* Create( NutEditor* editor, Args... args );
 
 	public:
+		/**
+		 * GetHandle const function
+		 * @author : ALVES Quentin
+		 * @note : Get current GLFW handle.
+		 * @return : GLFW::Window&
+		 **/
 		GLFW::Window& GetHandle( ) const;
 
+		/**
+		 * GetContext const function
+		 * @author : ALVES Quentin
+		 * @note : Get current ImGui context.
+		 * @return : const ImGuiContext*
+		 **/
+		const ImGuiContext* GetContext( ) const;
+
+		/**
+		 * ShouldRun const function
+		 * @author : ALVES Quentin
+		 * @note : Get if the current window should run.
+		 * @return : bool
+		 **/
 		bool ShouldRun( ) const;
 
+		/**
+		 * GetPanels const function
+		 * @author : ALVES Quentin
+		 * @note : Get current window panel list.
+		 * @return : NutList<NutPanel*>&
+		 **/
 		NutList<NutPanel*>& GetPanels( ) const;
 
+		/**
+		 * GetPanel const function
+		 * @author : ALVES Quentin
+		 * @note : Get a panel of current window panel list.
+		 * @param name : Name of the query panel.
+		 * @return : NutPanel*
+		 **/
 		NutPanel* GetPanel( nString name ) const;
 
 	public:
+		/**
+		 * GetPanel const function
+		 * @author : ALVES Quentin
+		 * @note : Get a panel of current window panel list.
+		 * @template Type : Query instance of panel to create.
+		 * @param name : Name of the query panel.
+		 * @return : Type*
+		 **/
 		template<typename Type = NutPanel>
 		Type* GetPanel( nString panel );
 

@@ -39,9 +39,32 @@
 
 	#include "NutFramework.hpp"
 	#include "Assets/NutAssetManager.hpp"
+	#include "UI/NutStyle.hpp"
+	#include "UI/NutWindow.hpp"
 	#include "Utils/NutLibrary.hpp"
 	#include "Utils/NutModule.hpp"
 	#include "Vendor/JSON.hpp"
+	#include "Vendor/Mono.hpp"
+
+	// -- DEV ROAD --
+	// -> Virtual File System
+	// -> Mono support
+	// [TextEditor] :
+	//		-> Text rendering
+	//		-> Text parser
+	//		-> Menu implementation
+	//		-> (Text completion)
+	// [NodeEditor] :
+	//		-> Node rendering
+	//		-> Node context menu
+	//		-> Node parser
+	//		-> Menu implementation
+	// [SpriteEditor]
+	// [AnimationEditor]
+	// [BlueprintEditor] (Knight + C)
+	// [MaterialEditor] (GLSL)
+	// [ScriptEditor] (Knight + C)
+	// [PostProcessEditor]
 
 	/**
 	 * NutEditor final class
@@ -54,11 +77,11 @@
 
 	private:
 		bool is_running;
+		NutLogger logger;
 		mutable NutFileSystem file_system;
 		mutable NutAssetManager assets;
-		NutLogger logger;
-		JSON config;
-		NutStyle* style;
+		mutable NutMono mono;
+		std::shared_ptr<NutStyle> style;
 		NutList<NutLibrary*> libraries;
 		NutList<NutModule*> modules;
 		NutList<NutWindow*> windows;
@@ -320,6 +343,14 @@
 		 * @return : NutAssetManager*
 		 **/
 		inline NutAssetManager* GetAssetManager( ) const;
+
+		/**
+		 * GetMono const function
+		 * @author : ALVES Quentin
+		 * @note : Get current mono.
+		 * @return : NutMono*
+		 **/
+		inline NutMono* GetMono( ) const;
 
 		/**
 		 * GetStyle const function

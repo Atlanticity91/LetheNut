@@ -34,32 +34,61 @@
  *
  ************************************************************************************/
 
-#ifndef _IGS_NUT_ASSET_JSON_HPP_
-#define _IGS_NUT_ASSET_JSON_HPP_
+#ifndef _IGS_NUT_NODE_HPP_
+#define _IGS_NUT_NODE_HPP_
 
-	#include <LetheNut/Vendor/JSON.hpp>
+	#include <LetheNut/Vendor/ImGUI.hpp>
 
-	#include "NutAsset.hpp"
-
-	NUT_ASSET( NutJSON ) {
+	template<size_t Inputs, size_t Outputs>
+	class NutNode {
 
 	private:
-		mutable JSON json;
+		ImGUI::ImNode data;
+		ImGUI::ImNodePin inputs[ Inputs ];
+		ImGUI::ImNodePin outputs[ Outputs ];
 
 	public:
-		NutJSON( nString alias );
+		NutNode( nString label, nString description, ImColor color )
+			: NutNode( label, description, false, color, 0, 0 )
+		{ }
 
-		virtual ~NutJSON( ) = default;
+		NutNode( nString label, nString description, bool is_centered, ImColor color ) 
+			: NutNode( label, description, is_centered, color, 0, 0 )
+		{ }
 
-		virtual bool Load( NutEditor* editor, nString path ) override;
+		NutNode( nString label, nString description, bool is_centered, ImColor color, nUByte column, nUByte row ) 
+			: data( label, description, is_centered, color, column, row )
+		{ 
+			this->OnCreate( ); 
 
-		virtual bool Write( NutEditor* editor, nString path ) override;
+			for ( int i = 0; i < Inputs; i++ )
+				this->inputs[ i ] = ImGUI::ImNodePin( ImGUI::EImNodePinTypes::EPT_TRIANGLE, "Test", ImColor{ 255, 32, 32, 255 } );
 
-	public:
-		JSON& Get( ) const;
+			for ( int i = 0; i < Outputs; i++ )
+				this->outputs[ i ] = ImGUI::ImNodePin( ImGUI::EImNodePinTypes::EPT_TRIANGLE, "Test", ImColor{ 255, 32, 32, 255 } );
+		}
 
-	public:
-		operator JSON( ) const;
+		virtual ~NutNode( ) = default;
+
+		virtual void OnRender( ImGUI::ImCanvas& canvas, ImGUI::ImNodeStyle& node_style, const ImVec2& position, bool is_selected ) {
+			if ( ImGUI::Node( canvas, node_style, this->data, position ) ) {
+				ImGui::BeginGroup( );
+				for ( int idx = 0; idx < Inputs; idx++ )
+					ImGUI::NodeInputPin( node_style, this->inputs[ idx ], false );
+				ImGui::EndGroup( );
+				ImGui::SameLine( );
+
+				ImGui::BeginGroup( );
+				for ( int odx = 0; odx < Outputs; odx++ )
+					ImGUI::NodeOutputputPin( node_style, this->outputs[ odx ], true );
+				ImGui::EndGroup( );
+
+				ImGUI::EndNode( canvas, node_style, this->data, position, is_selected );
+			}
+		}
+
+	protected:
+		virtual void OnCreate( ) { };
 
 	};
 

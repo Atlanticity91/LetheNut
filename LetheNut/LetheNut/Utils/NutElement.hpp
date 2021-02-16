@@ -39,6 +39,16 @@
 
 	#include <LetheNut/NutCore.hpp>
 
+	/**
+	 * NUT_ELEMENT macro
+	 * @author : ALVES Quentin
+	 * @node : Helper for child class of NutElement.
+	 * @param NAME : Name of the new class.
+	 * @usage : 
+	 *		NUT_ELEMENT( Test ) { ... };
+	 * 
+	 *	-> Create a Test class inherit from NutElement.
+	 **/
 	#define NUT_ELEMENT( NAME ) class NUT_API NAME : public NutElement
 
 	class NutEditor;
@@ -47,17 +57,38 @@
 	class NutWindow;
 	class NutPanel;
 
+	/**
+	 * Nut_Element struct
+	 * @author : ALVES Quentin
+	 * @node : Defined core struct for NutElement struct.
+	 **/
 	struct NUT_API Nut_Element {
 
 		nString label;
 		NutHash hash;
 
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param label : Label of the element.
+		 **/
 		Nut_Element( nString label );
 
+		/**
+		 * GetHash const function
+		 * @author : ALVES Quentin
+		 * @note : Get Hash of the element.
+		 * @return : NutHash
+		 **/
 		NutHash GetHash( ) const;
 
 	};
 
+	/**
+	 * NutElement class
+	 * @author : ALVES Quentin
+	 * @node : Defined core class for NutElement class.
+	 **/
 	class NUT_API NutElement {
 
 	private:
@@ -65,15 +96,43 @@
 		nString label;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param label : Label of the element.
+		 **/
 		NutElement( nString label );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		virtual ~NutElement( ) = default;
 
 	public:
+		/**
+		 * GetHash const function
+		 * @author : ALVES Quentin
+		 * @note : Get Hash of the element.
+		 * @return : NutHash
+		 **/
 		NutHash GetHash( ) const;
 
+		/**
+		 * GetName const function
+		 * @author : ALVES Quentin
+		 * @note : Get name of the current element.
+		 *		   Same as label but useful for name consistency.
+		 * @return : nString
+		 **/
 		nString GetName( ) const;
 
+		/**
+		 * GetLabel const function
+		 * @author : ALVES Quentin
+		 * @note : Get label of the current element.
+		 * @return : nString
+		 **/
 		nString GetLabel( ) const;
 
 	};

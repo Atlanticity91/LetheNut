@@ -47,6 +47,11 @@
 	#include <Thirdparty/GLM/ext/matrix_clip_space.hpp>
 	#include <Thirdparty/GLM/ext/scalar_constants.hpp>
 
+	/**
+	 * GLM namespace
+	 * @author : ALVES Quentin
+	 * @node : Wrapper for GLM.
+	 **/
 	namespace GLM {
 
 		const float PI_f = glm::pi<float>( );

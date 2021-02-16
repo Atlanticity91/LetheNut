@@ -164,10 +164,8 @@ OpenGL::Mesh::Mesh( )
 bool OpenGL::Initialize( NutEditor* editor ) {
 	auto state = glewInit( ); 
 
-	if ( state != GLEW_OK ) {
-
+	if ( state != GLEW_OK )
 		editor->Log( NutLoggerModes::NLM_ERRR, (nString)glewGetErrorString( state ) );
-	}
 
 	return state == GLEW_OK;
 }
@@ -199,7 +197,7 @@ bool OpenGL::Create( Frame& frame, nUInt width, nUInt height ) {
 		if (
 			internal_CreateTexture( frame.color, width, height, nullptr ) &&
 			internal_CreateRender( frame.render, width, height )
-			) {
+		) {
 			glBindFramebuffer( GL_FRAMEBUFFER, frame.ID );
 			glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, frame.color, 0 );
 			glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, frame.render );
@@ -226,7 +224,9 @@ bool OpenGL::Create( Texture& texture, nUInt width, nUInt height ) {
 }
 
 bool OpenGL::Create( Texture& texture, nUInt width, nUInt height, nUByte* pixels ) {
-	if ( internal_CreateTexture( texture.ID, width, height, pixels ) ) {
+	nUInt tmp;
+	if ( internal_CreateTexture( tmp, width, height, pixels ) ) {
+		texture.ID = tmp;
 		texture.Width = width;
 		texture.Height = height;
 	}
