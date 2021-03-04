@@ -43,6 +43,11 @@
 	typedef void (*NutModalContent)( NutEditor*, NutWindow*, NutPanel* );
 	typedef bool (*NutModalOnClick)( NutEditor*, NutWindow*, NutPanel* );
 
+	/**
+	 * NutModalButton struct
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Modal Button struct.
+	 **/
 	struct NUT_API NutModalButton {
 
 		nString label;
@@ -51,6 +56,11 @@
 
 	};
 
+	/**
+	 * NutModal final class [ NutElement ]
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Modal core class.
+	 **/
 	NUT_ELEMENT( NutModal final ) {
 
 	private:
@@ -58,25 +68,79 @@
 		std::vector<NutModalButton> buttons;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param name : Name of the style.
+		 **/
 		NutModal( nString label );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		~NutModal( ) = default;
 
+		/**
+		 * SetContent method
+		 * @author : ALVES Quentin
+		 * @note : Set the modal content.
+		 * @param content : Current modal content.
+		 **/
 		void SetContent( NutModalContent content );
 
+		/**
+		 * Create method
+		 * @author : ALVES Quentin
+		 * @note : Create a button.
+		 * @param label : Label of the button.
+		 * @param prevent_close : True to prevent the modal to close.
+		 * @param on_click : Callback when button is clicked.
+		 **/
 		void Create( nString label, bool prevent_close, NutModalOnClick on_click );
 
 	public:
+		/**
+		 * SetContent method
+		 * @author : ALVES Quentin
+		 * @note : Set the modal content.
+		 * @template Content : Lambda capture.
+		 * @param content : Current modal content.
+		 **/
 		template<typename Content>
 		void SetContent( Content&& content );
 
+		/**
+		 * Create method
+		 * @author : ALVES Quentin
+		 * @note : Create a button.
+		 * @template on_click : Lambda capture.
+		 * @param label : Label of the button.
+		 * @param prevent_close : True to prevent the modal to close.
+		 * @param on_click : Callback when button is clicked.
+		 **/
 		template<typename OnClick>
 		void Create( nString label, bool prevent_close, OnClick&& on_click );
 
 	public:
+		/**
+		 * OnRender function
+		 * @author : ALVES Quentin
+		 * @note : On modal render.
+		 * @param editor : Current editor pointer.
+		 * @param window : Current modal window.
+		 * @param parent : Current modal panel.
+		 * @return : bool
+		 **/
 		bool OnRender( NutEditor* editor, NutWindow* window, NutPanel* parent );
 
 	public:
+		/**
+		 * GetIsValid const function
+		 * @author : ALVES Quentin
+		 * @note : Get if the current modal is valid.
+		 * @return : bool
+		 **/
 		bool GetIsValid( ) const;
 
 	};

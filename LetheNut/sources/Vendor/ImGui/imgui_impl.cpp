@@ -523,7 +523,7 @@ CODE
  - 2017/11/18 (1.53) - Style: renamed ImGuiCol_ChildWindowBg to ImGuiCol_ChildBg.
  - 2017/11/18 (1.53) - Style: renamed style.ChildWindowRounding to style.ChildRounding, ImGuiStyleVar_ChildWindowRounding to ImGuiStyleVar_ChildRounding.
  - 2017/11/02 (1.53) - obsoleted IsRootWindowOrAnyChildHovered() in favor of using IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows);
- - 2017/10/24 (1.52) - renamed IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCS/IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCS to IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS/IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS for consistency.
+ - 2017/10/24 (1.52) - renamed IMGUI_DISABLE_WIN64_DEFAULT_CLIPBOARD_FUNCS/IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCS to IMGUI_DISABLE_WIN64_DEFAULT_CLIPBOARD_FUNCTIONS/IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCTIONS for consistency.
  - 2017/10/20 (1.52) - changed IsWindowHovered() default parameters behavior to return false if an item is active in another window (e.g. click-dragging item from another window to this window). You can use the newly introduced IsWindowHovered() flags to requests this specific behavior if you need it.
  - 2017/10/20 (1.52) - marked IsItemHoveredRect()/IsMouseHoveringWindow() as obsolete, in favor of using the newly introduced flags for IsItemHovered() and IsWindowHovered(). See https://github.com/ocornut/imgui/issues/1382 for details.
                        removed the IsItemRectHovered()/IsWindowRectHovered() names introduced in 1.51 since they were merely more consistent names for the two functions we are now obsoleting.
@@ -758,10 +758,10 @@ CODE
 #endif
 
 // [Windows] OS specific includes (optional)
-#if defined(_WIN32) && defined(IMGUI_DISABLE_DEFAULT_FILE_FUNCTIONS) && defined(IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS) && defined(IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
-#define IMGUI_DISABLE_WIN32_FUNCTIONS
+#if defined(_WIN64) && defined(IMGUI_DISABLE_DEFAULT_FILE_FUNCTIONS) && defined(IMGUI_DISABLE_WIN64_DEFAULT_CLIPBOARD_FUNCTIONS) && defined(IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN64_FUNCTIONS)
+#define IMGUI_DISABLE_WIN64_FUNCTIONS
 #endif
-#if defined(_WIN32) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
+#if defined(_WIN64) && !defined(IMGUI_DISABLE_WIN64_FUNCTIONS)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
@@ -774,8 +774,8 @@ CODE
 #include <windows.h>
 #endif
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP) // UWP doesn't have all Win32 functions
-#define IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS
-#define IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS
+#define IMGUI_DISABLE_WIN64_DEFAULT_CLIPBOARD_FUNCTIONS
+#define IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCTIONS
 #endif
 #endif
 
@@ -1526,7 +1526,7 @@ ImGuiID ImHashStr(const char* data_p, size_t data_size, ImU32 seed)
 
 ImFileHandle ImFileOpen(const char* filename, const char* mode)
 {
-#if defined(_WIN32) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS) && !defined(__CYGWIN__) && !defined(__GNUC__)
+#if defined(_WIN64) && !defined(IMGUI_DISABLE_WIN64_FUNCTIONS) && !defined(__CYGWIN__) && !defined(__GNUC__)
     // We need a fopen() wrapper because MSVC/Windows fopen doesn't handle UTF-8 filenames.
     // Previously we used ImTextCountCharsFromUtf8/ImTextStrFromUtf8 here but we now need to support ImWchar16 and ImWchar32!
     const int filename_wsize = ::MultiByteToWideChar(CP_UTF8, 0, filename, -1, NULL, 0);
@@ -15456,7 +15456,7 @@ static void ImGui::DockSettingsHandler_WriteAll(ImGuiContext* ctx, ImGuiSettings
 // [SECTION] PLATFORM DEPENDENT HELPERS
 //-----------------------------------------------------------------------------
 
-#if defined(_WIN32) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS)
+#if defined(_WIN64) && !defined(IMGUI_DISABLE_WIN64_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN64_DEFAULT_CLIPBOARD_FUNCTIONS)
 
 #ifdef _MSC_VER
 #pragma comment(lib, "user32")

@@ -47,9 +47,9 @@
 
 // GLFW
 #include <Thirdparty/GLFW/glfw3.h>
-#ifdef _WIN32
+#ifdef _WIN64
 #undef APIENTRY
-#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WIN64
 #include <Thirdparty/GLFW/glfw3native.h>   // for glfwGetWin32Window
 #endif
 #define GLFW_HAS_WINDOW_TOPMOST       (GLFW_VERSION_MAJOR * 1000 + GLFW_VERSION_MINOR * 100 >= 3200) // 3.2+ GLFW_FLOATING
@@ -143,7 +143,7 @@ void ImGui_ImplGlfw_KeyCallback(GLFWwindow* window, int key, int scancode, int a
     io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
     io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
     io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
-#ifdef _WIN32
+#ifdef _WIN64
     io.KeySuper = false;
 #else
     io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
@@ -174,7 +174,7 @@ static bool ImGui_ImplGlfw_Init(GLFWwindow* window, bool install_callbacks, Glfw
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;         // We can honor GetMouseCursor() values (optional)
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;          // We can honor io.WantSetMousePos requests (optional, rarely used)
     io.BackendFlags |= ImGuiBackendFlags_PlatformHasViewports;    // We can create multi-viewports on the Platform side (optional)
-#if GLFW_HAS_MOUSE_PASSTHROUGH || (GLFW_HAS_WINDOW_HOVERED && defined(_WIN32))
+#if GLFW_HAS_MOUSE_PASSTHROUGH || (GLFW_HAS_WINDOW_HOVERED && defined(_WIN64))
     io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport; // We can set io.MouseHoveredViewport correctly (optional, not easy)
 #endif
     io.BackendPlatformName = "imgui_impl_glfw";
@@ -253,7 +253,7 @@ static bool ImGui_ImplGlfw_Init(GLFWwindow* window, bool install_callbacks, Glfw
     // Our mouse update function expect PlatformHandle to be filled for the main viewport
     ImGuiViewport* main_viewport = ImGui::GetMainViewport();
     main_viewport->PlatformHandle = (void*)g_Window;
-#ifdef _WIN32
+#ifdef _WIN64
     main_viewport->PlatformHandleRaw = glfwGetWin32Window(g_Window);
 #endif
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -356,7 +356,7 @@ static void ImGui_ImplGlfw_UpdateMousePosAndButtons()
         // rectangles and last focused time of every viewports it knows about. It will be unaware of other windows that may be sitting between or over your windows.
         // [GLFW] FIXME: This is currently only correct on Win32. See what we do below with the WM_NCHITTEST, missing an equivalent for other systems.
         // See https://github.com/glfw/glfw/issues/1236 if you want to help in making this a GLFW feature.
-#if GLFW_HAS_MOUSE_PASSTHROUGH || (GLFW_HAS_WINDOW_HOVERED && defined(_WIN32))
+#if GLFW_HAS_MOUSE_PASSTHROUGH || (GLFW_HAS_WINDOW_HOVERED && defined(_WIN64))
         const bool window_no_input = (viewport->Flags & ImGuiViewportFlags_NoInputs) != 0;
 #if GLFW_HAS_MOUSE_PASSTHROUGH
         glfwSetWindowAttrib(window, GLFW_MOUSE_PASSTHROUGH, window_no_input);
@@ -572,7 +572,7 @@ static void ImGui_ImplGlfw_CreateWindow(ImGuiViewport* viewport)
     data->Window = glfwCreateWindow((int)viewport->Size.x, (int)viewport->Size.y, "No Title Yet", NULL, share_window);
     data->WindowOwned = true;
     viewport->PlatformHandle = (void*)data->Window;
-#ifdef _WIN32
+#ifdef _WIN64
     viewport->PlatformHandleRaw = glfwGetWin32Window(data->Window);
 #endif
     glfwSetWindowPos(data->Window, (int)viewport->Pos.x, (int)viewport->Pos.y);
@@ -598,7 +598,7 @@ static void ImGui_ImplGlfw_DestroyWindow(ImGuiViewport* viewport)
     {
         if (data->WindowOwned)
         {
-#if !GLFW_HAS_MOUSE_PASSTHROUGH && GLFW_HAS_WINDOW_HOVERED && defined(_WIN32)
+#if !GLFW_HAS_MOUSE_PASSTHROUGH && GLFW_HAS_WINDOW_HOVERED && defined(_WIN64)
             HWND hwnd = (HWND)viewport->PlatformHandleRaw;
             ::RemovePropA(hwnd, "IMGUI_VIEWPORT");
 #endif
@@ -612,7 +612,7 @@ static void ImGui_ImplGlfw_DestroyWindow(ImGuiViewport* viewport)
 
 // We have submitted https://github.com/glfw/glfw/pull/1568 to allow GLFW to support "transparent inputs".
 // In the meanwhile we implement custom per-platform workarounds here (FIXME-VIEWPORT: Implement same work-around for Linux/OSX!)
-#if !GLFW_HAS_MOUSE_PASSTHROUGH && GLFW_HAS_WINDOW_HOVERED && defined(_WIN32)
+#if !GLFW_HAS_MOUSE_PASSTHROUGH && GLFW_HAS_WINDOW_HOVERED && defined(_WIN64)
 static WNDPROC g_GlfwWndProc = NULL;
 static LRESULT CALLBACK WndProcNoInputs(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -634,7 +634,7 @@ static void ImGui_ImplGlfw_ShowWindow(ImGuiViewport* viewport)
 {
     ImGuiViewportDataGlfw* data = (ImGuiViewportDataGlfw*)viewport->PlatformUserData;
 
-#if defined(_WIN32)
+#if defined(_WIN64)
     // GLFW hack: Hide icon from task bar
     HWND hwnd = (HWND)viewport->PlatformHandleRaw;
     if (viewport->Flags & ImGuiViewportFlags_NoTaskBarIcon)
@@ -646,7 +646,7 @@ static void ImGui_ImplGlfw_ShowWindow(ImGuiViewport* viewport)
     }
 
     // GLFW hack: install hook for WM_NCHITTEST message handler
-#if !GLFW_HAS_MOUSE_PASSTHROUGH && GLFW_HAS_WINDOW_HOVERED && defined(_WIN32)
+#if !GLFW_HAS_MOUSE_PASSTHROUGH && GLFW_HAS_WINDOW_HOVERED && defined(_WIN64)
     ::SetPropA(hwnd, "IMGUI_VIEWPORT", viewport);
     if (g_GlfwWndProc == NULL)
         g_GlfwWndProc = (WNDPROC)::GetWindowLongPtr(hwnd, GWLP_WNDPROC);
@@ -768,8 +768,8 @@ static void ImGui_ImplGlfw_SwapBuffers(ImGuiViewport* viewport, void*)
 //--------------------------------------------------------------------------------------------------------
 
 // We provide a Win32 implementation because this is such a common issue for IME users
-#if defined(_WIN32) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS) && !defined(__GNUC__)
-#define HAS_WIN32_IME   1
+#if defined(_WIN64) && !defined(IMGUI_DISABLE_WIN64_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCTIONS) && !defined(__GNUC__)
+#define HAS_WIN64_IME   1
 #include <imm.h>
 #ifdef _MSC_VER
 #pragma comment(lib, "imm32")
@@ -785,7 +785,7 @@ static void ImGui_ImplWin32_SetImeInputPos(ImGuiViewport* viewport, ImVec2 pos)
         }
 }
 #else
-#define HAS_WIN32_IME   0
+#define HAS_WIN64_IME   0
 #endif
 
 //--------------------------------------------------------------------------------------------------------
@@ -839,7 +839,7 @@ static void ImGui_ImplGlfw_InitPlatformInterface()
 #if GLFW_HAS_VULKAN
     platform_io.Platform_CreateVkSurface = ImGui_ImplGlfw_CreateVkSurface;
 #endif
-#if HAS_WIN32_IME
+#if HAS_WIN64_IME
     platform_io.Platform_SetImeInputPos = ImGui_ImplWin32_SetImeInputPos;
 #endif
 

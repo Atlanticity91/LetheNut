@@ -238,6 +238,27 @@ bool OpenGL::Create( Material& material, nString vertex, nString fragment ) {
 	return OpenGL::Create( material, vertex, fragment, nullptr );
 }
 
+bool OpenGL::Create( Material& material, nString vertex, nString fragment, const std::vector<nString>& parameters ) {
+	if ( OpenGL::Create( material, vertex, fragment, nullptr ) ) {
+		auto size = parameters.size( );
+		material.Locations = nHelper::Alloc<nUInt>( size );
+
+		if ( material.Locations ) {
+			glUseProgram( material.ID );
+
+			while ( size > 0 ) {
+				size -= 1;
+
+				material.Locations[ size ] = glGetUniformLocation( material.ID, parameters[ size ] );
+			}
+
+			glUseProgram( 0 );
+		}
+	}
+
+	return OpenGL::IsValid( material );
+}
+
 bool OpenGL::Create( Material& material, nString vertex, nString fragment, nUInt size, nString* parameters ) {
 	return OpenGL::Create( material, vertex, fragment, nullptr, size, parameters );
 }
@@ -264,8 +285,29 @@ bool OpenGL::Create( Material& material, nString vertex, nString fragment, nStri
 	return OpenGL::IsValid( material );
 }
 
+bool OpenGL::Create( Material& material, nString vertex, nString fragment, nString geometry, const std::vector<nString>& parameters ) {
+	if ( OpenGL::Create( material, vertex, fragment, geometry ) ) {
+		auto size = parameters.size( );
+		material.Locations = nHelper::Alloc<nUInt>( size );
+
+		if ( material.Locations ) {
+			glUseProgram( material.ID );
+
+			while ( size > 0 ) {
+				size -= 1;
+
+				material.Locations[ size ] = glGetUniformLocation( material.ID, parameters[ size ] );
+			}
+
+			glUseProgram( 0 );
+		}
+	}
+
+	return OpenGL::IsValid( material );
+}
+
 bool OpenGL::Create( Material& material, nString vertex, nString fragment, nString geometry, nUInt size, nString* parameters ) {
-	if ( OpenGL::Create( material, vertex, fragment, nullptr ) && size > 0 && parameters ) {
+	if ( OpenGL::Create( material, vertex, fragment, geometry ) && size > 0 && parameters ) {
 		material.Locations = nHelper::Alloc<nUInt>( size );
 
 		if ( material.Locations ) {
@@ -421,6 +463,17 @@ void OpenGL::Display( const Material& material, const Mesh& mesh ) {
 	}
 }
 
+void OpenGL::Display( const Material& material, const Mesh& mesh, const std::vector<Texture>& textures ) {
+	auto idx = 0;
+
+	for ( auto texture : textures ) {
+		if ( OpenGL::IsValid( texture ) )
+			glBindTextureUnit( idx++, texture.ID );
+	}
+
+	OpenGL::Display( material, mesh );
+}
+
 void OpenGL::Display( const Material& material, const Mesh& mesh, nUInt size, const Texture* textures ) {
 	if ( size > 0 && textures ) {
 		while ( size > 0 ) {
@@ -436,6 +489,14 @@ void OpenGL::Display( const Material& material, const Mesh& mesh, nUInt size, co
 
 void OpenGL::Display( const Frame& frame, const Material& material, const Mesh& mesh ) {
 	OpenGL::Display( frame, material, mesh, 0, nullptr );
+}
+
+void OpenGL::Display( const Frame& frame, const Material& material, const Mesh& mesh, const std::vector<Texture>& textures ) {
+	OpenGL::Context context;
+
+	OpenGL::Create( context, frame );
+	OpenGL::Display( material, mesh, textures );
+	OpenGL::Restore( context );
 }
 
 void OpenGL::Display( const Frame& frame, const Material& material, const Mesh& mesh, nUInt size, const Texture* textures ) {

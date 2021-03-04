@@ -171,6 +171,21 @@ NutHash nHelper::Hash( nString text ) {
 	return h[ 0 ];
 }
 
+void nHelper::Format( char* buffer, size_t length, nString format, ... ) {
+	if ( buffer && strlen( format ) < length ) {
+		va_list args;
+		va_start( args, format );
+
+		#ifdef _WIN64
+			vsnprintf_s( buffer, length, length, format, args );
+		#else
+			vsprintf( buffer, format, args );
+		#endif
+
+		va_end( args );
+	}
+}
+
 void nHelper::ToDeg( float& radians ) { radians *= nHelper::RAD2DEG; }
 
 void nHelper::ToRad( float& degree ) { degree *= nHelper::DEG2RAD; }

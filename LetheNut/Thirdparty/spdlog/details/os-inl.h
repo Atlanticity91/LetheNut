@@ -21,7 +21,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#ifdef _WIN32
+#ifdef _WIN64
 
 #include <io.h>      // _get_osfhandle and _isatty support
 #include <process.h> //  _get_pid support
@@ -84,7 +84,7 @@ SPDLOG_INLINE spdlog::log_clock::time_point now() SPDLOG_NOEXCEPT
 SPDLOG_INLINE std::tm localtime(const std::time_t &time_tt) SPDLOG_NOEXCEPT
 {
 
-#ifdef _WIN32
+#ifdef _WIN64
     std::tm tm;
     ::localtime_s(&tm, &time_tt);
 #else
@@ -103,7 +103,7 @@ SPDLOG_INLINE std::tm localtime() SPDLOG_NOEXCEPT
 SPDLOG_INLINE std::tm gmtime(const std::time_t &time_tt) SPDLOG_NOEXCEPT
 {
 
-#ifdef _WIN32
+#ifdef _WIN64
     std::tm tm;
     ::gmtime_s(&tm, &time_tt);
 #else
@@ -122,7 +122,7 @@ SPDLOG_INLINE std::tm gmtime() SPDLOG_NOEXCEPT
 // fopen_s on non windows for writing
 SPDLOG_INLINE bool fopen_s(FILE **fp, const filename_t &filename, const filename_t &mode)
 {
-#ifdef _WIN32
+#ifdef _WIN64
 #ifdef SPDLOG_WCHAR_FILENAMES
     *fp = ::_wfsopen((filename.c_str()), mode.c_str(), _SH_DENYNO);
 #else
@@ -162,7 +162,7 @@ SPDLOG_INLINE bool fopen_s(FILE **fp, const filename_t &filename, const filename
 
 SPDLOG_INLINE int remove(const filename_t &filename) SPDLOG_NOEXCEPT
 {
-#if defined(_WIN32) && defined(SPDLOG_WCHAR_FILENAMES)
+#if defined(_WIN64) && defined(SPDLOG_WCHAR_FILENAMES)
     return ::_wremove(filename.c_str());
 #else
     return std::remove(filename.c_str());
@@ -176,7 +176,7 @@ SPDLOG_INLINE int remove_if_exists(const filename_t &filename) SPDLOG_NOEXCEPT
 
 SPDLOG_INLINE int rename(const filename_t &filename1, const filename_t &filename2) SPDLOG_NOEXCEPT
 {
-#if defined(_WIN32) && defined(SPDLOG_WCHAR_FILENAMES)
+#if defined(_WIN64) && defined(SPDLOG_WCHAR_FILENAMES)
     return ::_wrename(filename1.c_str(), filename2.c_str());
 #else
     return std::rename(filename1.c_str(), filename2.c_str());
@@ -186,7 +186,7 @@ SPDLOG_INLINE int rename(const filename_t &filename1, const filename_t &filename
 // Return true if path exists (file or directory)
 SPDLOG_INLINE bool path_exists(const filename_t &filename) SPDLOG_NOEXCEPT
 {
-#ifdef _WIN32
+#ifdef _WIN64
 #ifdef SPDLOG_WCHAR_FILENAMES
     auto attribs = ::GetFileAttributesW(filename.c_str());
 #else
@@ -206,7 +206,7 @@ SPDLOG_INLINE size_t filesize(FILE *f)
     {
         throw_spdlog_ex("Failed getting file size. fd is null");
     }
-#if defined(_WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN64) && !defined(__CYGWIN__)
     int fd = ::_fileno(f);
 #if _WIN64 // 64 bits
     __int64 ret = ::_filelengthi64(fd);
@@ -253,8 +253,8 @@ SPDLOG_INLINE size_t filesize(FILE *f)
 SPDLOG_INLINE int utc_minutes_offset(const std::tm &tm)
 {
 
-#ifdef _WIN32
-#if _WIN32_WINNT < _WIN32_WINNT_WS08
+#ifdef _WIN64
+#if _WIN64_WINNT < _WIN64_WINNT_WS08
     TIME_ZONE_INFORMATION tzinfo;
     auto rv = ::GetTimeZoneInformation(&tzinfo);
 #else
@@ -319,7 +319,7 @@ SPDLOG_INLINE int utc_minutes_offset(const std::tm &tm)
 // under VS 2013)
 SPDLOG_INLINE size_t _thread_id() SPDLOG_NOEXCEPT
 {
-#ifdef _WIN32
+#ifdef _WIN64
     return static_cast<size_t>(::GetCurrentThreadId());
 #elif defined(__linux__)
 #if defined(__ANDROID__) && defined(__ANDROID_API__) && (__ANDROID_API__ < 21)
@@ -358,7 +358,7 @@ SPDLOG_INLINE size_t thread_id() SPDLOG_NOEXCEPT
 // See https://github.com/gabime/spdlog/issues/609
 SPDLOG_INLINE void sleep_for_millis(int milliseconds) SPDLOG_NOEXCEPT
 {
-#if defined(_WIN32)
+#if defined(_WIN64)
     ::Sleep(milliseconds);
 #else
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
@@ -366,7 +366,7 @@ SPDLOG_INLINE void sleep_for_millis(int milliseconds) SPDLOG_NOEXCEPT
 }
 
 // wchar support for windows file names (SPDLOG_WCHAR_FILENAMES must be defined)
-#if defined(_WIN32) && defined(SPDLOG_WCHAR_FILENAMES)
+#if defined(_WIN64) && defined(SPDLOG_WCHAR_FILENAMES)
 SPDLOG_INLINE std::string filename_to_str(const filename_t &filename)
 {
     memory_buf_t buf;
@@ -383,7 +383,7 @@ SPDLOG_INLINE std::string filename_to_str(const filename_t &filename)
 SPDLOG_INLINE int pid() SPDLOG_NOEXCEPT
 {
 
-#ifdef _WIN32
+#ifdef _WIN64
     return static_cast<int>(::GetCurrentProcessId());
 #else
     return static_cast<int>(::getpid());
@@ -394,7 +394,7 @@ SPDLOG_INLINE int pid() SPDLOG_NOEXCEPT
 // Based on: https://github.com/agauniyal/rang/
 SPDLOG_INLINE bool is_color_terminal() SPDLOG_NOEXCEPT
 {
-#ifdef _WIN32
+#ifdef _WIN64
     return true;
 #else
 
@@ -426,14 +426,14 @@ SPDLOG_INLINE bool is_color_terminal() SPDLOG_NOEXCEPT
 SPDLOG_INLINE bool in_terminal(FILE *file) SPDLOG_NOEXCEPT
 {
 
-#ifdef _WIN32
+#ifdef _WIN64
     return ::_isatty(_fileno(file)) != 0;
 #else
     return ::isatty(fileno(file)) != 0;
 #endif
 }
 
-#if (defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || defined(SPDLOG_WCHAR_FILENAMES)) && defined(_WIN32)
+#if (defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || defined(SPDLOG_WCHAR_FILENAMES)) && defined(_WIN64)
 SPDLOG_INLINE void wstr_to_utf8buf(wstring_view_t wstr, memory_buf_t &target)
 {
     if (wstr.size() > static_cast<size_t>((std::numeric_limits<int>::max)()))
@@ -503,12 +503,12 @@ SPDLOG_INLINE void utf8_to_wstrbuf(string_view_t str, memory_buf_t &target)
 
     throw_spdlog_ex(fmt::format("MultiByteToWideChar failed. Last error: {}", ::GetLastError()));
 }
-#endif // (defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || defined(SPDLOG_WCHAR_FILENAMES)) && defined(_WIN32)
+#endif // (defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || defined(SPDLOG_WCHAR_FILENAMES)) && defined(_WIN64)
 
 // return true on success
 static SPDLOG_INLINE bool mkdir_(const filename_t &path)
 {
-#ifdef _WIN32
+#ifdef _WIN64
 #ifdef SPDLOG_WCHAR_FILENAMES
     return ::_wmkdir(path.c_str()) == 0;
 #else
@@ -533,7 +533,7 @@ SPDLOG_INLINE bool create_dir(filename_t path)
         return false;
     }
 
-#ifdef _WIN32
+#ifdef _WIN64
     // support forward slash in windows
     std::replace(path.begin(), path.end(), '/', folder_sep);
 #endif
@@ -567,7 +567,7 @@ SPDLOG_INLINE bool create_dir(filename_t path)
 // "abc///" => "abc//"
 SPDLOG_INLINE filename_t dir_name(filename_t path)
 {
-#ifdef _WIN32
+#ifdef _WIN64
     // support forward slash in windows
     std::replace(path.begin(), path.end(), '/', folder_sep);
 #endif

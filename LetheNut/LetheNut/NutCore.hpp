@@ -293,6 +293,16 @@
 		NUT_API NutHash Hash( nString text );
 
 		/**
+		 * Format method
+		 * @note : Geenrate a formated string based on format and arguments provided.
+		 * @param buffer : Buffer to store the formated string.
+		 * @param length : Length of the buffer.
+		 * @param format : Query string format.
+		 * @param ... : Variadic arguments for format arguements values.
+		 **/
+		NUT_API void Format( char* buffer, size_t length, nString format, ... );
+
+		/**
 		 * nClamp static template method
 		 * @author : ALVES Quentin
 		 * @note : Internal definition for clamp method.

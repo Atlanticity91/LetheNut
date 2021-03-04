@@ -3,7 +3,7 @@
 
 #pragma once
 
-#ifdef _WIN32
+#ifdef _WIN64
 #error include tcp_client-windows.h instead
 #endif
 

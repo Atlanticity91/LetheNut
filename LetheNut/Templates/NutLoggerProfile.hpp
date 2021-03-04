@@ -42,12 +42,14 @@
 	///////////////////////////////////////////////////////////////////////////////////////////
 	template<typename... Args>
 	void NutLoggerProfile::Append( NutLoggerModes mode, nString format, Args... args ) {
-		switch ( mode ) {
-			case NutLoggerModes::NLM_INFO : this->handle->info( format, args... ); break;
-			case NutLoggerModes::NLM_WARN : this->handle->warn( format, args... ); break;
-			case NutLoggerModes::NLM_ERRR : this->handle->error( format, args... ); break;
+		nHelper::Format( this->buffer, BUFFER_SIZE, format, args... );
 
-			default: this->handle->trace( format, args... ); break;
+		switch ( mode ) {
+			case NutLoggerModes::NLM_INFO: this->handle->info( this->buffer ); break;
+			case NutLoggerModes::NLM_WARN: this->handle->warn( this->buffer ); break;
+			case NutLoggerModes::NLM_ERRR: this->handle->error( this->buffer ); break;
+
+			default: this->handle->trace( this->buffer ); break;
 		}
 	}
 

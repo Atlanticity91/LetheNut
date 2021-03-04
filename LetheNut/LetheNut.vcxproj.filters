@@ -129,9 +129,6 @@
     <ClInclude Include="Templates\NutLogger.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Templates\NutLoggerProfile.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Templates\NutMenu.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -1417,6 +1414,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="LetheNut\Vendor\Mono.hpp">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\NutLoggerProfile.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

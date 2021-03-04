@@ -159,7 +159,13 @@
         void InternalForeach( nString parameter, Action&& action, Args... args );
 
     public:
-        operator nlohmann::json();
+        /**
+         * Cast operator
+         * @author : ALVES Quentin
+         * @note : Get current json object.
+         * @return : nlohmann::json&
+         **/
+        operator nlohmann::json&();
 
     public:
         /**

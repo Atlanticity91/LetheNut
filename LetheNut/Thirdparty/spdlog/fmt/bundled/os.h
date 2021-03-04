@@ -39,7 +39,7 @@
 #endif
 
 #ifndef FMT_POSIX
-#  if defined(_WIN32) && !defined(__MINGW32__)
+#  if defined(_WIN64) && !defined(__MINGW32__)
 // Fix warnings about deprecated symbols.
 #    define FMT_POSIX(call) _##call
 #  else
@@ -52,7 +52,7 @@
 #  define FMT_POSIX_CALL(call) FMT_SYSTEM(call)
 #else
 #  define FMT_SYSTEM(call) ::call
-#  ifdef _WIN32
+#  ifdef _WIN64
 // Fix warnings about deprecated symbols.
 #    define FMT_POSIX_CALL(call) ::_##call
 #  else
@@ -62,7 +62,7 @@
 
 // Retries the expression while it evaluates to error_result and errno
 // equals to EINTR.
-#ifndef _WIN32
+#ifndef _WIN64
 #  define FMT_RETRY_VAL(result, expression, error_result) \
     do {                                                  \
       (result) = (expression);                            \
@@ -133,7 +133,7 @@ class error_code {
   int get() const FMT_NOEXCEPT { return value_; }
 };
 
-#ifdef _WIN32
+#ifdef _WIN64
 namespace detail {
 // A converter from UTF-16 to UTF-8.
 // It is only provided for Windows since other systems support UTF-8 natively.
@@ -203,7 +203,7 @@ class windows_error : public system_error {
 // Can be used to report errors from destructors.
 FMT_API void report_windows_error(int error_code,
                                   string_view message) FMT_NOEXCEPT;
-#endif  // _WIN32
+#endif  // _WIN64
 
 // A buffered file.
 class buffered_file {
@@ -435,7 +435,7 @@ inline ostream output_file(cstring_view path, T... params) {
 // A "C" numeric locale.
 class locale {
  private:
-#  ifdef _WIN32
+#  ifdef _WIN64
   using locale_t = _locale_t;
 
   static void freelocale(locale_t loc) { _free_locale(loc); }
@@ -453,7 +453,7 @@ class locale {
   void operator=(const locale&) = delete;
 
   locale() {
-#  ifndef _WIN32
+#  ifndef _WIN64
     locale_ = FMT_SYSTEM(newlocale(LC_NUMERIC_MASK, "C", nullptr));
 #  else
     locale_ = _create_locale(LC_NUMERIC, "C");

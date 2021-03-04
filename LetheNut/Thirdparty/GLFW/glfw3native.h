@@ -58,7 +58,7 @@ extern "C" {
  *  to do this will cause a link-time error.
  *
  *  The available window API macros are:
- *  * `GLFW_EXPOSE_NATIVE_WIN32`
+ *  * `GLFW_EXPOSE_NATIVE_WIN64`
  *  * `GLFW_EXPOSE_NATIVE_COCOA`
  *  * `GLFW_EXPOSE_NATIVE_X11`
  *  * `GLFW_EXPOSE_NATIVE_WAYLAND`
@@ -81,7 +81,7 @@ extern "C" {
  * System headers and types
  *************************************************************************/
 
-#if defined(GLFW_EXPOSE_NATIVE_WIN32) || defined(GLFW_EXPOSE_NATIVE_WGL)
+#if defined(GLFW_EXPOSE_NATIVE_WIN64) || defined(GLFW_EXPOSE_NATIVE_WGL)
  // This is a workaround for the fact that glfw3.h needs to export APIENTRY (for
  // example to allow applications to correctly declare a GL_ARB_debug_output
  // callback) but windows.h assumes no one will define APIENTRY before it does
@@ -125,7 +125,7 @@ extern "C" {
  * Functions
  *************************************************************************/
 
-#if defined(GLFW_EXPOSE_NATIVE_WIN32)
+#if defined(GLFW_EXPOSE_NATIVE_WIN64)
 /*! @brief Returns the adapter device name of the specified monitor.
  *
  *  @return The UTF-8 encoded adapter device name (for example `\\.\DISPLAY1`)

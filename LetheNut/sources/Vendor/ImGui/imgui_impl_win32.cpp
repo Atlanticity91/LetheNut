@@ -21,12 +21,12 @@
 #include <tchar.h>
 
 // Using XInput library for gamepad (with recent Windows SDK this may leads to executables which won't run on Windows 7)
-#ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
+#ifndef IMGUI_IMPL_WIN64_DISABLE_GAMEPAD
 #include <XInput.h>
 #else
-#define IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT
+#define IMGUI_IMPL_WIN64_DISABLE_LINKING_XINPUT
 #endif
-#if defined(_MSC_VER) && !defined(IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT)
+#if defined(_MSC_VER) && !defined(IMGUI_IMPL_WIN64_DISABLE_LINKING_XINPUT)
 #pragma comment(lib, "xinput")
 //#pragma comment(lib, "Xinput9_1_0")
 #endif
@@ -37,7 +37,7 @@
 //  2020-12-04: Misc: Fixed setting of io.DisplaySize to invalid/uninitialized data when after hwnd has been closed.
 //  2020-03-03: Inputs: Calling AddInputCharacterUTF16() to support surrogate pairs leading to codepoint >= 0x10000 (for more complete CJK inputs)
 //  2020-02-17: Added ImGui_ImplWin32_EnableDpiAwareness(), ImGui_ImplWin32_GetDpiScaleForHwnd(), ImGui_ImplWin32_GetDpiScaleForMonitor() helper functions.
-//  2020-01-14: Inputs: Added support for #define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD/IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT.
+//  2020-01-14: Inputs: Added support for #define IMGUI_IMPL_WIN64_DISABLE_GAMEPAD/IMGUI_IMPL_WIN64_DISABLE_LINKING_XINPUT.
 //  2019-12-05: Inputs: Added support for ImGuiMouseCursor_NotAllowed mouse cursor.
 //  2019-05-11: Inputs: Don't filter value from WM_CHAR before calling AddInputCharacter().
 //  2019-01-17: Misc: Using GetForegroundWindow()+IsChild() instead of GetActiveWindow() to be compatible with windows created in a different thread or parent.
@@ -224,7 +224,7 @@ static void ImGui_ImplWin32_UpdateMousePos()
 // Gamepad navigation mapping
 static void ImGui_ImplWin32_UpdateGamepads()
 {
-#ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
+#ifndef IMGUI_IMPL_WIN64_DISABLE_GAMEPAD
     ImGuiIO& io = ImGui::GetIO();
     memset(io.NavInputs, 0, sizeof(io.NavInputs));
     if ((io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad) == 0)
@@ -267,7 +267,7 @@ static void ImGui_ImplWin32_UpdateGamepads()
         #undef MAP_BUTTON
         #undef MAP_ANALOG
     }
-#endif // #ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
+#endif // #ifndef IMGUI_IMPL_WIN64_DISABLE_GAMEPAD
 }
 
 static BOOL CALLBACK ImGui_ImplWin32_UpdateMonitors_EnumFunc(HMONITOR monitor, HDC, LPRECT, LPARAM)
@@ -337,7 +337,7 @@ void    ImGui_ImplWin32_NewFrame()
     ImGui_ImplWin32_UpdateGamepads();
 }
 
-// Allow compilation with old Windows SDK. MinGW doesn't have default _WIN32_WINNT/WINVER versions.
+// Allow compilation with old Windows SDK. MinGW doesn't have default _WIN64_WINNT/WINVER versions.
 #ifndef WM_MOUSEHWHEEL
 #define WM_MOUSEHWHEEL 0x020E
 #endif
@@ -457,7 +457,7 @@ static BOOL IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp)
     cond = ::VerSetConditionMask(cond, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
     return ::VerifyVersionInfoW(&osvi, mask, cond);
 }
-#define IsWindows8Point1OrGreater()  IsWindowsVersionOrGreater(HIBYTE(0x0602), LOBYTE(0x0602), 0) // _WIN32_WINNT_WINBLUE
+#define IsWindows8Point1OrGreater()  IsWindowsVersionOrGreater(HIBYTE(0x0602), LOBYTE(0x0602), 0) // _WIN64_WINNT_WINBLUE
 #endif
 
 #ifndef DPI_ENUMS_DECLARED
@@ -499,7 +499,7 @@ void ImGui_ImplWin32_EnableDpiAwareness()
             return;
         }
     }
-#if _WIN32_WINNT >= 0x0600
+#if _WIN64_WINNT >= 0x0600
     ::SetProcessDPIAware();
 #endif
 }
@@ -543,11 +543,11 @@ float ImGui_ImplWin32_GetDpiScaleForHwnd(void* hwnd)
 //--------------------------------------------------------------------------------------------------------
 
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP) // UWP doesn't have Win32 functions
-#define IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS
+#define IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCTIONS
 #endif
 
-#if defined(_WIN32) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS) && !defined(__GNUC__)
-#define HAS_WIN32_IME   1
+#if defined(_WIN64) && !defined(IMGUI_DISABLE_WIN64_FUNCTIONS) && !defined(IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCTIONS) && !defined(__GNUC__)
+#define HAS_WIN64_IME   1
 #include <imm.h>
 #ifdef _MSC_VER
 #pragma comment(lib, "imm32")
@@ -563,7 +563,7 @@ static void ImGui_ImplWin32_SetImeInputPos(ImGuiViewport* viewport, ImVec2 pos)
         }
 }
 #else
-#define HAS_WIN32_IME   0
+#define HAS_WIN64_IME   0
 #endif
 
 //--------------------------------------------------------------------------------------------------------
@@ -867,7 +867,7 @@ static void ImGui_ImplWin32_InitPlatformInterface()
     platform_io.Platform_UpdateWindow = ImGui_ImplWin32_UpdateWindow;
     platform_io.Platform_GetWindowDpiScale = ImGui_ImplWin32_GetWindowDpiScale; // FIXME-DPI
     platform_io.Platform_OnChangedViewport = ImGui_ImplWin32_OnChangedViewport; // FIXME-DPI
-#if HAS_WIN32_IME
+#if HAS_WIN64_IME
     platform_io.Platform_SetImeInputPos = ImGui_ImplWin32_SetImeInputPos;
 #endif
 

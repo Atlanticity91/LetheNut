@@ -39,22 +39,59 @@
 
 	#include "NutModal.hpp"
 
+	/**
+	 * NutModalManager class
+	 * @author : ALVES Quentin
+	 * @note : Defined Nut Modal Manager core class.
+	 **/
 	class NUT_API NutModalManager {
 
 	private:
 		NutList<NutModal> modals;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 **/
 		NutModalManager( );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		~NutModalManager( ) = default;
 
 	protected:
+		/**
+		 * CreateModal function
+		 * @author : ALVES Quentin
+		 * @note : Create a new modal.
+		 * @param label : Label of the new modal.
+		 * @return : NutModal*
+		 **/
 		NutModal* CreateModal( nString label );
 
+		/**
+		 * OnRenderModal function
+		 * @author : ALVES Quentin
+		 * @note : Render a modal.
+		 * @param editor : Current editor pointer.
+		 * @param window : Current modal window.
+		 * @param parent : Current modal panel.
+		 * @param label : Query modal label.
+		 * @return : bool
+		 **/
 		bool OnRenderModal( NutEditor* editor, NutWindow* window, NutPanel* parent, nString label );
 
 	public:
+		/**
+		 * GetModal const function
+		 * @author : ALVES Quentin
+		 * @note : Get a modal.
+		 * @param label : Label of the modal.
+		 * @return : NutModal*
+		 **/
 		const NutModal* GetModal( nString label ) const;
 
 	};

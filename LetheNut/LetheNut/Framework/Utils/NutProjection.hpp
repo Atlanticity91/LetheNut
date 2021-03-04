@@ -41,13 +41,17 @@
 	#include <LetheNut/Vendor/ImGUI.hpp>
 
 	struct Projection {
+		
 		float z_far;
 		float z_near;
+
 	};
 
 	struct Ortho {
+		
 		float width;
 		float height;
+
 	};
 
 	 /**

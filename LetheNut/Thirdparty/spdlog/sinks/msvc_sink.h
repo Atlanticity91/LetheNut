@@ -3,7 +3,7 @@
 
 #pragma once
 
-#if defined(_WIN32)
+#if defined(_WIN64)
 
 #include <spdlog/details/null_mutex.h>
 #include <spdlog/sinks/base_sink.h>

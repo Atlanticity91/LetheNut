@@ -12,7 +12,7 @@
 //
 // color sinks
 //
-#ifdef _WIN32
+#ifdef _WIN64
 #include <spdlog/sinks/wincolor_sink-inl.h>
 template class SPDLOG_API spdlog::sinks::wincolor_sink<spdlog::details::console_mutex>;
 template class SPDLOG_API spdlog::sinks::wincolor_sink<spdlog::details::console_nullmutex>;

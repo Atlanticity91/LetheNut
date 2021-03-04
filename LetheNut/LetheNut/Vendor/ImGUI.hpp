@@ -37,6 +37,8 @@
 #ifndef _IGS_NUT_IMGUI_HPP_
 #define _IGS_NUT_IMGUI_HPP_
 
+	// TODO : Divide ImGui API's to sub file for maintenance and redability.
+
 	#ifndef IMGUI_DEFINE_MATH_OPERATORS
 		#define IMGUI_DEFINE_MATH_OPERATORS
 	#endif
@@ -448,6 +450,17 @@
 		 * @return : bool
 		 **/
 		NUT_API bool Panel( NutPanel* panel );
+
+		/**
+		 * TabBar function
+		 * @author : ALVES Quentin
+		 * @note : Create ImGui Tab Bar for a Nut Text Document.
+		 * @param label : Label of the tab bar.
+		 * @param flags : Tab bar flags.
+		 * @param spacing : Spacing between the tabs of the tab bar.
+		 * @return : bool
+		 **/
+		NUT_API bool TabBar( nString label, ImGuiTabBarFlags flags, float spacing );
 
 		/**
 		 * Tab function

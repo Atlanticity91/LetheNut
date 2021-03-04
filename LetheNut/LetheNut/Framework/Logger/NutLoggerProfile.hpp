@@ -63,7 +63,10 @@
 
 	NUT_ELEMENT( NutLoggerProfile final ) {
 
+		static const size_t BUFFER_SIZE = 4096;
+
 	private:
+		char buffer[ BUFFER_SIZE ];
 		std::shared_ptr<spdlog::logger> handle;
 		NutLoggerLevels level;
 
@@ -85,7 +88,7 @@
 		operator bool( ) const;
 
 	};
-	
+
 	#include <Templates/NutLoggerProfile.hpp>
 
 #endif

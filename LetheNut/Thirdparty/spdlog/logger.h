@@ -220,7 +220,7 @@ public:
     }
 
 #ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
-#ifndef _WIN32
+#ifndef _WIN64
 #error SPDLOG_WCHAR_TO_UTF8_SUPPORT only supported on windows
 #else
 
@@ -267,7 +267,7 @@ public:
         }
         SPDLOG_LOGGER_CATCH()
     }
-#endif // _WIN32
+#endif // _WIN64
 #endif // SPDLOG_WCHAR_TO_UTF8_SUPPORT
 
     // return true logging is enabled for the given level.

@@ -21,7 +21,7 @@
 #  include <locale>
 #endif
 
-#ifdef _WIN32
+#ifdef _WIN64
 #  include <io.h>  // _isatty
 #endif
 
@@ -2753,7 +2753,7 @@ FMT_FUNC std::string detail::vformat(string_view format_str, format_args args) {
   return to_string(buffer);
 }
 
-#ifdef _WIN32
+#ifdef _WIN64
 namespace detail {
 using dword = conditional_t<sizeof(long) == 4, unsigned long, unsigned>;
 extern "C" __declspec(dllimport) int __stdcall WriteConsoleW(  //
@@ -2765,7 +2765,7 @@ FMT_FUNC void vprint(std::FILE* f, string_view format_str, format_args args) {
   memory_buffer buffer;
   detail::vformat_to(buffer, format_str,
                      basic_format_args<buffer_context<char>>(args));
-#ifdef _WIN32
+#ifdef _WIN64
   auto fd = _fileno(f);
   if (_isatty(fd)) {
     detail::utf8_to_utf16 u16(string_view(buffer.data(), buffer.size()));
@@ -2781,7 +2781,7 @@ FMT_FUNC void vprint(std::FILE* f, string_view format_str, format_args args) {
   detail::fwrite_fully(buffer.data(), 1, buffer.size(), f);
 }
 
-#ifdef _WIN32
+#ifdef _WIN64
 // Print assuming legacy (non-Unicode) encoding.
 FMT_FUNC void detail::vprint_mojibake(std::FILE* f, string_view format_str,
                                       format_args args) {

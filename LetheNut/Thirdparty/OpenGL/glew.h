@@ -111,7 +111,7 @@
 #define __GLEXT_H_
 #define __gl_ATI_h_
 
-#if defined(_WIN32)
+#if defined(_WIN64)
 
 /*
  * GLEW does not include <windows.h> to avoid name space pollution.
@@ -253,7 +253,7 @@ typedef _W64 int ptrdiff_t;
 #define GLAPI extern
 #endif
 
-#endif /* _WIN32 */
+#endif /* _WIN64 */
 
 #ifndef GLAPIENTRY
 #define GLAPIENTRY
@@ -11035,8 +11035,8 @@ typedef void (GLAPIENTRY * PFNGLIMPORTMEMORYFDEXTPROC) (GLuint memory, GLuint64 
 #define GL_EXT_memory_object_win32 1
 
 #define GL_LUID_SIZE_EXT 8
-#define GL_HANDLE_TYPE_OPAQUE_WIN32_EXT 0x9587
-#define GL_HANDLE_TYPE_OPAQUE_WIN32_KMT_EXT 0x9588
+#define GL_HANDLE_TYPE_OPAQUE_WIN64_EXT 0x9587
+#define GL_HANDLE_TYPE_OPAQUE_WIN64_KMT_EXT 0x9588
 #define GL_HANDLE_TYPE_D3D12_TILEPOOL_EXT 0x9589
 #define GL_HANDLE_TYPE_D3D12_RESOURCE_EXT 0x958A
 #define GL_HANDLE_TYPE_D3D11_IMAGE_EXT 0x958B

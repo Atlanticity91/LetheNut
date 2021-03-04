@@ -25,7 +25,7 @@
 #	define GLM_PLATFORM GLM_PLATFORM_APPLE
 #elif defined(WINCE)
 #	define GLM_PLATFORM GLM_PLATFORM_WINCE
-#elif defined(_WIN32)
+#elif defined(_WIN64)
 #	define GLM_PLATFORM GLM_PLATFORM_WINDOWS
 #elif defined(__native_client__)
 #	define GLM_PLATFORM GLM_PLATFORM_CHROME_NACL

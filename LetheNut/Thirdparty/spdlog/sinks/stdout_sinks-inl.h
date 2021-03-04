@@ -11,7 +11,7 @@
 #include <spdlog/pattern_formatter.h>
 #include <memory>
 
-#ifdef _WIN32
+#ifdef _WIN64
 // under windows using fwrite to non-binary stream results in \r\r\n (see issue #1675)
 // so instead we use ::FileWrite
 #include <spdlog/details/windows_include.h>
@@ -30,7 +30,7 @@ SPDLOG_INLINE stdout_sink_base<ConsoleMutex>::stdout_sink_base(FILE *file)
     , file_(file)
     , formatter_(details::make_unique<spdlog::pattern_formatter>())
 {
-#ifdef _WIN32
+#ifdef _WIN64
     // get windows handle from the FILE* object
     handle_ = (HANDLE)::_get_osfhandle(::_fileno(file_));
     if (handle_ == INVALID_HANDLE_VALUE)
@@ -46,7 +46,7 @@ SPDLOG_INLINE void stdout_sink_base<ConsoleMutex>::log(const details::log_msg &m
     std::lock_guard<mutex_t> lock(mutex_);
     memory_buf_t formatted;
     formatter_->format(msg, formatted);
-#ifdef _WIN32
+#ifdef _WIN64
     ::fflush(file_); // flush in case there is somthing in this file_ already
     auto size = static_cast<DWORD>(formatted.size());
     DWORD bytes_written = 0;

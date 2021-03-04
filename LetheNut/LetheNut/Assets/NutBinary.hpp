@@ -38,24 +38,64 @@
 #define _IGS_NUT_ASSET_BINARY_HPP_
 
 	#include "NutAsset.hpp"
-
+	/**
+	 * NutBinary class [ NutAsset ]
+	 * @author : ALVES Quentin
+	 * @node : Defined Nut Binary core class.
+	 **/
 	NUT_ASSET( NutBinary ) {
 
 	private:
 		nPointer data;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param alias : Alias of the asset.
+		 **/
 		NutBinary( nString alias );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		~NutBinary( ) = default;
 
+		/**
+		 * Load function
+		 * @author : ALVES Quentin
+		 * @note : Load the current asset.
+		 * @param editor : Pointer to current editor.
+		 * @param path : Path to the query asset.
+		 * @return : bool
+		 **/
 		virtual bool Load( NutEditor* editor, nString path ) override;
 
+		/**
+		 * Write function
+		 * @author : ALVES Quentin
+		 * @note : Write the current asset.
+		 * @param editor : Pointer to current editor.
+		 * @param path : Path to the query asset.
+		 * @return : bool
+		 **/
 		virtual bool Write( NutEditor* editor, nString path ) override;
 
+		/**
+		 * Cleanup method
+		 * @author : ALVES Quentin
+		 * @note : Cleanup the current asset.
+		 **/
 		virtual void Cleanup( ) override;
 
 	public:
+		/**
+		 * Get const function
+		 * @author : ALVES Quentin
+		 * @note : Get current binary pointer.
+		 * @return : nPointer
+		 **/
 		nPointer Get( ) const;
 
 	};

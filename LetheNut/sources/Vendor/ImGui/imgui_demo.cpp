@@ -121,7 +121,7 @@ Index of this file:
 #endif
 
 // Play it nice with Windows users (Update: May 2018, Notepad now supports Unix-style carriage returns!)
-#ifdef _WIN32
+#ifdef _WIN64
 #define IM_NEWLINE  "\r\n"
 #else
 #define IM_NEWLINE  "\n"
@@ -5420,14 +5420,14 @@ void ImGui::ShowAboutWindow(bool* p_open)
 #ifdef IMGUI_DISABLE_OBSOLETE_FUNCTIONS
         ImGui::Text("define: IMGUI_DISABLE_OBSOLETE_FUNCTIONS");
 #endif
-#ifdef IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS
-        ImGui::Text("define: IMGUI_DISABLE_WIN32_DEFAULT_CLIPBOARD_FUNCTIONS");
+#ifdef IMGUI_DISABLE_WIN64_DEFAULT_CLIPBOARD_FUNCTIONS
+        ImGui::Text("define: IMGUI_DISABLE_WIN64_DEFAULT_CLIPBOARD_FUNCTIONS");
 #endif
-#ifdef IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS
-        ImGui::Text("define: IMGUI_DISABLE_WIN32_DEFAULT_IME_FUNCTIONS");
+#ifdef IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCTIONS
+        ImGui::Text("define: IMGUI_DISABLE_WIN64_DEFAULT_IME_FUNCTIONS");
 #endif
-#ifdef IMGUI_DISABLE_WIN32_FUNCTIONS
-        ImGui::Text("define: IMGUI_DISABLE_WIN32_FUNCTIONS");
+#ifdef IMGUI_DISABLE_WIN64_FUNCTIONS
+        ImGui::Text("define: IMGUI_DISABLE_WIN64_FUNCTIONS");
 #endif
 #ifdef IMGUI_DISABLE_DEFAULT_FORMAT_FUNCTIONS
         ImGui::Text("define: IMGUI_DISABLE_DEFAULT_FORMAT_FUNCTIONS");
@@ -5447,8 +5447,8 @@ void ImGui::ShowAboutWindow(bool* p_open)
 #ifdef IMGUI_USE_BGRA_PACKED_COLOR
         ImGui::Text("define: IMGUI_USE_BGRA_PACKED_COLOR");
 #endif
-#ifdef _WIN32
-        ImGui::Text("define: _WIN32");
+#ifdef _WIN64
+        ImGui::Text("define: _WIN64");
 #endif
 #ifdef _WIN64
         ImGui::Text("define: _WIN64");

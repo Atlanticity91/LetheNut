@@ -41,11 +41,25 @@
 
 	#include "NutAsset.hpp"
 
+	/**
+	 * NutSound class
+	 * @author : ALVES Quentin
+	 * @node : Defined Nut Sound core class.
+	 **/
 	NUT_ASSET( NutSound final ) {
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param alias : Alias of the asset.
+		 **/
 		NutSound( nString alias );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		~NutSound( ) = default;
 
 	};

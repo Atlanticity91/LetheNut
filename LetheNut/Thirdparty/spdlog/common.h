@@ -17,13 +17,13 @@
 
 #ifdef SPDLOG_COMPILED_LIB
 #undef SPDLOG_HEADER_ONLY
-#if defined(_WIN32) && defined(SPDLOG_SHARED_LIB)
+#if defined(_WIN64) && defined(SPDLOG_SHARED_LIB)
 #ifdef spdlog_EXPORTS
 #define SPDLOG_API __declspec(dllexport)
 #else
 #define SPDLOG_API __declspec(dllimport)
 #endif
-#else // !defined(_WIN32) || !defined(SPDLOG_SHARED_LIB)
+#else // !defined(_WIN64) || !defined(SPDLOG_SHARED_LIB)
 #define SPDLOG_API
 #endif
 #define SPDLOG_INLINE
@@ -86,7 +86,7 @@ namespace sinks {
 class sink;
 }
 
-#if defined(_WIN32) && defined(SPDLOG_WCHAR_FILENAMES)
+#if defined(_WIN64) && defined(SPDLOG_WCHAR_FILENAMES)
 using filename_t = std::wstring;
 #define SPDLOG_FILENAME_T(s) L##s
 #else
@@ -103,13 +103,13 @@ using wstring_view_t = fmt::basic_string_view<wchar_t>;
 using memory_buf_t = fmt::basic_memory_buffer<char, 250>;
 
 #ifdef SPDLOG_WCHAR_TO_UTF8_SUPPORT
-#ifndef _WIN32
+#ifndef _WIN64
 #error SPDLOG_WCHAR_TO_UTF8_SUPPORT only supported on windows
 #else
 template<typename T>
 struct is_convertible_to_wstring_view : std::is_convertible<T, wstring_view_t>
 {};
-#endif // _WIN32
+#endif // _WIN64
 #else
 template<typename>
 struct is_convertible_to_wstring_view : std::false_type

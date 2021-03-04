@@ -22,7 +22,7 @@ SPDLOG_API std::tm gmtime() SPDLOG_NOEXCEPT;
 
 // eol definition
 #if !defined(SPDLOG_EOL)
-#ifdef _WIN32
+#ifdef _WIN64
 #define SPDLOG_EOL "\r\n"
 #else
 #define SPDLOG_EOL "\n"
@@ -32,7 +32,7 @@ SPDLOG_API std::tm gmtime() SPDLOG_NOEXCEPT;
 SPDLOG_CONSTEXPR static const char *default_eol = SPDLOG_EOL;
 
 // folder separator
-#ifdef _WIN32
+#ifdef _WIN64
 static const char folder_sep = '\\';
 #else
 SPDLOG_CONSTEXPR static const char folder_sep = '/';
@@ -83,7 +83,7 @@ SPDLOG_API bool is_color_terminal() SPDLOG_NOEXCEPT;
 // Source: https://github.com/agauniyal/rang/
 SPDLOG_API bool in_terminal(FILE *file) SPDLOG_NOEXCEPT;
 
-#if (defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || defined(SPDLOG_WCHAR_FILENAMES)) && defined(_WIN32)
+#if (defined(SPDLOG_WCHAR_TO_UTF8_SUPPORT) || defined(SPDLOG_WCHAR_FILENAMES)) && defined(_WIN64)
 SPDLOG_API void wstr_to_utf8buf(wstring_view_t wstr, memory_buf_t &target);
 
 SPDLOG_INLINE void utf8_to_wstrbuf(string_view_t str, memory_buf_t &target);

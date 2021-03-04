@@ -205,7 +205,7 @@
     FMT_INLINE_NAMESPACE v7 {
 #endif
 
-#if !defined(FMT_HEADER_ONLY) && defined(_WIN32)
+#if !defined(FMT_HEADER_ONLY) && defined(_WIN64)
 #  define FMT_CLASS_API FMT_SUPPRESS_MSC_WARNING(4275)
 #  ifdef FMT_EXPORT
 #    define FMT_API __declspec(dllexport)
@@ -1967,7 +1967,7 @@ template <typename Char, typename Args,
 inline void vprint_mojibake(std::FILE*, basic_string_view<Char>, const Args&) {}
 
 FMT_API void vprint_mojibake(std::FILE*, string_view, format_args);
-#ifndef _WIN32
+#ifndef _WIN64
 inline void vprint_mojibake(std::FILE*, string_view, format_args) {}
 #endif
 }  // namespace detail

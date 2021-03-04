@@ -274,7 +274,7 @@ void NutTextEditor::OnProcess( NutEditor* editor, NutWindow* parent ) { }
 
 void NutTextEditor::OnRender( NutEditor* editor, NutWindow* parent ) {
 	if ( this->documents ) {
-		if ( ImGui::BeginTabBar( "##TextEditorTabs", ImGuiTabBarFlags_Reorderable ) ) {
+		if ( ImGUI::TabBar( "##TextEditorTabs", ImGuiTabBarFlags_Reorderable, 0.f ) ) {
 			this->documents.Foreach(
 				[ this ]( auto& document, NutEditor* editor, NutWindow* window ) {
 					if ( ImGUI::Tab( document ) ) {
@@ -294,6 +294,8 @@ void NutTextEditor::OnRender( NutEditor* editor, NutWindow* parent ) {
 				}, 
 				editor, parent
 			);
+
+			ImGui::PopStyleVar( );
 		}
 
 		ImGui::EndTabBar( );
@@ -311,10 +313,10 @@ void NutTextEditor::OnRender( NutTextDocument& document ) {
 	ImGui::PushStyleColor( ImGuiCol_Text, this->style->GetText( ) );
 	ImGui::PushStyleColor( ImGuiCol_WindowBg, this->style->GetBackground( ) );
 	
-	if ( !this->parser ) {
+	//if ( !this->parser ) {
 		for ( auto& line : this->GetCurrent( )->GetLines( ) )
 			ImGui::Text( line.c_str( ) );
-	} else {
+	/*} else {
 		NutTextParser::TextPair pair;
 
 		while ( this->parser->Parse( this->GetCurrent( )->GetLines( ), pair ) ) {
@@ -323,6 +325,7 @@ void NutTextEditor::OnRender( NutTextDocument& document ) {
 			ImGUI::Text( scheme.foreground, scheme.background, pair.first );
 		}
 	}
+	*/
 	
 	ImGui::PopStyleColor( 2 );
 }

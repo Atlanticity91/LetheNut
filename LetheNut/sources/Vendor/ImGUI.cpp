@@ -378,7 +378,7 @@ ImGUI::ImCanvas::ImCanvas( float zoom_max )
 
 void ImGUI::ImCanvas::SetStyle( const ImGUI::ImCanvasStyle* style ) {
 	if ( style ) {
-#ifdef _WIN32
+#ifdef _WIN64
 		memcpy_s( &this->style, sizeof( ImGUI::ImCanvasStyle ), style, sizeof( ImGUI::ImCanvasStyle ) );
 #else
 		memcpy( &this->style, style, sizeof( ImGUI::ImCanvasStyle ) );
@@ -387,7 +387,7 @@ void ImGUI::ImCanvas::SetStyle( const ImGUI::ImCanvasStyle* style ) {
 }
 
 void ImGUI::ImCanvas::SetStyle( const ImGUI::ImCanvasStyle& style ) {
-#ifdef _WIN32
+#ifdef _WIN64
 	memcpy_s( &this->style, sizeof( ImGUI::ImCanvasStyle ), &style, sizeof( ImGUI::ImCanvasStyle ) );
 #else
 	memcpy( &this->style, &style, sizeof( ImGUI::ImCanvasStyle ) );
@@ -396,7 +396,7 @@ void ImGUI::ImCanvas::SetStyle( const ImGUI::ImCanvasStyle& style ) {
 
 void ImGUI::ImCanvas::SetStyle( const ImNodeStyle* style ) {
 	if ( style ) {
-#ifdef _WIN32
+#ifdef _WIN64
 		memcpy_s( &this->node_style, sizeof( ImGUI::ImNodeStyle ), style, sizeof( ImGUI::ImNodeStyle ) );
 #else
 		memcpy( &this->node_style, style, sizeof( ImGUI::ImNodeStyle ) );
@@ -405,7 +405,7 @@ void ImGUI::ImCanvas::SetStyle( const ImNodeStyle* style ) {
 }
 
 void ImGUI::ImCanvas::SetStyle( const ImNodeStyle& style ) {
-#ifdef _WIN32
+#ifdef _WIN64
 	memcpy_s( &this->node_style, sizeof( ImGUI::ImNodeStyle ), &style, sizeof( ImGUI::ImNodeStyle ) );
 #else
 	memcpy( &this->node_style, &style, sizeof( ImGUI::ImNodeStyle ) );
@@ -594,6 +594,15 @@ bool ImGUI::Panel( NutPanel* panel ) {
 	}
 
 	return false;
+}
+
+bool ImGUI::TabBar( nString label, ImGuiTabBarFlags flags, float spacing ) {
+	auto state = ImGui::BeginTabBar( label, flags );
+
+	if ( state ) 
+		ImGui::PushStyleVar( ImGuiStyleVar_ItemInnerSpacing, ImVec2{ spacing, 0.f } );
+
+	return state;
 }
 
 bool ImGUI::Tab( NutTextDocument& document ) {

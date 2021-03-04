@@ -1663,7 +1663,7 @@ JSON_HEDLEY_DIAGNOSTIC_POP
 #if defined(JSON_HEDLEY_IMPORT)
 #undef JSON_HEDLEY_IMPORT
 #endif
-#if defined(_WIN32) || defined(__CYGWIN__)
+#if defined(_WIN64) || defined(__CYGWIN__)
 #  define JSON_HEDLEY_PRIVATE
 #  define JSON_HEDLEY_PUBLIC   __declspec(dllexport)
 #  define JSON_HEDLEY_IMPORT   __declspec(dllimport)
@@ -15459,7 +15459,7 @@ namespace nlohmann {
                 result[ "version" ][ "minor" ] = NLOHMANN_JSON_VERSION_MINOR;
                 result[ "version" ][ "patch" ] = NLOHMANN_JSON_VERSION_PATCH;
 
-#ifdef _WIN32
+#ifdef _WIN64
                 result[ "platform" ] = "win32";
 #elif defined __linux__
                 result[ "platform" ] = "linux";

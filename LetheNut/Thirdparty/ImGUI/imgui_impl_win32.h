@@ -12,7 +12,7 @@
 // If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
-#ifdef _WIN32
+#ifdef _WIN64
 
 #pragma once
 #include "imgui.h"      // IMGUI_IMPL_API
@@ -23,8 +23,8 @@ IMGUI_IMPL_API void     ImGui_ImplWin32_NewFrame();
 
 // Configuration
 // - Disable gamepad support or linking with xinput.lib
-//#define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
-//#define IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT
+//#define IMGUI_IMPL_WIN64_DISABLE_GAMEPAD
+//#define IMGUI_IMPL_WIN64_DISABLE_LINKING_XINPUT
 
 // Win32 message handler your application need to call.
 // - Intentionally commented out in a '#if 0' block to avoid dragging dependencies on <windows.h> from this helper.

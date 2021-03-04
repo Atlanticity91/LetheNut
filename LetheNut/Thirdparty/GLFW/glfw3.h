@@ -92,9 +92,9 @@ extern "C" {
 
 /* If we are we on Windows, we want a single define for it.
  */
-#if !defined(_WIN32) && (defined(__WIN32__) || defined(WIN32) || defined(__MINGW32__))
- #define _WIN32
-#endif /* _WIN32 */
+#if !defined(_WIN64) && (defined(__WIN64__) || defined(WIN32) || defined(__MINGW32__))
+ #define _WIN64
+#endif /* _WIN64 */
 
 /* Include because most Windows GLU headers need wchar_t and
  * the macOS OpenGL header blocks the definition of ptrdiff_t by glext.h.
@@ -112,14 +112,14 @@ extern "C" {
 #endif /* Vulkan header */
 
 /* The Vulkan header may have indirectly included windows.h (because of
- * VK_USE_PLATFORM_WIN32_KHR) so we offer our replacement symbols after it.
+ * VK_USE_PLATFORM_WIN64_KHR) so we offer our replacement symbols after it.
  */
 
 /* It is customary to use APIENTRY for OpenGL function pointer declarations on
  * all platforms.  Additionally, the Windows OpenGL header needs APIENTRY.
  */
 #if !defined(APIENTRY)
- #if defined(_WIN32)
+ #if defined(_WIN64)
   #define APIENTRY __stdcall
  #else
   #define APIENTRY
@@ -129,14 +129,14 @@ extern "C" {
 
 /* Some Windows OpenGL headers need this.
  */
-#if !defined(WINGDIAPI) && defined(_WIN32)
+#if !defined(WINGDIAPI) && defined(_WIN64)
  #define WINGDIAPI __declspec(dllimport)
  #define GLFW_WINGDIAPI_DEFINED
 #endif /* WINGDIAPI */
 
 /* Some Windows GLU headers need this.
  */
-#if !defined(CALLBACK) && defined(_WIN32)
+#if !defined(CALLBACK) && defined(_WIN64)
  #define CALLBACK __stdcall
  #define GLFW_CALLBACK_DEFINED
 #endif /* CALLBACK */
@@ -230,10 +230,10 @@ extern "C" {
 /* GLFWAPI is used to declare public API functions for export
  * from the DLL / shared library / dynamic library.
  */
-#if defined(_WIN32) && defined(_GLFW_BUILD_DLL)
+#if defined(_WIN64) && defined(_GLFW_BUILD_DLL)
  /* We are building GLFW as a Win32 DLL */
  #define GLFWAPI __declspec(dllexport)
-#elif defined(_WIN32) && defined(GLFW_DLL)
+#elif defined(_WIN64) && defined(GLFW_DLL)
  /* We are calling GLFW as a Win32 DLL */
  #define GLFWAPI __declspec(dllimport)
 #elif defined(__GNUC__) && defined(_GLFW_BUILD_DLL)

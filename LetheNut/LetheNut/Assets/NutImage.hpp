@@ -41,21 +41,54 @@
 
 	#include "NutAsset.hpp"
 
+	/**
+	 * NutImage class [ NutAsset ]
+	 * @author : ALVES Quentin
+	 * @node : Defined Nut Image core class.
+	 **/
 	NUT_ASSET( NutImage final ) {
 
 	private:
 		mutable OpenGL::Texture texture;
 
 	public:
+		/**
+		 * Constructor
+		 * @author : ALVES Quentin
+		 * @param alias : Alias of the asset.
+		 **/
 		NutImage( nString alias );
 
+		/**
+		 * Destructor
+		 * @author : ALVES Quentin
+		 **/
 		~NutImage( ) = default;
 
+		/**
+		 * Load function
+		 * @author : ALVES Quentin
+		 * @note : Load the current asset.
+		 * @param editor : Pointer to current editor.
+		 * @param path : Path to the query asset.
+		 * @return : bool
+		 **/
 		virtual bool Load( NutEditor* editor, nString path ) override;
 
+		/**
+		 * Cleanup method
+		 * @author : ALVES Quentin
+		 * @note : Cleanup the current asset.
+		 **/
 		virtual void Cleanup( ) override;
 
 	public:
+		/**
+		 * Get const function
+		 * @author : ALVES Quentin
+		 * @note : Get current opengl texture.
+		 * @return : OpenGL::Texture&
+		 **/
 		OpenGL::Texture& Get( ) const;
 
 	};
